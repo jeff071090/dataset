@@ -1,0 +1,2407 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Escala CLT — Prisma Contabilidade</title>
+<link rel="icon" href="data:image/png;base64,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">
+<style>
+:root{
+  --azul-900:#042C53; --azul-800:#083869; --azul-700:#0C447C; --azul-500:#017ACD;
+  --ambar:#EF9F27; --ambar-claro:#FAC775; --gelo:#B5D4F4;
+  --tinta:#16243a; --tinta-fraca:#5a6b82; --linha:#dce6f2;
+  --fundo:#f4f7fb; --papel:#ffffff;
+  --ok-bg:#e6f6ec; --ok-tx:#1d6b3a;
+  --alerta-bg:#fdf0da; --alerta-tx:#8a5510;
+  --erro-bg:#fdeaea; --erro-tx:#9b2c2c;
+  --raio:10px; --sombra:0 1px 2px rgba(4,44,83,.06),0 4px 16px rgba(4,44,83,.07);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  font-family:'Segoe UI',system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif;
+  background:var(--fundo); color:var(--tinta); font-size:14px; line-height:1.5;
+}
+/* ---------------------------------------------------------------- cabeçalho */
+header{
+  background:linear-gradient(135deg,var(--azul-900) 0%,var(--azul-700) 100%);
+  color:#fff; padding:14px 22px; display:flex; align-items:center; gap:18px;
+  box-shadow:0 2px 12px rgba(4,44,83,.18); position:relative;
+}
+header::after{content:'';position:absolute;left:0;right:0;bottom:0;height:3px;background:var(--ambar)}
+header img{height:34px;width:auto;display:block}
+.cab-txt{flex:1;min-width:0}
+.cab-txt h1{margin:0;font-size:17px;font-weight:600;letter-spacing:.2px}
+.cab-txt p{margin:1px 0 0;font-size:11.5px;color:var(--gelo);letter-spacing:.3px}
+.cab-versao{font-size:11px;color:var(--gelo);white-space:nowrap;opacity:.85}
+/* ---------------------------------------------------------------- abas */
+nav{background:var(--papel);border-bottom:1px solid var(--linha);padding:0 22px;display:flex;gap:2px;overflow-x:auto}
+nav button{
+  background:none;border:0;border-bottom:3px solid transparent;padding:12px 16px;
+  font:inherit;font-weight:500;color:var(--tinta-fraca);cursor:pointer;white-space:nowrap;
+}
+nav button:hover{color:var(--azul-700)}
+nav button.on{color:var(--azul-700);border-bottom-color:var(--ambar);font-weight:600}
+nav button .bolha{
+  display:inline-block;min-width:18px;padding:0 5px;margin-left:6px;border-radius:9px;
+  background:var(--erro-bg);color:var(--erro-tx);font-size:11px;font-weight:700;text-align:center;
+}
+main{padding:22px;max-width:1700px;margin:0 auto}
+.aba{display:none}
+.aba.on{display:block}
+/* ---------------------------------------------------------------- blocos */
+.cartao{background:var(--papel);border:1px solid var(--linha);border-radius:var(--raio);box-shadow:var(--sombra);padding:18px;margin-bottom:18px}
+.cartao > h2{margin:0 0 4px;font-size:15px;font-weight:600;color:var(--azul-700)}
+.cartao > h2 + .sub{margin:0 0 14px;font-size:12.5px;color:var(--tinta-fraca)}
+.linha{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end}
+label.campo{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:600;color:var(--tinta-fraca)}
+input,select,textarea{
+  font:inherit;padding:7px 10px;border:1px solid var(--linha);border-radius:7px;background:#fff;color:var(--tinta);
+}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--gelo);outline-offset:-1px;border-color:var(--azul-500)}
+textarea{resize:vertical;min-height:90px;font-family:ui-monospace,Consolas,monospace;font-size:12.5px}
+button.bt{
+  font:inherit;font-weight:600;padding:8px 16px;border-radius:7px;border:1px solid transparent;cursor:pointer;
+  background:var(--azul-700);color:#fff;
+}
+button.bt:hover{background:var(--azul-800)}
+button.bt.ambar{background:var(--ambar);color:#3d2a06}
+button.bt.ambar:hover{background:#dd9220}
+button.bt.linha2{background:#fff;color:var(--azul-700);border-color:var(--linha)}
+button.bt.linha2:hover{background:var(--fundo)}
+button.bt:disabled{opacity:.45;cursor:not-allowed}
+button.mini{font:inherit;font-size:12px;padding:3px 8px;border-radius:6px;border:1px solid var(--linha);background:#fff;color:var(--tinta-fraca);cursor:pointer}
+button.mini:hover{border-color:var(--erro-tx);color:var(--erro-tx)}
+/* ---------------------------------------------------------------- tabelas */
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{border:1px solid var(--linha);padding:6px 9px;text-align:left;vertical-align:middle}
+thead th{background:var(--azul-700);color:#fff;font-weight:600;font-size:12px;position:sticky;top:0;z-index:2}
+tbody tr:nth-child(even) td{background:#fbfdff}
+td input,td select{width:100%;border:1px solid transparent;background:transparent;padding:4px 6px}
+td input:hover,td select:hover{border-color:var(--linha);background:#fff}
+.rolagem{overflow:auto;max-height:70vh;border:1px solid var(--linha);border-radius:var(--raio);background:#fff}
+/* ---------------------------------------------------------------- grade da escala */
+#grade table{font-size:12px;white-space:nowrap}
+#grade th,#grade td{padding:4px 6px;text-align:center}
+#grade .fx{position:sticky;left:0;background:#fff;text-align:left;z-index:1;border-right:2px solid var(--azul-700)}
+#grade thead .fx{background:var(--azul-700);z-index:3}
+#grade tbody tr:nth-child(even) .fx{background:#fbfdff}
+#grade .dom{background:#eef4fb}
+#grade thead th.dom{background:var(--azul-800)}
+#grade th.fer::after{content:'\2022';color:var(--ambar);display:block;line-height:.6;font-size:15px}
+.cod{display:block;border-radius:4px;padding:2px 0;font-weight:600;font-size:11px}
+.c-trab{color:var(--tinta)}
+.c-dsr{background:#e3ebf5;color:#3c5878}
+.c-f{background:#eef2f7;color:#6b7a8d}
+.c-fer{background:#fdf0da;color:#8a5510}
+.c-fercomp{background:#e6f6ec;color:#1d6b3a}
+.c-ferdobro{background:#fdeaea;color:#9b2c2c}
+.c-fer59{background:#e6eefa;color:#0C447C}
+.c-folgacomp{background:#d5f0e0;color:#1d6b3a}
+.tot{background:#f7fafd;font-weight:600}
+.st-ok{background:var(--ok-bg);color:var(--ok-tx)}
+.st-al{background:var(--alerta-bg);color:var(--alerta-tx)}
+.st-vi{background:var(--erro-bg);color:var(--erro-tx);font-weight:700}
+#grade td.status{text-align:left;white-space:normal;min-width:260px;font-size:11.5px;line-height:1.35}
+/* ---------------------------------------------------------------- legenda e avisos */
+.legenda{display:flex;flex-wrap:wrap;gap:8px 16px;margin-top:12px;font-size:12px;color:var(--tinta-fraca)}
+.legenda span b{display:inline-block;min-width:74px;text-align:center;border-radius:4px;padding:1px 6px;margin-right:5px;font-size:11px}
+.nota{border-left:4px solid var(--ambar);background:#fffdf7;padding:11px 14px;border-radius:0 8px 8px 0;font-size:12.5px;color:#6b5220;margin-top:14px}
+.nota b{color:#4d3a12}
+.nota ol,.nota ul{margin:6px 0 0;padding-left:20px}
+.nota li{margin:3px 0}
+.achado{border:1px solid var(--linha);border-left:4px solid var(--erro-tx);border-radius:0 8px 8px 0;padding:11px 14px;margin-bottom:10px;background:#fff}
+.achado.ok{border-left-color:var(--ok-tx)}
+.achado h3{margin:0 0 6px;font-size:13.5px;color:var(--azul-700)}
+.achado ul{margin:0;padding-left:20px;font-size:12.5px}
+.achado li{margin:4px 0}
+.achado .lei{color:var(--tinta-fraca);font-size:11.5px;font-style:italic}
+.vazio{text-align:center;color:var(--tinta-fraca);padding:38px 18px;font-size:13.5px}
+.chip{display:inline-flex;align-items:center;gap:6px;background:var(--fundo);border:1px solid var(--linha);border-radius:20px;padding:4px 6px 4px 12px;font-size:12.5px;margin:0 7px 7px 0}
+.chip b{font-weight:600}
+.chip .op{color:var(--tinta-fraca);font-size:11px}
+#avisoArmazenamento{
+  background:#fdf0da;border-bottom:1px solid #f0d9ae;color:#6b5220;
+  padding:10px 22px;font-size:12.5px;display:flex;gap:10px;align-items:flex-start
+}
+#avisoArmazenamento b{color:#4d3a12}
+#avisoArmazenamento .ic{font-size:15px;line-height:1.2}
+#toast{
+  position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(90px);
+  background:var(--azul-900);color:#fff;padding:11px 20px;border-radius:8px;font-size:13px;
+  box-shadow:0 8px 30px rgba(4,44,83,.3);opacity:0;transition:.28s;z-index:99;max-width:min(560px,92vw)
+}
+#toast.ver{transform:translateX(-50%) translateY(0);opacity:1}
+#toast.ok{background:#1d6b3a}
+#toast.err{background:#9b2c2c}
+.rodape{text-align:center;color:var(--tinta-fraca);font-size:11.5px;padding:10px 22px 26px}
+.rodape b{color:var(--azul-700)}
+/* ---------------------------------------------------------------- impressão */
+@media print{
+  @page{size:A4 landscape;margin:9mm}
+  body{background:#fff;font-size:9px}
+  header{box-shadow:none;padding:8px 0}
+  nav,.naoimprime,#toast{display:none!important}
+  main{padding:0;max-width:none}
+  .aba{display:none!important}
+  .aba.on{display:block!important}
+  .cartao{box-shadow:none;border:0;padding:0;margin:0 0 10px;break-inside:avoid}
+  .rolagem{max-height:none;overflow:visible;border:0}
+  #grade table{font-size:7.5px}
+  #grade th,#grade td{padding:2px 3px}
+  thead th{position:static}
+  #grade .fx{position:static}
+  .achado{break-inside:avoid}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <img src="data:image/png;base64,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" alt="Prisma Contabilidade">
+  <div class="cab-txt">
+    <h1>Escala de Trabalho com Compliance CLT</h1>
+    <p>Digital para você ter mais tempo.</p>
+  </div>
+  <div class="cab-versao naoimprime">v1.1 &middot; PEC 221/2019 &middot; 100% offline</div>
+</header>
+
+<div id="avisoArmazenamento" class="naoimprime" hidden>
+  <span class="ic">&#9888;</span>
+  <span><b>Este navegador bloqueou o armazenamento local.</b> O app funciona normalmente, mas a equipe, os feriados e os meses gerados <b>não ficam guardados</b> ao fechar a aba — e a emenda dos contadores na virada do mês deixa de funcionar. Use <b>Parâmetros &rarr; Backup dos dados</b> para salvar e recarregar em arquivo. Costuma acontecer quando o arquivo é aberto de dentro de um visualizador; abrindo direto com duplo clique no navegador, o armazenamento volta a funcionar.</span>
+</div>
+
+<nav class="naoimprime">
+  <button data-aba="equipe" class="on">Equipe</button>
+  <button data-aba="feriados">Feriados</button>
+  <button data-aba="escala">Escala</button>
+  <button data-aba="auditoria">Auditoria <span class="bolha" id="bolhaAud" hidden>0</span></button>
+  <button data-aba="params">Parâmetros</button>
+  <button data-aba="ajuda">Como usar</button>
+</nav>
+
+<main>
+
+<!-- ============================================================ EQUIPE -->
+<section class="aba on" id="aba-equipe">
+  <div class="cartao">
+    <h2>Período de referência</h2>
+    <p class="sub">A escala é gerada mês a mês. O app guarda os meses gerados neste navegador para emendar os contadores na virada.</p>
+    <div class="linha">
+      <label class="campo">Mês
+        <select id="mes"></select>
+      </label>
+      <label class="campo">Ano
+        <input type="number" id="ano" min="2000" max="2100" step="1" style="width:110px">
+      </label>
+      <button class="bt ambar" id="btGerar">Gerar escala</button>
+      <span id="infoMes" style="font-size:12.5px;color:var(--tinta-fraca)"></span>
+    </div>
+    <p id="infoRegime" style="margin:10px 0 0;font-size:12.5px"></p>
+  </div>
+
+  <div class="cartao">
+    <h2>Funcionários</h2>
+    <p class="sub">Nome e cargo bastam. A escala é sugerida pelo cargo e pode ser trocada na coluna &ldquo;Escala&rdquo;. O turno é só o rótulo do dia trabalhado. Preencha o <b>Setor</b> quando pessoas do mesmo setor não puderem folgar no mesmo dia.</p>
+    <div class="rolagem" style="max-height:none">
+      <table id="tbEquipe">
+        <thead><tr>
+          <th style="width:76px">Matrícula</th>
+          <th>Nome</th>
+          <th>Cargo</th>
+          <th style="width:130px" title="Pessoas do mesmo setor não folgam no mesmo dia (limite na aba Parâmetros)">Setor</th>
+          <th style="width:112px" title="Mínimo de domingos de folga por mês: 2 para mulher (art. 386 da CLT), 1 para homem">Sexo</th>
+          <th style="width:118px">Turno</th>
+          <th style="width:112px">Escala</th>
+          <th style="width:136px" title="Só vale na 6x1">Folga semanal</th>
+          <th style="width:58px"></th>
+        </tr></thead>
+        <tbody></tbody>
+      </table>
+      <datalist id="listaSetores"></datalist>
+    </div>
+    <div class="linha" style="margin-top:14px">
+      <button class="bt linha2" id="btAddFunc">+ Adicionar funcionário</button>
+      <button class="bt linha2" id="btColar">Colar lista&hellip;</button>
+      <button class="bt linha2" id="btExemplo">Carregar exemplo</button>
+      <button class="mini" id="btLimparEquipe" style="margin-left:auto">Limpar equipe</button>
+    </div>
+    <div id="areaColar" hidden style="margin-top:14px">
+      <p class="sub" style="margin:0 0 6px">Uma pessoa por linha, separando com ponto e vírgula ou tabulação: <code>Nome; Cargo; Turno; Sexo; Setor</code>. Turno, sexo e setor são opcionais (padrão: M, masculino e sem setor).</p>
+      <textarea id="txColar" placeholder="Ana Paula Silva; Analista Contábil; M; F; Administrativo&#10;Roberto Carlos; Atendente de Vendas; T; M; Loja&#10;Fernanda Rocha; Vendedora; D; F; Loja"></textarea>
+      <div class="linha" style="margin-top:8px">
+        <button class="bt" id="btImportar">Importar</button>
+        <button class="bt linha2" id="btCancelarColar">Cancelar</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ FERIADOS -->
+<section class="aba" id="aba-feriados">
+  <div class="cartao">
+    <h2>Feriados do mês</h2>
+    <p class="sub">Os nacionais já vêm calculados. Os <b>municipais e estaduais você precisa acrescentar</b> — o app não tem como saber os da sua cidade.</p>
+    <div id="listaFeriados"></div>
+    <div class="linha" style="margin-top:14px">
+      <label class="campo">Data
+        <input type="date" id="novoFerData">
+      </label>
+      <label class="campo" style="flex:1;min-width:230px">Descrição
+        <input type="text" id="novoFerDesc" placeholder="Ex.: Aniversário do município">
+      </label>
+      <button class="bt linha2" id="btAddFer">+ Acrescentar feriado</button>
+    </div>
+    <div class="nota">
+      <b>Sobre os sugeridos:</b> Carnaval e Corpus Christi são <b>ponto facultativo</b> federal, não feriado nacional — só valem como feriado se lei municipal/estadual ou a CCT disserem. Vêm desmarcados de propósito. Confira sempre contra o calendário oficial do município e a convenção coletiva da categoria antes de rodar a folha.
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ ESCALA -->
+<section class="aba" id="aba-escala">
+  <div class="cartao">
+    <div class="linha naoimprime" style="margin-bottom:14px">
+      <h2 style="margin:0;flex:1" id="tituloEscala">Escala</h2>
+      <span id="regimeEscala" style="font-size:12px;color:var(--tinta-fraca);flex-basis:100%;order:9"></span>
+      <button class="bt linha2" id="btXlsx">Exportar .xlsx</button>
+      <button class="bt linha2" id="btImprimir">Imprimir / PDF</button>
+    </div>
+    <div id="grade"><p class="vazio">Nenhuma escala gerada ainda. Cadastre a equipe e clique em <b>Gerar escala</b>.</p></div>
+    <div class="legenda" id="legenda" hidden></div>
+    <div class="nota" id="notaEscala" hidden>
+      <b>Limites desta planilha</b>
+      <ol>
+        <li>A <b>interjornada de 11h</b> (art. 66 da CLT) não é validada integralmente: a entrada de dados não tem horário de entrada e saída. O app só aponta plantões 12x36 em dias adjacentes.</li>
+        <li>Os <b>tetos de horas</b> são parâmetros de referência, não valores fixados pela CLT — confira contra a CCT/ACT da categoria.</li>
+        <li>A leitura adotada para <b>feriado na 12x36</b> está na aba Parâmetros e é controvérsia viva, não ponto pacífico.</li>
+        <li>Isto <b>não substitui</b> advogado trabalhista, contador ou o setor de RH responsável antes de uso em folha de pagamento.</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ AUDITORIA -->
+<section class="aba" id="aba-auditoria">
+  <div class="cartao">
+    <h2>Auditoria de compliance</h2>
+    <p class="sub">Checagens estruturais recalculadas sobre a escala gerada, com a base legal de cada uma.</p>
+    <div id="listaAuditoria"><p class="vazio">Gere uma escala para ver a auditoria.</p></div>
+  </div>
+</section>
+
+<!-- ============================================================ PARÂMETROS -->
+<section class="aba" id="aba-params">
+  <div class="cartao">
+    <h2>Parâmetros de compliance</h2>
+    <p class="sub">Mudar qualquer um destes muda a leitura jurídica adotada. Cada campo diz qual é a consequência.</p>
+    <div id="formParams"></div>
+    <div class="linha" style="margin-top:16px">
+      <button class="bt linha2" id="btRestaurar">Restaurar padrões</button>
+    </div>
+  </div>
+  <div class="cartao">
+    <h2>Meses guardados neste navegador</h2>
+    <p class="sub">Servem para emendar os contadores de dias e domingos seguidos na virada do mês. Ficam só nesta máquina, neste navegador.</p>
+    <div id="listaMeses"></div>
+    <div class="linha" style="margin-top:14px">
+      <button class="mini" id="btLimparMeses">Apagar histórico de meses</button>
+    </div>
+  </div>
+  <div class="cartao">
+    <h2>Backup dos dados</h2>
+    <p class="sub">Salva equipe, feriados, parâmetros e histórico de meses num arquivo. Serve para levar tudo para outro computador, para outro navegador, ou como cópia de segurança — e é o caminho quando o armazenamento local está bloqueado.</p>
+    <div class="linha">
+      <button class="bt linha2" id="btBackup">Salvar backup (.json)</button>
+      <button class="bt linha2" id="btRestaurarBackup">Carregar backup&hellip;</button>
+      <input type="file" id="arqBackup" accept=".json,application/json" hidden>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ AJUDA -->
+<section class="aba" id="aba-ajuda">
+  <div class="cartao">
+    <h2>Como usar o app e as regras aplicadas</h2>
+    <p class="sub">Guia passo a passo, como ler a escala gerada e todas as regras que o app aplica, com a base legal de cada uma.</p>
+    <div id="textoAjuda"></div>
+  </div>
+</section>
+
+</main>
+
+<div class="rodape">
+  <b>Prisma Contabilidade</b> &middot; Escala CLT v1.1 &middot; roda 100% no seu computador, sem internet e sem enviar dado nenhum para fora.
+</div>
+
+<div id="toast"></div>
+
+<script>
+'use strict';
+/* ==========================================================================
+   ESCALA DE TRABALHO COM COMPLIANCE CLT — Prisma Contabilidade
+   App de arquivo único, 100% offline. Nenhuma requisição de rede.
+   O motor de regras (CONFIG, montarEscala, analisarCodigos, buscarDiaParaCompensar)
+   é portado 1:1 do gerador_escala_clt.gs da skill escala-clt-sheets.
+   ========================================================================== */
+
+var VERSAO = '1.1';
+
+/* ----------------------------------------------------- configuração padrão */
+var PADRAO = {
+  // 5x2r = 5x2 com folgas em rodízio, para operação de 7 dias (comércio,
+  // restaurante, indústria) que sai da 6x1 por força da PEC 221/2019.
+  jornadaHoras: { '5x2': 8, '5x2r': 8, '6x1': 44 / 6, '12x36': 12 },
+  // 12x36: 180h = 15 plantões de 12h. É teto, e o app suprime plantão
+  // excedente em mês de 31 dias que começaria com 16.
+  tetoContratualPorEscala: { '5x2': 220, '5x2r': 220, '6x1': 220, '12x36': 180 },
+
+  // PEC 221/2019 (fim da 6x1), aprovada pelo Senado em 14/10/2026.
+  // Fase 1: 60 dias após a promulgação — escala 5x2 obrigatória e jornada de
+  //         até 42h semanais. Fase 2: 12 meses depois — jornada de até 40h.
+  // A data de promulgação é PREVISÃO (sessão marcada para 20/10/2026) e deve
+  // ser conferida no Diário Oficial da União.
+  dataPromulgacaoPEC: '2026-10-20',
+  diasAteFase1: 60,
+  mesesAteFase2: 12,
+  // Na vigência, quem está na 6x1 passa para a 5x2 com rodízio. Desligar
+  // mantém a 6x1 só para simular o impacto — e a auditoria aponta violação.
+  converter6x1: true,
+
+  // Regra da empresa: quantas pessoas do MESMO setor podem folgar no mesmo
+  // dia. 1 = nunca duas ao mesmo tempo (setor com dois colaboradores).
+  maxFolgaMesmoSetor: 1,
+  limiteDiasConsecutivos: 6,
+
+  // Mínimo de DOMINGOS DE FOLGA por mês, por sexo.
+  //  F = 2: art. 386 da CLT — havendo trabalho aos domingos, escala de
+  //         revezamento QUINZENAL que favoreça o repouso dominical. Norma do
+  //         capítulo de proteção ao trabalho da mulher, não revogada pela
+  //         Lei 13.467/2017 e confirmada pelo TST e pelo STF.
+  //  M = 1: prática do escritório. Atenção: no comércio, o art. 6º, parágrafo
+  //         único, da Lei 10.101/2000 pede folga dominical a cada três
+  //         semanas, o que é MAIS estrito que 1 por mês em mês de 5 domingos.
+  minDomingosFolga: { M: 1, F: 2 },
+
+  // Guarda extra de domingos seguidos trabalhados (Lei 10.101/2000).
+  // 0 = desligado — quem manda é o mínimo mensal acima.
+  limiteDomingosSeguidos: 0,
+
+  // Folga variável: de quantas em quantas semanas a folga anda um dia da
+  // semana para trás. A semana do giro tem 5 dias trabalhados em vez de 6 —
+  // é o que desloca a fase. As demais seguem 6x1 normal, para o total de
+  // horas do mês ficar igual ao da folga fixa. Ver a aba Ajuda.
+  girarFolgaACadaSemanas: 3,
+
+  politicaFeriado: 'compensar',
+  feriado12x36ConformeArt59A: true,
+  janelaCompensacao: 30
+};
+var CONFIG = JSON.parse(JSON.stringify(PADRAO));
+
+/* ----------------------------------------------------- códigos de célula */
+var COD = {
+  PLANTAO: 'P12', FOLGA_ESCALA: 'F', DSR: 'DSR', FER: 'FER',
+  FER_COMP: 'FER_COMP', FER_DOBRO: 'FER_DOBRO', FER_59A: 'FER_59A',
+  FOLGA_COMP: 'FOLGA_COMP', PENDENTE: '__PEND__'
+};
+var CODIGOS_DESCANSO = [COD.FOLGA_ESCALA, COD.DSR, COD.FER, COD.FOLGA_COMP];
+var TURNOS = { M: 'manhã', T: 'tarde', N: 'noite', D: 'dia todo' };
+var SEXOS = { M: 'masculino', F: 'feminino' };
+var DIAS_SEMANA = ['domingo','segunda','terça','quarta','quinta','sexta','sábado'];
+var DS_CURTO = ['dom','seg','ter','qua','qui','sex','sáb'];
+var MESES = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+
+/* ----------------------------------------------------- estado do app */
+var ST = {
+  equipe: [],
+  feriadosExtras: [],   // {data:'YYYY-MM-DD', desc:'...'}
+  ferDesmarcados: [],   // datas de sugestões que o usuário desmarcou
+  meses: {},            // 'YYYY-MM' -> [{matricula,nome,escala,folgaDiaSemana,codigos}]
+  atual: null           // resultado da última geração
+};
+
+/* ========================================================================
+   MOTOR DE REGRAS  (espelho de gerador_escala_clt.gs)
+   ======================================================================== */
+
+function ehDescanso(cod) {
+  return cod === '' || cod == null || CODIGOS_DESCANSO.indexOf(cod) !== -1;
+}
+function diasNoMes(ano, mes) { return new Date(ano, mes, 0).getDate(); }
+function diaSemana(ano, mes, dia) { return new Date(ano, mes - 1, dia).getDay(); }
+function fmtData(ano, mes, dia) {
+  return ano + '-' + (mes < 10 ? '0' + mes : mes) + '-' + (dia < 10 ? '0' + dia : dia);
+}
+
+/* ----------------------------------------------- PEC 221/2019 — vigência */
+
+var REGIMES = [
+  { nome: 'Regime anterior à PEC (até 44h semanais, 6x1 permitida)', curto: 'pré-PEC · 44h', semanal: 44, mensal: 220 },
+  { nome: 'PEC 221/2019 — 1ª fase (escala 5x2, até 42h semanais)', curto: 'PEC fase 1 · 5x2 · 42h', semanal: 42, mensal: 210 },
+  { nome: 'PEC 221/2019 — 2ª fase (escala 5x2, até 40h semanais)', curto: 'PEC fase 2 · 5x2 · 40h', semanal: 40, mensal: 200 }
+];
+var ROTULO_ESCALA = { '5x2': '5x2', '5x2r': '5x2 rodízio', '6x1': '6x1', '12x36': '12x36' };
+
+/** Datas de início das fases, como Date local (sem fuso). */
+function datasPEC(cfg) {
+  var p = String(cfg.dataPromulgacaoPEC || '').split('-').map(Number);
+  if (p.length !== 3 || !p[0] || !p[1] || !p[2]) return null;
+  var promulgacao = new Date(p[0], p[1] - 1, p[2]);
+  var f1 = new Date(p[0], p[1] - 1, p[2] + (+cfg.diasAteFase1 || 0));
+  var f2 = new Date(f1.getFullYear(), f1.getMonth() + (+cfg.mesesAteFase2 || 0), f1.getDate());
+  return { promulgacao: promulgacao, fase1: f1, fase2: f2 };
+}
+/** 0 = regime anterior, 1 = 1ª fase (5x2/42h), 2 = 2ª fase (40h). */
+function faseNaData(ano, mes, dia, cfg) {
+  var d = datasPEC(cfg);
+  if (!d) return 0;
+  var x = new Date(ano, mes - 1, dia);
+  if (x >= d.fase2) return 2;
+  if (x >= d.fase1) return 1;
+  return 0;
+}
+/** Texto do(s) regime(s) que valem no mês — muda no dia da transição. */
+function resumoRegime(ano, mes) {
+  var dias = diasNoMes(ano, mes), partes = [], atual = -1, ini = 1;
+  for (var d = 1; d <= dias + 1; d++) {
+    var f = d <= dias ? faseNaData(ano, mes, d, CONFIG) : -2;
+    if (f !== atual) {
+      if (atual >= 0) partes.push((partes.length || f !== -2 ? 'dias ' + ini + ' a ' + (d - 1) + ': ' : '') + REGIMES[atual].nome);
+      atual = f; ini = d;
+    }
+  }
+  return partes.join(' · ');
+}
+function fmtBR(dt) {
+  return (dt.getDate() < 10 ? '0' : '') + dt.getDate() + '/' +
+         (dt.getMonth() < 9 ? '0' : '') + (dt.getMonth() + 1) + '/' + dt.getFullYear();
+}
+
+/**
+ * Atribui a escala pelo cargo. Heurística — o usuário pode sobrescrever.
+ * Quem cairia na 6x1 vai para a 5x2 com rodízio quando a competência já
+ * começa na vigência da PEC. Se a vigência começa no meio do mês, fica 6x1
+ * e a troca é feita dia a dia em montarEscalaDoFuncionario.
+ */
+function definirEscalaPorCargo(cargo, ano, mes) {
+  var c = String(cargo || '').toLowerCase();
+  if (c.indexOf('analista') !== -1 || c.indexOf('auxiliar') !== -1 ||
+      c.indexOf('escritório') !== -1 || c.indexOf('escritorio') !== -1 ||
+      c.indexOf('gerente') !== -1 || c.indexOf('administrativ') !== -1 ||
+      c.indexOf('contábil') !== -1 || c.indexOf('contabil') !== -1) return '5x2';
+  if (c.indexOf('vigilante') !== -1 || c.indexOf('portaria') !== -1 ||
+      c.indexOf('porteiro') !== -1 || c.indexOf('segurança') !== -1 ||
+      c.indexOf('seguranca') !== -1 || c.indexOf('zelador') !== -1) return '12x36';
+  if (ano && mes && CONFIG.converter6x1 && faseNaData(ano, mes, 1, CONFIG) >= 1) return '5x2r';
+  return '6x1';
+}
+
+/**
+ * Pares de folga da 5x2 com rodízio (0 = domingo ... 6 = sábado). Espalhados
+ * pela semana para a operação não ficar sem ninguém no mesmo dia. Nenhum par
+ * usa o domingo: o domingo de folga vem do rodízio dominical, e na semana em
+ * que ele cai o segundo dia do par volta a ser de trabalho.
+ */
+var PARES_5X2R = [[1, 2], [3, 4], [5, 6], [2, 3], [4, 5], [6, 1]];
+
+/** O domingo que fecha a semana (seg–dom) deste dia é folga do funcionário? */
+function domingoDaSemanaEhFolga(ano, mes, dia, domingosFolga) {
+  var w = diaSemana(ano, mes, dia);
+  var dom = dia + ((7 - w) % 7);
+  return domingosFolga.indexOf(dom) !== -1;
+}
+
+/**
+ * Folga semanal fixa da 6x1: segunda a sábado, nunca domingo. Duas razões —
+ * a operação não fica sem ninguém no mesmo dia, e ninguém recebe domingo como
+ * folga permanente (o domingo de folga vem do rodízio da Lei 10.101/2000).
+ */
+function semearFolgaFixa(ordem, escala) {
+  if (escala !== '6x1') return -1;
+  return 1 + (ordem % 6);
+}
+
+/** Dias do mês que caem em domingo. */
+function domingosDoMes(ano, mes) {
+  var out = [];
+  for (var d = 1; d <= diasNoMes(ano, mes); d++) if (diaSemana(ano, mes, d) === 0) out.push(d);
+  return out;
+}
+
+/**
+ * Escolhe QUAIS domingos do mês serão de folga para este funcionário.
+ * Espalha as escolhas pelo mês e desloca por posição na escala, para que os
+ * colegas não folguem todos no mesmo domingo e a operação siga coberta.
+ * Mínimo por sexo: art. 386 da CLT (quinzenal) para mulheres.
+ */
+function escolherDomingosDeFolga(ano, mes, quantos, ordem) {
+  var doms = domingosDoMes(ano, mes);
+  var S = doms.length;
+  if (!S || quantos <= 0) return [];
+  if (quantos >= S) return doms.slice();
+  var escolhidos = [];
+  for (var k = 0; k < quantos; k++) {
+    var i = ((ordem || 0) + Math.round(k * S / quantos)) % S;
+    var voltas = 0;
+    while (escolhidos.indexOf(doms[i]) !== -1 && voltas < S) { i = (i + 1) % S; voltas++; }
+    escolhidos.push(doms[i]);
+  }
+  return escolhidos.sort(function (a, b) { return a - b; });
+}
+
+/** Quantos domingos do mês o funcionário efetivamente folgou. */
+function contarDomingosDeFolga(codigos, ano, mes) {
+  var n = 0;
+  for (var d = 1; d <= codigos.length; d++) {
+    if (diaSemana(ano, mes, d) === 0 && ehDescanso(codigos[d - 1])) n++;
+  }
+  return n;
+}
+
+/**
+ * Dia de trabalho livre mais próximo, para frente, que vira folga compensatória.
+ * Preferências: (1) não consumir domingo, que é o dia de cobertura mais escassa;
+ * (2) deslocar o início conforme a posição do funcionário, para dois colegas com
+ * o mesmo feriado não compensarem no mesmo dia.
+ */
+function buscarDiaParaCompensar(codigos, idxFeriado, janela, ano, mes, ordem) {
+  var limite = Math.min(codigos.length - 1, idxFeriado + janela);
+  var inicio = idxFeriado + 1;
+  var tentativas = [
+    { de: inicio + (ordem || 0), evitarDomingo: true },
+    { de: inicio, evitarDomingo: true },
+    { de: inicio, evitarDomingo: false }
+  ];
+  for (var t = 0; t < tentativas.length; t++) {
+    for (var i = Math.max(tentativas[t].de, inicio); i <= limite; i++) {
+      if (ehDescanso(codigos[i]) || codigos[i] === COD.PENDENTE) continue;
+      if (tentativas[t].evitarDomingo && diaSemana(ano, mes, i + 1) === 0) continue;
+      return i;
+    }
+  }
+  return -1;
+}
+
+/** Sequência de trabalho que ABRE o mês — a parte que emenda com o mês anterior. */
+function sequenciaInicial(codigos, somenteDomingos, ano, mes) {
+  var n = 0;
+  for (var i = 0; i < codigos.length; i++) {
+    if (somenteDomingos && diaSemana(ano, mes, i + 1) !== 0) continue;
+    if (ehDescanso(codigos[i])) break;
+    n++;
+  }
+  return n;
+}
+
+/** Indicadores estruturais de uma linha já pronta. */
+function analisarCodigos(codigos, ano, mes, feriados, escala) {
+  var seq = 0, maxSeq = 0, domSeq = 0, maxDom = 0;
+  var totalFolgas = 0, totalDSR = 0, semTratamento = [], adjacentes = [];
+  var tratados = [COD.FER_COMP, COD.FER_DOBRO, COD.FER_59A];
+  for (var i = 0; i < codigos.length; i++) {
+    var cod = codigos[i], dia = i + 1;
+    var ehDom = diaSemana(ano, mes, dia) === 0;
+    var ehFer = feriados.indexOf(fmtData(ano, mes, dia)) !== -1;
+    if (ehDescanso(cod)) {
+      seq = 0;
+      if (ehDom) domSeq = 0;
+      if (cod === COD.DSR) { totalDSR++; totalFolgas++; }
+      else if (cod === COD.FOLGA_ESCALA || cod === COD.FOLGA_COMP) totalFolgas++;
+    } else {
+      seq++; if (seq > maxSeq) maxSeq = seq;
+      if (ehDom) { domSeq++; if (domSeq > maxDom) maxDom = domSeq; }
+      if (escala === '12x36' && i > 0 && !ehDescanso(codigos[i - 1])) adjacentes.push(dia);
+      if (ehFer && tratados.indexOf(cod) === -1) semTratamento.push(dia);
+    }
+  }
+  return { maxDiasSeguidos: maxSeq, maxDomingosSeguidos: maxDom, totalFolgas: totalFolgas,
+           totalDSR: totalDSR, feriadosSemTratamento: semTratamento, adjacencia12x36: adjacentes };
+}
+
+/** Monta os códigos do mês para um funcionário. Função pura. */
+function montarEscalaDoFuncionario(ano, mes, func, escala, feriados, estado, cfg) {
+  var dias = diasNoMes(ano, mes);
+  var turno = func.turno || 'M';
+  var codigos = [], pendentes = [];
+  var diasSeguidos = estado.diasConsecutivos;
+  var domingosSeguidos = estado.domingosSeguidos;
+  var ultimo12x36 = estado.ultimoTurno12x36;
+  var folgaFixa = estado.folgaDiaSemana;
+  var variavel = (estado.tipoFolga === 'variavel');
+  var diasDesdeFolga = estado.diasConsecutivos; // usado só na folga variável
+  var ciclosFolga = estado.ciclosFolga || 0;
+
+  // Domingos que este funcionário folga neste mês. Na 5x2 todo domingo já é
+  // DSR; na 12x36 a alternância faz os domingos caírem em paridades opostas,
+  // então metade deles já é folga — a lista só precisa reger a 6x1.
+  var minDom = cfg.minDomingosFolga[func.sexo === 'F' ? 'F' : 'M'];
+  var domingosFolga = (escala === '6x1' || escala === '5x2r')
+    ? escolherDomingosDeFolga(ano, mes, minDom, estado.ordem)
+    : [];
+  var par = PARES_5X2R[(estado.parFolga != null ? estado.parFolga : (estado.ordem || 0)) % PARES_5X2R.length];
+  var escalaDia = [], fases = [], conversaoDia = 0;
+  var trabNaSemana = 0, dsrNaSemana = false;   // semana seg–dom, para a 5x2r
+  var folgasTransicao = null;                    // dias de folga da semana em que a 6x1 vira 5x2r
+
+  for (var dia = 1; dia <= dias; dia++) {
+    var w = diaSemana(ano, mes, dia);
+    var ehFeriado = feriados.indexOf(fmtData(ano, mes, dia)) !== -1;
+    var ehDomingo = (w === 0);
+    var cod, fechouCicloSemanal = false;
+    if (w === 1) { trabNaSemana = 0; dsrNaSemana = false; }
+    var fase = faseNaData(ano, mes, dia, cfg);
+    // PEC 221/2019: a partir da vigência a 6x1 deixa de existir.
+    var esc = (escala === '6x1' && fase >= 1 && cfg.converter6x1) ? '5x2r' : escala;
+    if (esc !== escala && !conversaoDia) {
+      conversaoDia = dia;
+      // Conversão no meio da semana: a semana já tem dias de 6x1, então as
+      // folgas que faltam para fechar 5 dias trabalhados são escolhidas entre
+      // os dias restantes, defasadas por funcionário — senão a equipe inteira
+      // folga no mesmo dia (tipicamente o domingo) e a operação para.
+      if (w !== 1) {
+        var restantes = [];
+        for (var q = dia; q <= dias; q++) {
+          restantes.push(q);
+          if (diaSemana(ano, mes, q) === 0) break;
+        }
+        var nFolgas = Math.max(0, restantes.length - Math.max(0, 5 - trabNaSemana));
+        // O domingo de folga do mês, se cair aqui, fica (mínimo por sexo).
+        // Os demais folgam primeiro nos dias úteis restantes, alternando por
+        // funcionário, e o domingo só entra se ainda faltar folga.
+        var domF = restantes.filter(function (x) { return domingosFolga.indexOf(x) !== -1; });
+        var uteis = restantes.filter(function (x) { return diaSemana(ano, mes, x) !== 0; });
+        var desloc = uteis.length ? (estado.ordem || 0) % uteis.length : 0;
+        var girados = uteis.slice(desloc).concat(uteis.slice(0, desloc))
+          .concat(restantes.filter(function (x) { return diaSemana(ano, mes, x) === 0; }));
+        folgasTransicao = domF.slice(0, nFolgas).concat(
+          girados.filter(function (x) { return domF.indexOf(x) === -1; })).slice(0, nFolgas);
+      }
+    }
+    if (w === 1) folgasTransicao = null;
+    escalaDia.push(esc); fases.push(fase);
+
+    if (esc === '5x2r') {
+      // 5 dias de trabalho e 2 de folga por semana (seg–dom), em dias que
+      // variam por funcionário. Na semana do domingo de folga, o domingo
+      // é o DSR e substitui o segundo dia do par.
+      var domFolgaSemana = domingoDaSemanaEhFolga(ano, mes, dia, domingosFolga);
+      if (folgasTransicao) {
+        if (folgasTransicao.indexOf(dia) !== -1) cod = dsrNaSemana ? COD.FOLGA_ESCALA : COD.DSR;
+        else if (diasSeguidos >= cfg.limiteDiasConsecutivos) cod = COD.DSR;
+        else if (ehFeriado) { cod = COD.PENDENTE; pendentes.push(dia - 1); }
+        else cod = turno;
+      }
+      else if (ehDomingo && domingosFolga.indexOf(dia) !== -1) cod = COD.DSR;
+      else if (w === par[0]) cod = domFolgaSemana ? COD.FOLGA_ESCALA : COD.DSR;
+      else if (w === par[1] && !domFolgaSemana) cod = COD.FOLGA_ESCALA;
+      else if (diasSeguidos >= cfg.limiteDiasConsecutivos) cod = COD.DSR;
+      // Nunca mais de 5 dias trabalhados na semana — cobre a semana em que a
+      // 6x1 vira 5x2r, quando os dias da 6x1 já consumiram a semana.
+      else if (trabNaSemana >= 5) cod = dsrNaSemana ? COD.FOLGA_ESCALA : COD.DSR;
+      else if (ehFeriado) { cod = COD.PENDENTE; pendentes.push(dia - 1); }
+      else cod = turno;
+
+    } else if (esc === '5x2') {
+      // Segunda a sexta. Domingo é o DSR; sábado é folga da escala — em 5x2
+      // apenas um dos dois dias é o descanso semanal remunerado.
+      if (ehDomingo) cod = COD.DSR;
+      else if (w === 6) cod = COD.FOLGA_ESCALA;
+      else if (ehFeriado) cod = COD.FER;
+      else cod = turno;
+
+    } else if (esc === '12x36') {
+      // 12h de trabalho + 36h de descanso = ciclo de 48h = dia sim, dia não.
+      if (ultimo12x36) cod = COD.FOLGA_ESCALA;
+      else {
+        cod = ehFeriado ? COD.PENDENTE : COD.PLANTAO;
+        if (ehFeriado) pendentes.push(dia - 1);
+      }
+
+    } else { // 6x1
+      // Folga semanal: dia fixo da semana, ou variável girando para trás.
+      // Folga fixa: sempre no mesmo dia da semana.
+      // Folga variável: 6 dias trabalhados por ciclo, como na fixa, mas a cada
+      // N ciclos um deles tem só 5 — e é esse ciclo curto que empurra a folga
+      // um dia da semana para trás. Para trás porque adiar a folga abriria 7
+      // dias seguidos de trabalho, que viola o art. 67 da CLT.
+      var ehFolgaSemanal;
+      if (variavel) {
+        var giro = Math.max(1, cfg.girarFolgaACadaSemanas);
+        var diasDoCiclo = ((ciclosFolga + 1) % giro === 0) ? 5 : 6;
+        ehFolgaSemanal = (diasDesdeFolga >= diasDoCiclo);
+      } else {
+        ehFolgaSemanal = (w === folgaFixa);
+      }
+      var ehDomingoDeFolga = ehDomingo && domingosFolga.indexOf(dia) !== -1;
+      var forcarDomingo = ehDomingo && cfg.limiteDomingosSeguidos > 0 &&
+                          domingosSeguidos >= cfg.limiteDomingosSeguidos;
+
+      if (ehFolgaSemanal) { cod = COD.DSR; fechouCicloSemanal = true; }
+      else if (ehDomingoDeFolga || forcarDomingo) cod = COD.DSR;   // folga EXTRA de domingo
+      else if (diasSeguidos >= cfg.limiteDiasConsecutivos) { cod = COD.DSR; fechouCicloSemanal = true; }
+      else if (ehFeriado) { cod = COD.PENDENTE; pendentes.push(dia - 1); }
+      else cod = turno;
+    }
+
+    var trabalhou = !ehDescanso(cod);
+    if (trabalhou) trabNaSemana++;
+    else if (cod === COD.DSR) dsrNaSemana = true;
+    if (trabalhou) {
+      diasSeguidos++; diasDesdeFolga++;
+      if (ehDomingo) domingosSeguidos++;
+      if (escala === '12x36') ultimo12x36 = true;
+    } else {
+      diasSeguidos = 0;
+      if (fechouCicloSemanal) { ciclosFolga++; diasDesdeFolga = 0; }
+      if (ehDomingo) domingosSeguidos = 0;
+      if (escala === '12x36') ultimo12x36 = false;
+    }
+    codigos.push(cod);
+  }
+
+  // ---- Teto de horas da 12x36 ----
+  // A alternância dá 16 plantões em mês de 31 dias que começa trabalhando,
+  // o que passa das 180h. Suprime o excedente do fim do mês para trás,
+  // poupando os dias de feriado (que ainda estão como PENDENTE).
+  var plantoesSuprimidos = [];
+  if (escala === '12x36') {
+    var maxPlantoes = Math.floor(cfg.tetoContratualPorEscala['12x36'] / cfg.jornadaHoras['12x36']);
+    var trabalhados = 0;
+    for (var t = 0; t < codigos.length; t++) if (!ehDescanso(codigos[t])) trabalhados++;
+    for (var s = codigos.length - 1; s >= 0 && trabalhados > maxPlantoes; s--) {
+      if (codigos[s] === COD.PLANTAO) {
+        codigos[s] = COD.FOLGA_ESCALA;
+        plantoesSuprimidos.push(s + 1);
+        trabalhados--;
+      }
+    }
+    plantoesSuprimidos.reverse();
+  }
+
+  // ---- Feriado trabalhado: compensa OU paga dobro, nunca os dois ----
+  var emDobro = [], compensados = [];
+  for (var k = 0; k < pendentes.length; k++) {
+    var idx = pendentes[k];
+    if (escala === '12x36' && cfg.feriado12x36ConformeArt59A) {
+      codigos[idx] = COD.FER_59A;                  // já coberto pelo salário mensal
+      continue;
+    }
+    if (cfg.politicaFeriado === 'dobro') {
+      codigos[idx] = COD.FER_DOBRO; emDobro.push(idx + 1);
+      continue;
+    }
+    var j = buscarDiaParaCompensar(codigos, idx, cfg.janelaCompensacao, ano, mes, estado.ordem);
+    if (j !== -1) {
+      codigos[j] = COD.FOLGA_COMP;
+      codigos[idx] = COD.FER_COMP;                 // compensado -> pago simples
+      compensados.push({ feriado: idx + 1, folga: j + 1 });
+    } else {
+      codigos[idx] = COD.FER_DOBRO;                // art. 9º da Lei 605/1949
+      emDobro.push(idx + 1);
+    }
+  }
+
+  // Reapura sobre os códigos finais: o pós-processamento trocou dias de
+  // trabalho por folga depois de os contadores terem sido apurados.
+  var ap = analisarCodigos(codigos, ano, mes, feriados, escala);
+  var maxDias = Math.max(ap.maxDiasSeguidos,
+    sequenciaInicial(codigos, false, ano, mes) + estado.diasConsecutivos);
+  var maxDomingos = Math.max(ap.maxDomingosSeguidos,
+    sequenciaInicial(codigos, true, ano, mes) + estado.domingosSeguidos);
+
+  // Interjornada: o que dá para checar sem horário de entrada/saída.
+  var adjacencia = ap.adjacencia12x36.slice();
+  if (escala === '12x36' && estado.ultimoTurno12x36 && !ehDescanso(codigos[0])) {
+    adjacencia.unshift(1);
+  }
+
+  return {
+    codigos: codigos, feriadosEmDobro: emDobro, compensados: compensados,
+    maxDiasSeguidos: maxDias, maxDomingosSeguidos: maxDomingos,
+    totalDSR: ap.totalDSR, totalFolgas: ap.totalFolgas,
+    feriadosSemTratamento: ap.feriadosSemTratamento, adjacencia12x36: adjacencia,
+    folgaDiaSemana: folgaFixa, tipoFolga: variavel ? 'variavel' : 'fixa',
+    ciclosFolga: ciclosFolga,
+    domingosDeFolga: contarDomingosDeFolga(codigos, ano, mes),
+    minDomingosExigido: minDom,
+    plantoesSuprimidos: plantoesSuprimidos,
+    escalaDia: escalaDia, fases: fases, conversaoDia: conversaoDia
+  };
+}
+
+/**
+ * Paridade da 12x36 na virada do mês, pelo ÚLTIMO PLANTÃO e não pelo último
+ * dia: se o plantão do dia 31 foi suprimido pelo teto de 180h, olhar só o
+ * último dia faria a pessoa começar o mês seguinte fora da alternância — e
+ * dois colegas que se revezam passariam a trabalhar e folgar juntos.
+ */
+function ultimoTurno12x36Herdado(cods) {
+  for (var j = cods.length - 1; j >= 0; j--) {
+    if (!ehDescanso(cods[j])) return (cods.length - j) % 2 === 1;
+  }
+  return false;
+}
+
+/** Estado herdado do mês anterior, lido do histórico guardado no navegador. */
+function obterEstadoAnterior(ano, mes, matricula, nome, escala) {
+  var vazio = { diasConsecutivos: 0, domingosSeguidos: 0, ultimoTurno12x36: false,
+                folgaDiaSemana: null, herdado: false };
+  var mAnt = mes - 1, aAnt = ano;
+  if (mAnt === 0) { mAnt = 12; aAnt = ano - 1; }
+  var chave = aAnt + '-' + (mAnt < 10 ? '0' + mAnt : mAnt);
+  var linhas = ST.meses[chave];
+  if (!linhas) return vazio;
+
+  var linha = null;
+  for (var i = 0; i < linhas.length; i++) {
+    if (linhas[i].matricula === matricula || linhas[i].nome === nome) { linha = linhas[i]; break; }
+  }
+  if (!linha) return vazio;
+
+  var cods = linha.codigos;
+  var diasConsec = 0;
+  for (var j = cods.length - 1; j >= 0; j--) {
+    if (ehDescanso(cods[j])) break;
+    diasConsec++;
+  }
+  // Domingos seguidos: varre OS DOMINGOS do mês anterior, não os últimos dias —
+  // varrer só a sequência final enxerga no máximo um domingo.
+  var domingos = [];
+  for (var d = 1; d <= cods.length; d++) {
+    if (diaSemana(aAnt, mAnt, d) === 0) domingos.push(cods[d - 1]);
+  }
+  var domConsec = 0;
+  for (var q = domingos.length - 1; q >= 0; q--) {
+    if (ehDescanso(domingos[q])) break;
+    domConsec++;
+  }
+  return {
+    diasConsecutivos: diasConsec, domingosSeguidos: domConsec,
+    ultimoTurno12x36: (escala === '12x36') && ultimoTurno12x36Herdado(cods),
+    folgaDiaSemana: (typeof linha.folgaDiaSemana === 'number' && linha.folgaDiaSemana >= 0)
+                      ? linha.folgaDiaSemana : null,
+    ciclosFolga: linha.ciclosFolga || 0,
+    herdado: true
+  };
+}
+
+function calcularHorasGeradas(codigos, codTrabalho, jornada) {
+  var n = 0, alvo = [codTrabalho, COD.FER_COMP, COD.FER_59A, COD.FER_DOBRO];
+  for (var i = 0; i < codigos.length; i++) if (alvo.indexOf(codigos[i]) !== -1) n++;
+  return n * jornada;
+}
+/**
+ * Teto efetivo do alerta: o menor entre o teto contratual da CCT e as horas
+ * geradas mais ~1 jornada. O segundo termo é o que dá serventia ao alerta —
+ * qualquer dia de trabalho acrescentado à mão depois derruba o status.
+ */
+function calcularTetoHoras(horasGeradas, jornada, tetoContratual) {
+  return Math.round(Math.min(tetoContratual, horasGeradas + jornada * 0.9));
+}
+function calcularMinimoFolgas(escala, dias) {
+  if (escala === '12x36') return Math.floor(dias / 2);
+  if (escala === '5x2' || escala === '5x2r') return Math.floor(dias / 7) * 2;
+  return Math.floor(dias / 7);
+}
+/* ----------------------------------------------- folgas por setor */
+
+function chaveSetor(s) { return String(s || '').trim().toLowerCase(); }
+
+/**
+ * Entra na regra de setor quem trabalha em escala com rodízio naquele dia.
+ * A 5x2 fixa (seg–sex) fica de fora: nela o setor inteiro fecha no fim de
+ * semana por definição — se o setor abre no sábado/domingo, use 5x2 rodízio.
+ */
+function entraNaRegraDeSetor(it, d) { return it.r.escalaDia[d] !== '5x2'; }
+
+/** A linha do funcionário continua respeitando todas as regras estruturais? */
+function escalaAindaValida(it, ano, mes, cfg) {
+  var r = it.r, cods = r.codigos, est = it.estado;
+  var ap = analisarCodigos(cods, ano, mes, [], it.escala);
+  var maxDias = Math.max(ap.maxDiasSeguidos, sequenciaInicial(cods, false, ano, mes) + est.diasConsecutivos);
+  if (maxDias > cfg.limiteDiasConsecutivos) return false;
+  if (cfg.limiteDomingosSeguidos > 0 &&
+      Math.max(ap.maxDomingosSeguidos, sequenciaInicial(cods, true, ano, mes) + est.domingosSeguidos) > cfg.limiteDomingosSeguidos) return false;
+  if (contarDomingosDeFolga(cods, ano, mes) < Math.min(r.minDomingosExigido, it.domingosOriginais)) return false;
+  if (semanasAcimaDoLimite(cods, r.escalaDia, r.fases, it.codTrab, ano, mes, cfg).length) return false;
+  return true;
+}
+
+/** Tenta trocar a folga do dia d por um dia de trabalho próximo (até 3 dias). */
+function tentarMoverFolga(it, d, grupo, max, ano, mes, feriados, cfg, movidos) {
+  var cods = it.r.codigos, c = cods[d];
+  if (c !== COD.DSR && c !== COD.FOLGA_ESCALA && c !== COD.FOLGA_COMP) return false;   // feriado fica
+  // Folga compensatória só anda para depois do feriado que ela compensa.
+  var comp = null;
+  if (c === COD.FOLGA_COMP) {
+    it.r.compensados.forEach(function (x) { if (x.folga === d + 1) comp = x; });
+    if (!comp) return false;
+  }
+  if (it.r.escalaDia[d] === '12x36') return false;              // quebraria a alternância 12x36
+  if (feriados.indexOf(fmtData(ano, mes, d + 1)) !== -1) return false; // viraria feriado trabalhado
+  var deltas = [1, -1, 2, -2, 3, -3];
+  for (var k = 0; k < deltas.length; k++) {
+    var e = d + deltas[k];
+    if (e < 0 || e >= cods.length) continue;
+    if (cods[e] !== it.codTrab) continue;
+    if (comp && e + 1 <= comp.feriado) continue;
+    if (feriados.indexOf(fmtData(ano, mes, e + 1)) !== -1) continue;
+    if (it.r.escalaDia[e] === '12x36' || it.r.escalaDia[e] === '5x2') continue;
+    var ocup = grupo.filter(function (o) { return o !== it && entraNaRegraDeSetor(o, e) && ehDescanso(o.r.codigos[e]); }).length;
+    if (ocup >= max) continue;
+    cods[d] = it.codTrab; cods[e] = c;
+    if (escalaAindaValida(it, ano, mes, cfg)) {
+      if (comp) comp.folga = e + 1;
+      movidos.push({ it: it, de: d + 1, para: e + 1 });
+      it.mexido = true;
+      return true;
+    }
+    cods[d] = c; cods[e] = it.codTrab;
+  }
+  return false;
+}
+
+/**
+ * Percorre cada setor dia a dia. Onde há mais gente de folga que o permitido,
+ * desloca a folga de alguém para um dia próximo em que o setor tem cobertura,
+ * sem quebrar dias seguidos, limite semanal de horas nem domingos de folga.
+ * O que não tiver solução vira alerta na auditoria.
+ */
+function ajustarFolgasPorSetor(itens, ano, mes, feriados, cfg) {
+  var max = Math.max(1, parseInt(cfg.maxFolgaMesmoSetor, 10) || 1);
+  var grupos = {}, movidos = [], conflitos = [];
+  itens.forEach(function (it) { if (it.setor) (grupos[it.setor] = grupos[it.setor] || []).push(it); });
+  Object.keys(grupos).forEach(function (sk) {
+    var g = grupos[sk];
+    if (g.length < 2) return;
+    var dias = g[0].r.codigos.length;
+    var deFolga = function (d) {
+      return g.filter(function (it) { return entraNaRegraDeSetor(it, d) && ehDescanso(it.r.codigos[d]); });
+    };
+    for (var d = 0; d < dias; d++) {
+      var off = deFolga(d), voltas = 0;
+      while (off.length > max && voltas++ < g.length) {
+        var ok = false;
+        // tenta primeiro quem está mais para o fim da lista (preserva o 1º)
+        for (var k = off.length - 1; k >= 0 && !ok; k--) {
+          ok = tentarMoverFolga(off[k], d, g, max, ano, mes, feriados, cfg, movidos);
+        }
+        if (!ok) break;
+        off = deFolga(d);
+      }
+      if (off.length > max) {
+        conflitos.push({ setor: g[0].f.setor, dia: d + 1, nomes: off.map(function (o) { return o.f.nome; }) });
+      }
+    }
+  });
+  // Reapura os indicadores de quem teve folga deslocada.
+  itens.forEach(function (it) {
+    if (!it.mexido) return;
+    var r = it.r, ap = analisarCodigos(r.codigos, ano, mes, feriados, it.escala);
+    r.maxDiasSeguidos = Math.max(ap.maxDiasSeguidos, sequenciaInicial(r.codigos, false, ano, mes) + it.estado.diasConsecutivos);
+    r.maxDomingosSeguidos = Math.max(ap.maxDomingosSeguidos, sequenciaInicial(r.codigos, true, ano, mes) + it.estado.domingosSeguidos);
+    r.totalDSR = ap.totalDSR; r.totalFolgas = ap.totalFolgas;
+    r.feriadosSemTratamento = ap.feriadosSemTratamento;
+    r.domingosDeFolga = contarDomingosDeFolga(r.codigos, ano, mes);
+  });
+  return { movidos: movidos, conflitos: conflitos };
+}
+
+/** Mínimo de folgas quando a escala muda no meio do mês (6x1 -> 5x2r). */
+function calcularMinimoFolgasMisto(escalaDia) {
+  var n6 = 0, n5 = 0;
+  escalaDia.forEach(function (e) { if (e === '6x1') n6++; else n5++; });
+  return Math.floor(n6 / 7) + Math.floor(n5 / 7) * 2;
+}
+/** Jornada do dia conforme a escala efetivamente aplicada naquele dia. */
+function jornadaDoDia(esc, cfg) { return cfg.jornadaHoras[esc] || 8; }
+
+/**
+ * Horas por semana (seg–dom) dentro do mês, comparadas com o limite semanal
+ * do regime vigente na segunda-feira da semana (mais favorável na semana de
+ * transição). Semanas cortadas pela virada do mês entram com o que há no mês.
+ */
+function semanasAcimaDoLimite(codigos, escalaDia, fases, codTrab, ano, mes, cfg) {
+  var trabalho = [codTrab, COD.FER_COMP, COD.FER_59A, COD.FER_DOBRO];
+  var out = [], soma = 0, ini = 1, limite = REGIMES[fases[0]].semanal;
+  for (var i = 0; i < codigos.length; i++) {
+    var dia = i + 1, w = diaSemana(ano, mes, dia);
+    if (w === 1 || i === 0) { soma = 0; ini = dia; limite = REGIMES[fases[i]].semanal; }
+    if (trabalho.indexOf(codigos[i]) !== -1) soma += jornadaDoDia(escalaDia[i], cfg);
+    if (w === 0 || i === codigos.length - 1) {
+      if (soma > limite + 0.001) out.push({ de: ini, ate: dia, horas: soma, limite: limite });
+    }
+  }
+  return out;
+}
+/** Referência mensal proporcional aos dias de cada regime no mês. */
+function referenciaMensalLegal(fases) {
+  var s = 0;
+  fases.forEach(function (f) { s += REGIMES[f].mensal; });
+  return Math.round(s / fases.length);
+}
+
+/* ========================================================================
+   FERIADOS NACIONAIS  (calculados, não "chutados")
+   ======================================================================== */
+
+/** Domingo de Páscoa — algoritmo de Meeus/Jones/Butcher. */
+function pascoa(ano) {
+  var a = ano % 19, b = Math.floor(ano / 100), c = ano % 100;
+  var d = Math.floor(b / 4), e = b % 4, f = Math.floor((b + 8) / 25);
+  var g = Math.floor((b - f + 1) / 3), h = (19 * a + b - d - g + 15) % 30;
+  var i = Math.floor(c / 4), k = c % 4;
+  var l = (32 + 2 * e + 2 * i - h - k) % 7;
+  var m = Math.floor((a + 11 * h + 22 * l) / 451);
+  var mes = Math.floor((h + l - 7 * m + 114) / 31);
+  var dia = ((h + l - 7 * m + 114) % 31) + 1;
+  return new Date(ano, mes - 1, dia);
+}
+function somaDias(dt, n) { var x = new Date(dt.getTime()); x.setDate(x.getDate() + n); return x; }
+function iso(dt) { return fmtData(dt.getFullYear(), dt.getMonth() + 1, dt.getDate()); }
+
+/**
+ * Feriados nacionais do ano. `certo:true` = feriado nacional por lei federal.
+ * `certo:false` = ponto facultativo — só vira feriado por lei local ou CCT,
+ * então entra desmarcado.
+ */
+function feriadosNacionais(ano) {
+  var p = pascoa(ano);
+  var lista = [
+    { data: fmtData(ano, 1, 1),   desc: 'Confraternização Universal',    certo: true,  lei: 'Lei 662/1949' },
+    { data: iso(somaDias(p, -2)), desc: 'Sexta-feira Santa',             certo: true,  lei: 'Lei 9.093/1995' },
+    { data: fmtData(ano, 4, 21),  desc: 'Tiradentes',                    certo: true,  lei: 'Lei 662/1949' },
+    { data: fmtData(ano, 5, 1),   desc: 'Dia do Trabalho',               certo: true,  lei: 'Lei 662/1949' },
+    { data: fmtData(ano, 9, 7),   desc: 'Independência',                 certo: true,  lei: 'Lei 662/1949' },
+    { data: fmtData(ano, 10, 12), desc: 'N. Sra. Aparecida',             certo: true,  lei: 'Lei 6.802/1980' },
+    { data: fmtData(ano, 11, 2),  desc: 'Finados',                       certo: true,  lei: 'Lei 662/1949' },
+    { data: fmtData(ano, 11, 15), desc: 'Proclamação da República',      certo: true,  lei: 'Lei 662/1949' },
+    { data: fmtData(ano, 12, 25), desc: 'Natal',                         certo: true,  lei: 'Lei 662/1949' },
+    { data: iso(somaDias(p, -48)),desc: 'Carnaval (segunda)',            certo: false, lei: 'ponto facultativo' },
+    { data: iso(somaDias(p, -47)),desc: 'Carnaval (terça)',              certo: false, lei: 'ponto facultativo' },
+    { data: iso(somaDias(p, 60)), desc: 'Corpus Christi',                certo: false, lei: 'ponto facultativo' }
+  ];
+  if (ano >= 2024) {
+    lista.push({ data: fmtData(ano, 11, 20), desc: 'Consciência Negra', certo: true, lei: 'Lei 14.759/2023' });
+  }
+  return lista;
+}
+
+/** Sugestões de feriado que caem no mês selecionado. */
+function sugestoesDoMes(ano, mes) {
+  var pre = ano + '-' + (mes < 10 ? '0' + mes : mes);
+  return feriadosNacionais(ano)
+    .filter(function (f) { return f.data.indexOf(pre) === 0; })
+    .sort(function (a, b) { return a.data < b.data ? -1 : 1; });
+}
+
+/** Lista final de datas que valem como feriado no mês. */
+function feriadosAtivos(ano, mes) {
+  var out = [];
+  sugestoesDoMes(ano, mes).forEach(function (f) {
+    var marcado = f.certo ? ST.ferDesmarcados.indexOf(f.data) === -1
+                          : ST.ferDesmarcados.indexOf('+' + f.data) !== -1;
+    if (marcado) out.push(f.data);
+  });
+  var pre = ano + '-' + (mes < 10 ? '0' + mes : mes);
+  ST.feriadosExtras.forEach(function (f) {
+    if (f.data.indexOf(pre) === 0 && out.indexOf(f.data) === -1) out.push(f.data);
+  });
+  return out.sort();
+}
+function descricaoFeriado(data) {
+  var ano = parseInt(data.slice(0, 4), 10);
+  var achou = null;
+  feriadosNacionais(ano).forEach(function (f) { if (f.data === data) achou = f.desc; });
+  ST.feriadosExtras.forEach(function (f) { if (f.data === data) achou = f.desc; });
+  return achou || 'Feriado';
+}
+
+/* ========================================================================
+   GERAÇÃO
+   ======================================================================== */
+
+function gerar() {
+  var ano = parseInt(el('#ano').value, 10);
+  var mes = parseInt(el('#mes').value, 10);
+  if (!ano || ano < 2000 || ano > 2100) { aviso('Informe um ano entre 2000 e 2100.', 'err'); return; }
+  if (!ST.equipe.length) { aviso('Cadastre pelo menos um funcionário na aba Equipe.', 'err'); irPara('equipe'); return; }
+
+  var semNome = ST.equipe.filter(function (f) { return !String(f.nome || '').trim(); });
+  if (semNome.length) { aviso('Há ' + semNome.length + ' funcionário(s) sem nome.', 'err'); irPara('equipe'); return; }
+
+  var feriados = feriadosAtivos(ano, mes);
+  var dias = diasNoMes(ano, mes);
+  var linhas = [];
+
+  // Posição dentro da escala agrupando por setor: colegas do mesmo setor
+  // recebem posições vizinhas, que já caem em dias de folga diferentes.
+  var itens = ST.equipe.map(function (f, i) {
+    return { f: f, i: i, escala: f.escala || definirEscalaPorCargo(f.cargo, ano, mes), setor: chaveSetor(f.setor) };
+  });
+  var ordinais = {};
+  itens.slice().sort(function (a, b) {
+    if (a.escala !== b.escala) return a.escala < b.escala ? -1 : 1;
+    if (a.setor !== b.setor) return !a.setor ? 1 : !b.setor ? -1 : (a.setor < b.setor ? -1 : 1);
+    return a.i - b.i;
+  }).forEach(function (it) { it.ordem = (ordinais[it.escala] = (ordinais[it.escala] || 0) + 1) - 1; });
+  // 5x2 rodízio: dentro do setor, pares de folga sem dia em comum. Os três
+  // primeiros pares de cada metade da tabela são disjuntos ([seg,ter],
+  // [qua,qui], [sex,sáb] / [ter,qua], [qui,sex], [sáb,seg]); setores
+  // alternam de metade para não concentrar todo mundo nos mesmos dias.
+  var posSetor = {}, idxSetor = {}, nSetores = 0;
+  itens.forEach(function (it) {
+    if (!it.setor) return;
+    if (!(it.setor in idxSetor)) idxSetor[it.setor] = nSetores++;
+    it.parFolga = ((posSetor[it.setor] = (posSetor[it.setor] || 0) + 1) - 1 + 3 * (idxSetor[it.setor] % 2)) % PARES_5X2R.length;
+  });
+
+  itens.forEach(function (it) {
+    var f = it.f, escala = it.escala, ordem = it.ordem;
+    var estado = obterEstadoAnterior(ano, mes, f.matricula, f.nome, escala);
+    if (estado.folgaDiaSemana === null) estado.folgaDiaSemana = semearFolgaFixa(ordem, escala);
+    if (!estado.herdado) {
+      estado.ultimoTurno12x36 = (ordem % 2 === 1);
+      // Defasa também o ciclo de domingo: sem isso a equipe inteira atinge o
+      // limite na mesma semana e folga toda no mesmo domingo.
+      estado.domingosSeguidos = CONFIG.limiteDomingosSeguidos > 0
+        ? ordem % (CONFIG.limiteDomingosSeguidos + 1) : 0;
+    }
+    estado.ordem = ordem;
+    estado.parFolga = (it.parFolga != null) ? it.parFolga : null;
+    estado.tipoFolga = f.tipoFolga || 'fixa';
+    estado.ciclosFolga = estado.ciclosFolga || 0;
+
+    it.estado = estado;
+    it.r = montarEscalaDoFuncionario(ano, mes, f, escala, feriados, estado, CONFIG);
+    it.codTrab = (escala === '12x36') ? COD.PLANTAO : (f.turno || 'M');
+    it.domingosOriginais = it.r.domingosDeFolga;
+  });
+
+  // Regra da empresa: pessoas do mesmo setor não folgam no mesmo dia.
+  var setorRes = ajustarFolgasPorSetor(itens, ano, mes, feriados, CONFIG);
+
+  itens.forEach(function (it) {
+    var f = it.f, escala = it.escala, r = it.r, codTrab = it.codTrab;
+    var conflitosSetor = setorRes.conflitos.filter(function (c) { return c.nomes.indexOf(f.nome) !== -1; });
+    var movidas = setorRes.movidos.filter(function (m) { return m.it === it; });
+    // Escala que vale para o mês na maior parte das contas: a do último dia
+    // (se a 6x1 virou 5x2r no meio do mês, o que fica é a 5x2r).
+    var escalaFinal = r.escalaDia[r.escalaDia.length - 1];
+    var jornada = jornadaDoDia(escalaFinal, CONFIG);
+    var hNormais = 0, hDobro = 0, nNormais = 0, nDobro = 0;
+    r.codigos.forEach(function (c, i) {
+      var jd = jornadaDoDia(r.escalaDia[i], CONFIG);
+      if (c === codTrab || c === COD.FER_COMP || c === COD.FER_59A) { nNormais++; hNormais += jd; }
+      if (c === COD.FER_DOBRO) { nDobro++; hDobro += jd; }
+    });
+    var hGeradas = hNormais + hDobro;
+
+    // Teto de referência: o contratual (CCT/ACT) limitado pela referência
+    // mensal da jornada legal vigente (220h / 210h / 200h), exceto na 12x36,
+    // que tem teto próprio.
+    var tetoContr = CONFIG.tetoContratualPorEscala[escalaFinal] || 220;
+    if (escalaFinal !== '12x36') tetoContr = Math.min(tetoContr, referenciaMensalLegal(r.fases));
+    var teto = calcularTetoHoras(hGeradas, jornada, tetoContr);
+    var minFolgas = r.conversaoDia ? calcularMinimoFolgasMisto(r.escalaDia) : calcularMinimoFolgas(escala, dias);
+    var faseMax = Math.max.apply(null, r.fases);
+    var dPEC = datasPEC(CONFIG);
+
+    var problemas = [];
+
+    // ---- PEC 221/2019 ----
+    var dias6x1NaVigencia = [];
+    r.escalaDia.forEach(function (e, i) { if (e === '6x1' && r.fases[i] >= 1) dias6x1NaVigencia.push(i + 1); });
+    if (dias6x1NaVigencia.length) {
+      problemas.push({ grau: 'vi',
+        txt: 'Escala 6x1 mantida na vigência da PEC (a partir do dia ' + dias6x1NaVigencia[0] + '). Simulação apenas — a 6x1 deixa de ser permitida.',
+        lei: 'PEC 221/2019 (fim da escala 6x1), aprovada pelo Senado em 14/10/2026 — confira a Emenda Constitucional publicada no DOU' });
+    }
+    if (r.conversaoDia) {
+      problemas.push({ grau: 'al',
+        txt: (r.conversaoDia === 1 ? 'Convertido de 6x1 para 5x2 com rodízio' : 'Convertido de 6x1 para 5x2 com rodízio a partir do dia ' + r.conversaoDia)
+             + ' por causa da vigência da PEC. Atualize o contrato/aditivo e o controle de ponto.',
+        lei: 'PEC 221/2019 — escala 5x2, sem redução salarial' });
+    }
+    if (escala === '6x1' && faseMax === 0 && dPEC) {
+      problemas.push({ grau: 'al',
+        txt: 'A 6x1 deixa de ser permitida em ' + fmtBR(dPEC.fase1) + ' (previsão). Planeje a migração para a 5x2.',
+        lei: 'PEC 221/2019 — vigência 60 dias após a promulgação; data de promulgação é parâmetro (aba Parâmetros)' });
+    }
+    if (escalaFinal !== '12x36') {
+      semanasAcimaDoLimite(r.codigos, r.escalaDia, r.fases, codTrab, ano, mes, CONFIG).forEach(function (s) {
+        problemas.push({ grau: 'vi',
+          txt: 'Semana de ' + s.de + ' a ' + s.ate + ': ' + n2(s.horas) + 'h, acima do limite de ' + s.limite + 'h semanais.',
+          lei: s.limite < 44 ? 'PEC 221/2019 — jornada máxima de ' + s.limite + 'h semanais na fase vigente'
+                             : 'art. 7º, XIII, da CF — 44h semanais' });
+      });
+    } else if (r.fases.indexOf(2) !== -1) {
+      problemas.push({ grau: 'al',
+        txt: 'A 12x36 tem média de 42h semanais, acima das 40h da 2ª fase da PEC. Ainda não está claro se a emenda alcança a 12x36 — confirme no texto promulgado e na lei de regulamentação.',
+        lei: 'PEC 221/2019 x art. 59-A da CLT — ponto em aberto' });
+    }
+    if (r.maxDiasSeguidos > CONFIG.limiteDiasConsecutivos) {
+      problemas.push({ grau: 'vi', txt: 'Mais de ' + CONFIG.limiteDiasConsecutivos + ' dias seguidos de trabalho (chegou a ' + r.maxDiasSeguidos + ').',
+        lei: 'art. 67 da CLT; conceder o DSR após o 7º dia consecutivo viola o art. 7º, XV, da CF — OJ 410 da SBDI-1 do TST' });
+    }
+    if (CONFIG.limiteDomingosSeguidos > 0 && r.maxDomingosSeguidos > CONFIG.limiteDomingosSeguidos) {
+      problemas.push({ grau: 'vi', txt: 'Mais de ' + CONFIG.limiteDomingosSeguidos + ' domingos seguidos trabalhados (chegou a ' + r.maxDomingosSeguidos + ').',
+        lei: 'art. 6º, parágrafo único, da Lei 10.101/2000 — regra do comércio, aplicada por analogia; confira a CCT' });
+    }
+    if (r.domingosDeFolga < r.minDomingosExigido) {
+      problemas.push({ grau: 'vi',
+        txt: 'Folgou em apenas ' + r.domingosDeFolga + ' domingo(s) no mês; o mínimo para ' +
+             (f.sexo === 'F' ? 'mulher' : 'homem') + ' é ' + r.minDomingosExigido + '.',
+        lei: f.sexo === 'F'
+          ? 'art. 386 da CLT — havendo trabalho aos domingos, escala de revezamento quinzenal que favoreça o repouso dominical'
+          : 'parâmetro do escritório; no comércio o art. 6º, parágrafo único, da Lei 10.101/2000 é mais estrito (uma folga dominical a cada três semanas)' });
+    }
+    if (r.plantoesSuprimidos.length) {
+      problemas.push({ grau: 'al',
+        txt: 'Plantão suprimido no(s) dia(s) ' + r.plantoesSuprimidos.join(', ') +
+             ' para não passar do teto de ' + CONFIG.tetoContratualPorEscala['12x36'] + 'h da 12x36. Confira a cobertura desse(s) dia(s).',
+        lei: 'teto contratual da 12x36 — 15 plantões de 12h' });
+    }
+    if (conflitosSetor.length) {
+      problemas.push({ grau: 'al',
+        txt: 'Folga no mesmo dia que colega(s) do setor "' + f.setor + '" no(s) dia(s) '
+             + conflitosSetor.map(function (c) { return c.dia + ' (' + c.nomes.filter(function (n) { return n !== f.nome; }).join(', ') + ')'; }).join('; ')
+             + ' — o app não achou troca que respeitasse as demais regras (dias seguidos, horas da semana, domingos de folga). '
+             + 'Troque a folga à mão com o colega, pague o feriado em dobro em vez de compensar, ou reveja o limite por setor.',
+        lei: 'regra da empresa — máximo de ' + CONFIG.maxFolgaMesmoSetor + ' pessoa(s) do mesmo setor de folga por dia (aba Parâmetros)' });
+    }
+    if (r.feriadosSemTratamento.length) {
+      problemas.push({ grau: 'vi', txt: 'Feriado trabalhado sem compensação nem dobro no(s) dia(s) ' + r.feriadosSemTratamento.join(', ') + '.',
+        lei: 'art. 9º da Lei 605/1949' });
+    }
+    if (r.adjacencia12x36.length) {
+      problemas.push({ grau: 'al', txt: 'Plantões 12x36 em dias adjacentes no(s) dia(s) ' + r.adjacencia12x36.join(', ') + ' — risco de interjornada. Confira os horários.',
+        lei: 'art. 66 da CLT' });
+    }
+    if (r.totalFolgas < minFolgas) {
+      problemas.push({ grau: 'al', txt: 'Folgas abaixo do mínimo do período: ' + r.totalFolgas + ' de ' + minFolgas + '.',
+        lei: 'art. 67 da CLT' });
+    }
+    var horasTotal = hGeradas;
+    if (horasTotal > teto) {
+      problemas.push({ grau: 'al', txt: 'Horas acima do teto de referência: ' + n2(horasTotal) + 'h contra ' + teto + 'h.',
+        lei: 'teto contratual — conferir CCT/ACT, a CLT não fixa teto mensal' });
+    }
+    if (nDobro > 0) {
+      problemas.push({ grau: 'al', txt: 'Pagar em dobro na folha o(s) feriado(s) do(s) dia(s) ' + r.feriadosEmDobro.join(', ') + ' — não houve dia livre para compensar.',
+        lei: 'art. 9º da Lei 605/1949' });
+    }
+
+    linhas.push({
+      matricula: f.matricula, nome: f.nome, cargo: f.cargo, setor: f.setor || '', turno: f.turno || 'M',
+      folgasMovidas: movidas.map(function (m) { return { de: m.de, para: m.para }; }),
+      sexo: f.sexo === 'F' ? 'F' : 'M', tipoFolga: r.tipoFolga,
+      escala: escalaFinal, escalaOriginal: escala, conversaoDia: r.conversaoDia,
+      folgaDiaSemana: r.folgaDiaSemana, codigos: r.codigos,
+      horasNormais: hNormais, horasDobro: hDobro,
+      totalDSR: r.totalDSR, totalFolgas: r.totalFolgas,
+      maxDias: r.maxDiasSeguidos, maxDomingos: r.maxDomingosSeguidos,
+      domingosDeFolga: r.domingosDeFolga, minDomingos: r.minDomingosExigido,
+      plantoesSuprimidos: r.plantoesSuprimidos, ciclosFolga: r.ciclosFolga,
+      emDobro: r.feriadosEmDobro, compensados: r.compensados,
+      teto: teto, minFolgas: minFolgas, problemas: problemas
+    });
+  });
+
+  ST.atual = { ano: ano, mes: mes, dias: dias, feriados: feriados, linhas: linhas, geradoEm: new Date(),
+               regime: resumoRegime(ano, mes),
+               setor: { movidas: setorRes.movidos.length, conflitos: setorRes.conflitos.length } };
+
+  var chave = ano + '-' + (mes < 10 ? '0' + mes : mes);
+  ST.meses[chave] = linhas.map(function (l) {
+    return { matricula: l.matricula, nome: l.nome, escala: l.escala,
+             folgaDiaSemana: l.folgaDiaSemana, tipoFolga: l.tipoFolga,
+             ciclosFolga: l.ciclosFolga, codigos: l.codigos };
+  });
+  salvar();
+
+  desenharGrade();
+  desenharAuditoria();
+  desenharMeses();
+  irPara('escala');
+
+  var comProblema = linhas.filter(function (l) { return l.problemas.length; }).length;
+  aviso(comProblema
+    ? 'Escala gerada. ' + comProblema + ' de ' + linhas.length + ' funcionário(s) com ponto de atenção — veja a aba Auditoria.'
+    : 'Escala de ' + MESES[mes - 1] + '/' + ano + ' gerada. Nenhuma violação estrutural detectada.',
+    comProblema ? '' : 'ok');
+}
+
+/* ========================================================================
+   RENDERIZAÇÃO
+   ======================================================================== */
+
+function classeCod(c) {
+  if (c === COD.DSR) return 'c-dsr';
+  if (c === COD.FOLGA_ESCALA) return 'c-f';
+  if (c === COD.FER) return 'c-fer';
+  if (c === COD.FER_COMP) return 'c-fercomp';
+  if (c === COD.FER_DOBRO) return 'c-ferdobro';
+  if (c === COD.FER_59A) return 'c-fer59';
+  if (c === COD.FOLGA_COMP) return 'c-folgacomp';
+  return 'c-trab';
+}
+function rotuloEscalaLinha(l) {
+  var r = ROTULO_ESCALA[l.escala] || l.escala;
+  if (l.conversaoDia > 1) r = '6x1 → ' + r + ' (dia ' + l.conversaoDia + ')';
+  else if (l.conversaoDia === 1) r += ' (era 6x1)';
+  return r;
+}
+function rotuloFolgaLinha(l) {
+  if (l.escala === '5x2r') return 'rodízio';
+  if (l.escala !== '6x1') return '—';
+  return l.tipoFolga === 'variavel' ? 'variável' : DIAS_SEMANA[l.folgaDiaSemana];
+}
+function n2(v) { return (Math.round(v * 100) / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+function esc(s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+function desenharGrade() {
+  var a = ST.atual;
+  if (!a) return;
+  el('#tituloEscala').textContent = 'Escala de ' + MESES[a.mes - 1] + '/' + a.ano;
+  el('#regimeEscala').textContent = 'Regime: ' + (a.regime || '');
+
+  var h = '<div class="rolagem"><table><thead><tr>';
+  h += '<th class="fx">Funcionário</th><th>Escala</th><th>Sexo</th><th>Folga semanal</th>';
+  for (var d = 1; d <= a.dias; d++) {
+    var w = diaSemana(a.ano, a.mes, d);
+    var ehFer = a.feriados.indexOf(fmtData(a.ano, a.mes, d)) !== -1;
+    var cls = (w === 0 ? 'dom' : '') + (ehFer ? ' fer' : '');
+    var tit = DS_CURTO[w] + (ehFer ? ' — ' + descricaoFeriado(fmtData(a.ano, a.mes, d)) : '');
+    h += '<th class="' + cls + '" title="' + esc(tit) + '">' + d + '<br><span style="font-weight:400;font-size:10px;opacity:.8">' + DS_CURTO[w] + '</span></th>';
+  }
+  h += '<th>Horas<br>normais</th><th>Horas<br>dobro</th><th>DSR</th><th>Folgas</th>'
+     + '<th>Máx.<br>dias</th><th>Dom. de<br>folga</th><th>Status CLT / Compliance</th></tr></thead><tbody>';
+
+  a.linhas.forEach(function (l) {
+    h += '<tr><td class="fx"><b>' + esc(l.nome) + '</b><br><span style="font-size:10.5px;color:var(--tinta-fraca)">'
+       + esc(l.cargo || '') + (l.setor ? ' &middot; setor ' + esc(l.setor) : '') + '</span></td>';
+    h += '<td>' + esc(rotuloEscalaLinha(l)) + '</td>';
+    h += '<td title="' + SEXOS[l.sexo] + '">' + l.sexo + '</td>';
+    h += '<td>' + rotuloFolgaLinha(l) + '</td>';
+    for (var d2 = 0; d2 < l.codigos.length; d2++) {
+      var w2 = diaSemana(a.ano, a.mes, d2 + 1);
+      h += '<td class="' + (w2 === 0 ? 'dom' : '') + '"><span class="cod ' + classeCod(l.codigos[d2]) + '">'
+         + l.codigos[d2] + '</span></td>';
+    }
+    h += '<td class="tot">' + n2(l.horasNormais) + '</td>';
+    h += '<td class="tot">' + (l.horasDobro ? n2(l.horasDobro) : '—') + '</td>';
+    // Na 12x36 o descanso semanal está embutido nas 36h (art. 59-A, p. único,
+    // da CLT) e as folgas são marcadas como F — mostrar "DSR 0" aqui daria a
+    // impressão falsa de que a pessoa ficou sem repouso semanal.
+    h += '<td class="tot"' + (l.escala === '12x36'
+        ? ' title="Na 12x36 o repouso semanal está embutido nas 36h de descanso — ver coluna Folgas">&mdash;'
+        : '>' + l.totalDSR) + '</td>';
+    h += '<td class="tot">' + l.totalFolgas + '</td>';
+    h += '<td class="tot">' + l.maxDias + '</td>';
+    h += '<td class="tot' + (l.domingosDeFolga < l.minDomingos ? ' st-vi' : '') + '"'
+       + ' title="mínimo exigido: ' + l.minDomingos + '">'
+       + l.domingosDeFolga + ' / ' + l.minDomingos + '</td>';
+
+    var grau = 'ok', txt = 'OK — nenhuma violação detectada';
+    if (l.problemas.length) {
+      grau = l.problemas.some(function (p) { return p.grau === 'vi'; }) ? 'vi' : 'al';
+      txt = l.problemas.map(function (p) { return (p.grau === 'vi' ? 'VIOLAÇÃO: ' : 'ALERTA: ') + p.txt; }).join(' ');
+    }
+    h += '<td class="status st-' + grau + '">' + esc(txt) + '</td></tr>';
+  });
+  h += '</tbody></table></div>';
+  el('#grade').innerHTML = h;
+
+  var leg = [
+    ['c-trab', 'M / T / N', 'turno trabalhado'],
+    ['c-trab', 'P12', 'plantão de 12h'],
+    ['c-f', 'F', 'folga da escala'],
+    ['c-dsr', 'DSR', 'descanso semanal remunerado'],
+    ['c-fer', 'FER', 'feriado não trabalhado'],
+    ['c-fercomp', 'FER_COMP', 'feriado trabalhado e compensado (pago simples)'],
+    ['c-ferdobro', 'FER_DOBRO', 'feriado trabalhado sem compensação — pagar em dobro'],
+    ['c-fer59', 'FER_59A', 'feriado em 12x36 já coberto pelo salário mensal (art. 59-A)'],
+    ['c-folgacomp', 'FOLGA_COMP', 'folga compensatória de feriado']
+  ];
+  el('#legenda').innerHTML = leg.map(function (x) {
+    return '<span><b class="' + x[0] + '">' + x[1] + '</b>' + x[2] + '</span>';
+  }).join('');
+  el('#legenda').hidden = false;
+  el('#notaEscala').hidden = false;
+}
+
+function desenharAuditoria() {
+  var a = ST.atual;
+  if (!a) return;
+  var comProblema = a.linhas.filter(function (l) { return l.problemas.length; });
+  var b = el('#bolhaAud');
+  b.hidden = !comProblema.length;
+  b.textContent = comProblema.length;
+
+  var h = '';
+  h += '<div class="chip"><b>' + MESES[a.mes - 1] + '/' + a.ano + '</b></div>';
+  h += '<div class="chip"><b>' + a.linhas.length + '</b>&nbsp;funcionário(s)<span class="op"></span></div>';
+  h += '<div class="chip"><b>' + a.feriados.length + '</b>&nbsp;feriado(s) no mês<span class="op"></span></div>';
+  h += '<div class="chip"><b>' + comProblema.length + '</b>&nbsp;com ponto de atenção<span class="op"></span></div>';
+  if (a.setor) {
+    h += '<div class="chip"><b>' + a.setor.movidas + '</b>&nbsp;folga(s) deslocada(s) por setor<span class="op"></span></div>';
+    h += '<div class="chip"><b>' + a.setor.conflitos + '</b>&nbsp;choque(s) de setor sem solução<span class="op"></span></div>';
+  }
+  h += '<p style="margin:10px 0 0;font-size:12.5px"><b>Regime da competência:</b> ' + esc(a.regime || '') + '</p>';
+  h += '<div style="height:10px"></div>';
+
+  a.linhas.forEach(function (l) {
+    var ok = !l.problemas.length;
+    h += '<div class="achado' + (ok ? ' ok' : '') + '">';
+    h += '<h3>' + esc(l.nome) + ' <span style="font-weight:400;color:var(--tinta-fraca)">— ' + esc(l.cargo || '')
+       + (l.setor ? ' &middot; setor ' + esc(l.setor) : '')
+       + ' &middot; ' + esc(rotuloEscalaLinha(l)) + ' &middot; ' + SEXOS[l.sexo] + ' &middot; turno ' + TURNOS[l.turno]
+       + (l.escala === '6x1'
+            ? ' &middot; folga ' + (l.tipoFolga === 'variavel' ? 'variável' : 'fixa na ' + DIAS_SEMANA[l.folgaDiaSemana])
+            : '') + '</span></h3>';
+    if (ok) {
+      h += '<p style="margin:0;font-size:12.5px;color:var(--ok-tx)">Nenhuma violação estrutural detectada. '
+         + 'Máximo de ' + l.maxDias + ' dias seguidos; ' + l.totalFolgas + ' folga(s) no mês, sendo '
+         + l.domingosDeFolga + ' em domingo (mínimo ' + l.minDomingos + ' para '
+         + (l.sexo === 'F' ? 'mulher' : 'homem') + ').</p>';
+    } else {
+      h += '<ul>';
+      l.problemas.forEach(function (p) {
+        h += '<li><b style="color:' + (p.grau === 'vi' ? 'var(--erro-tx)' : 'var(--alerta-tx)') + '">'
+           + (p.grau === 'vi' ? 'Violação' : 'Atenção') + ':</b> ' + esc(p.txt)
+           + '<br><span class="lei">' + esc(p.lei) + '</span></li>';
+      });
+      h += '</ul>';
+    }
+    if (l.folgasMovidas && l.folgasMovidas.length) {
+      h += '<p style="margin:8px 0 0;font-size:12px;color:var(--tinta-fraca)">Folga deslocada para não coincidir com colega do setor: '
+         + l.folgasMovidas.map(function (m) { return 'dia ' + m.de + ' &rarr; dia ' + m.para; }).join('; ') + '.</p>';
+    }
+    if (l.compensados.length) {
+      h += '<p style="margin:8px 0 0;font-size:12px;color:var(--tinta-fraca)">Feriado compensado: '
+         + l.compensados.map(function (c) { return 'dia ' + c.feriado + ' &rarr; folga no dia ' + c.folga; }).join('; ') + '.</p>';
+    }
+    h += '</div>';
+  });
+
+  h += '<div class="nota"><b>O que esta auditoria não cobre:</b> a interjornada de 11h do art. 66 da CLT depende de horário '
+     + 'de entrada e saída, que não entra aqui — o app só aponta plantões 12x36 em dias adjacentes. '
+     + 'E o teto de horas é parâmetro contratual da CCT/ACT, não um número fixado pela CLT. '
+     + '<b>PEC 221/2019:</b> as regras de vigência e de jornada seguem o que foi noticiado na aprovação pelo Senado '
+     + '(14/10/2026); a data de promulgação é previsão. Confira a Emenda Constitucional publicada no DOU e a lei de '
+     + 'regulamentação dos setores antes de rodar a folha.</div>';
+  el('#listaAuditoria').innerHTML = h;
+}
+
+function desenharEquipe() {
+  var tb = el('#tbEquipe tbody');
+  if (!ST.equipe.length) {
+    tb.innerHTML = '<tr><td colspan="9" class="vazio">Nenhum funcionário cadastrado.</td></tr>';
+    return;
+  }
+  var setores = [];
+  ST.equipe.forEach(function (f) { var x = String(f.setor || '').trim(); if (x && setores.indexOf(x) === -1) setores.push(x); });
+  el('#listaSetores').innerHTML = setores.map(function (x) { return '<option value="' + esc(x) + '">'; }).join('');
+  tb.innerHTML = ST.equipe.map(function (f, i) {
+    var auto = definirEscalaPorCargo(f.cargo, parseInt(el('#ano').value, 10), parseInt(el('#mes').value, 10));
+    var escalaAtual = f.escala || auto;
+    var ehSeisPorUm = (escalaAtual === '6x1');
+    return '<tr>'
+      + '<td>' + f.matricula + '</td>'
+      + '<td><input type="text" data-i="' + i + '" data-c="nome" value="' + esc(f.nome) + '" placeholder="Nome completo"></td>'
+      + '<td><input type="text" data-i="' + i + '" data-c="cargo" value="' + esc(f.cargo) + '" placeholder="Cargo"></td>'
+      + '<td><input type="text" data-i="' + i + '" data-c="setor" value="' + esc(f.setor || '') + '" placeholder="Ex.: Caixa" list="listaSetores"></td>'
+      + '<td><select data-i="' + i + '" data-c="sexo">'
+        + ['M', 'F'].map(function (s) {
+            return '<option value="' + s + '"' + ((f.sexo || 'M') === s ? ' selected' : '') + '>' + SEXOS[s] + '</option>';
+          }).join('')
+      + '</select></td>'
+      + '<td><select data-i="' + i + '" data-c="turno">'
+        + ['M', 'T', 'N', 'D'].map(function (t) {
+            return '<option value="' + t + '"' + ((f.turno || 'M') === t ? ' selected' : '') + '>' + t + ' — ' + TURNOS[t] + '</option>';
+          }).join('')
+      + '</select></td>'
+      + '<td><select data-i="' + i + '" data-c="escala">'
+        + ['', '5x2', '5x2r', '6x1', '12x36'].map(function (e2) {
+            var rot = e2 === '' ? 'auto (' + ROTULO_ESCALA[auto] + ')' : ROTULO_ESCALA[e2];
+            return '<option value="' + e2 + '"' + ((f.escala || '') === e2 ? ' selected' : '') + '>' + rot + '</option>';
+          }).join('')
+      + '</select></td>'
+      + '<td>' + (ehSeisPorUm
+          ? '<select data-i="' + i + '" data-c="tipoFolga">'
+            + [['fixa', 'dia fixo'], ['variavel', 'variável']].map(function (o) {
+                return '<option value="' + o[0] + '"' + ((f.tipoFolga || 'fixa') === o[0] ? ' selected' : '') + '>' + o[1] + '</option>';
+              }).join('')
+            + '</select>'
+          : '<span style="color:var(--tinta-fraca)">—</span>') + '</td>'
+      + '<td><button class="mini" data-rm="' + i + '">remover</button></td>'
+      + '</tr>';
+  }).join('');
+}
+
+function desenharRegime() {
+  var ano = parseInt(el('#ano').value, 10), mes = parseInt(el('#mes').value, 10);
+  if (!ano || !mes || ano < 2000 || ano > 2100) { el('#infoRegime').textContent = ''; return; }
+  var d = datasPEC(CONFIG);
+  el('#infoRegime').innerHTML = '<b>Regime da competência:</b> ' + esc(resumoRegime(ano, mes))
+    + (d ? '<br><span style="color:var(--tinta-fraca)">PEC 221/2019: promulgação ' + fmtBR(d.promulgacao)
+      + ' (previsão — conferir no DOU) · 5x2 e 42h a partir de ' + fmtBR(d.fase1)
+      + ' · 40h a partir de ' + fmtBR(d.fase2) + '. Ajuste na aba Parâmetros.</span>' : '');
+}
+
+function desenharFeriados() {
+  var ano = parseInt(el('#ano').value, 10);
+  var mes = parseInt(el('#mes').value, 10);
+  if (!ano || !mes) return;
+  var sug = sugestoesDoMes(ano, mes);
+  var pre = ano + '-' + (mes < 10 ? '0' + mes : mes);
+  var extras = ST.feriadosExtras.filter(function (f) { return f.data.indexOf(pre) === 0; });
+
+  var h = '';
+  if (!sug.length && !extras.length) {
+    h += '<p class="vazio">Nenhum feriado nacional em ' + MESES[mes - 1] + '/' + ano
+       + '. Se a sua cidade tiver feriado municipal neste mês, acrescente abaixo.</p>';
+  } else {
+    h += '<table><thead><tr><th style="width:52px">Vale?</th><th style="width:120px">Data</th><th style="width:74px">Dia</th><th>Descrição</th><th style="width:230px">Base</th><th style="width:60px"></th></tr></thead><tbody>';
+    sug.forEach(function (f) {
+      var marcado = f.certo ? ST.ferDesmarcados.indexOf(f.data) === -1
+                            : ST.ferDesmarcados.indexOf('+' + f.data) !== -1;
+      var p = f.data.split('-');
+      var w = diaSemana(+p[0], +p[1], +p[2]);
+      h += '<tr><td style="text-align:center"><input type="checkbox" data-fer="' + f.data + '" data-certo="' + (f.certo ? 1 : 0) + '"' + (marcado ? ' checked' : '') + '></td>'
+        + '<td>' + p[2] + '/' + p[1] + '/' + p[0] + '</td>'
+        + '<td>' + DS_CURTO[w] + '</td>'
+        + '<td>' + esc(f.desc) + '</td>'
+        + '<td style="font-size:11.5px;color:var(--tinta-fraca)">' + esc(f.lei) + '</td><td></td></tr>';
+    });
+    extras.forEach(function (f) {
+      var p2 = f.data.split('-');
+      var w2 = diaSemana(+p2[0], +p2[1], +p2[2]);
+      h += '<tr><td style="text-align:center"><input type="checkbox" checked disabled></td>'
+        + '<td>' + p2[2] + '/' + p2[1] + '/' + p2[0] + '</td>'
+        + '<td>' + DS_CURTO[w2] + '</td>'
+        + '<td>' + esc(f.desc) + '</td>'
+        + '<td style="font-size:11.5px;color:var(--tinta-fraca)">acrescentado por você</td>'
+        + '<td><button class="mini" data-rmfer="' + f.data + '">remover</button></td></tr>';
+    });
+    h += '</tbody></table>';
+  }
+  el('#listaFeriados').innerHTML = h;
+
+  var ativos = feriadosAtivos(ano, mes);
+  el('#infoMes').textContent = MESES[mes - 1] + '/' + ano + ' — ' + diasNoMes(ano, mes)
+    + ' dias, ' + ativos.length + ' feriado(s) considerado(s).';
+}
+
+var DEF_PARAMS = [
+  { k: 'dataPromulgacaoPEC', rot: 'PEC 221/2019 (fim da 6x1): data de promulgação', tipo: 'data',
+    ajuda: 'A PEC foi aprovada pelo Senado em 14/10/2026. A sessão de promulgação está PREVISTA para 20/10/2026 — confira a data no Diário Oficial da União e ajuste aqui. Todas as datas de vigência saem desta.' },
+  { k: 'diasAteFase1', rot: 'Dias entre a promulgação e a 1ª fase (5x2 obrigatória, 42h semanais)', tipo: 'num', min: 0, max: 730,
+    ajuda: 'Pelo texto aprovado, 60 dias após a promulgação a 6x1 deixa de existir, a escala passa a ser 5x2 e a jornada cai de 44h para 42h semanais, sem redução de salário.' },
+  { k: 'mesesAteFase2', rot: 'Meses entre a 1ª fase e a 2ª fase (40h semanais)', tipo: 'num', min: 0, max: 60,
+    ajuda: 'Pelo texto aprovado, 12 meses depois da 1ª fase a jornada cai para 40h semanais.' },
+  { k: 'converter6x1', rot: 'Funcionário em 6x1 na vigência da PEC', tipo: 'sel',
+    ops: [['true', 'Converter automaticamente para 5x2 com rodízio'], ['false', 'Manter 6x1 (só para simular o impacto — a auditoria aponta violação)']],
+    ajuda: 'Na conversão, os dias de folga passam a ser dois por semana, em dias que variam por funcionário para a operação seguir coberta, e o rodízio de domingos (art. 386 da CLT e Lei 10.101/2000) continua valendo. A jornada diária fica em 8h, o que dá 40h por semana — dentro do limite das duas fases.' },
+  { k: 'maxFolgaMesmoSetor', rot: 'Máximo de pessoas do mesmo setor de folga no mesmo dia', tipo: 'num', min: 1, max: 20,
+    ajuda: 'Regra da empresa, não da CLT. Com 1, duas pessoas do mesmo setor nunca folgam juntas — é o caso de setor com dois colaboradores que precisa de alguém todo dia. O app já distribui as folgas por setor e, quando duas coincidem (feriado compensado, rodízio de domingo), desloca uma delas em até 3 dias sem quebrar as demais regras. Se não houver troca possível, aponta na auditoria. Vale para 5x2 rodízio, 6x1 e 12x36; a 5x2 fixa (seg–sex) fica de fora porque nela o setor fecha no fim de semana.' },
+  { k: 'limiteDiasConsecutivos', rot: 'Máximo de dias consecutivos de trabalho', tipo: 'num', min: 1, max: 7,
+    ajuda: 'Art. 67 da CLT. Conceder o DSR só após o 7º dia consecutivo viola o art. 7º, XV, da CF e é devido em dobro (OJ 410 da SBDI-1 do TST). Aumentar daqui é assumir risco.' },
+  { k: 'limiteDomingosSeguidos', rot: 'Máximo de domingos seguidos trabalhados (0 = desligado)', tipo: 'num', min: 0, max: 6,
+    ajuda: 'Guarda EXTRA, além do mínimo mensal de domingos de folga. Vem desligada porque quem rege é o mínimo por mês. Ligue com 2 se o cliente for do comércio: o art. 6º, parágrafo único, da Lei 10.101/2000 pede folga dominical a cada três semanas, o que em mês de 5 domingos é mais estrito que 1 por mês.' },
+  { k: 'girarFolgaACadaSemanas', rot: 'Folga variável: girar o dia a cada N semanas', tipo: 'num', min: 1, max: 8,
+    ajuda: 'Só vale para quem está com folga variável. A folga fica N semanas no mesmo dia e então anda um dia da semana para trás — a semana do giro tem 5 dias trabalhados em vez de 6, e é ela que desloca a fase. Com 3, o total de horas do mês fica praticamente igual ao da folga fixa. Com 1 a folga gira toda semana, mas aí são sempre 5 dias trabalhados e o mês perde cerca de uma jornada. Não existe girar para a frente: isso abriria 7 dias seguidos de trabalho, que viola o art. 67 da CLT.' },
+  { k: 'politicaFeriado', rot: 'Feriado trabalhado', tipo: 'sel',
+    ops: [['compensar', 'Procurar folga compensatória no mês; se não achar, pagar em dobro'], ['dobro', 'Sempre pagar em dobro, nunca compensar']],
+    ajuda: 'Art. 9º da Lei 605/1949: feriado trabalhado sem folga compensatória é pago em dobro. Nunca os dois ao mesmo tempo — isso seria pagamento em duplicidade.' },
+  { k: 'feriado12x36ConformeArt59A', rot: 'Feriado na escala 12x36', tipo: 'sel',
+    ops: [[ 'true', 'Já coberto pelo salário mensal (art. 59-A, p. único, da CLT)'], ['false', 'Pago em dobro (Súmula 444 do TST)']],
+    ajuda: 'CONTROVÉRSIA VIVA. O art. 59-A, parágrafo único, da CLT (Lei 13.467/2017) diz que a remuneração mensal da 12x36 já abrange o DSR e o descanso em feriados. A Súmula 444 do TST, anterior à reforma, assegura o dobro. Para contrato posterior a novembro de 2017 a leitura corrente é a do art. 59-A — mas confirme com o jurídico antes de rodar a folha.' },
+  { k: 'janelaCompensacao', rot: 'Janela de busca da folga compensatória (dias)', tipo: 'num', min: 1, max: 60,
+    ajuda: 'Quantos dias para frente o app procura um dia livre para virar folga compensatória. Não atravessa o mês.' }
+];
+
+function desenharParams() {
+  var h = '';
+  DEF_PARAMS.forEach(function (p) {
+    h += '<div style="padding:13px 0;border-bottom:1px solid var(--linha)">';
+    h += '<div class="linha" style="align-items:center">';
+    h += '<label class="campo" style="flex:1;min-width:280px"><span style="font-size:13px;color:var(--tinta)">' + p.rot + '</span>';
+    if (p.tipo === 'num') {
+      h += '<input type="number" data-p="' + p.k + '" value="' + CONFIG[p.k] + '" min="' + p.min + '" max="' + p.max + '" style="width:120px">';
+    } else if (p.tipo === 'data') {
+      h += '<input type="date" data-p="' + p.k + '" value="' + esc(CONFIG[p.k]) + '" style="width:170px">';
+    } else {
+      h += '<select data-p="' + p.k + '" style="max-width:560px">' + p.ops.map(function (o) {
+        var sel = String(CONFIG[p.k]) === o[0] ? ' selected' : '';
+        return '<option value="' + o[0] + '"' + sel + '>' + esc(o[1]) + '</option>';
+      }).join('') + '</select>';
+    }
+    h += '</label></div>';
+    h += '<p style="margin:7px 0 0;font-size:12px;color:var(--tinta-fraca);max-width:900px">' + esc(p.ajuda) + '</p>';
+    h += '</div>';
+  });
+
+  h += '<div style="padding:13px 0;border-bottom:1px solid var(--linha)">'
+     + '<h3 style="margin:0 0 8px;font-size:13px;color:var(--azul-700)">Mínimo de domingos de folga por mês</h3>'
+     + '<p style="margin:0 0 10px;font-size:12px;color:var(--tinta-fraca);max-width:900px">'
+     + 'Para <b>mulher</b> a base é o <b>art. 386 da CLT</b>: havendo trabalho aos domingos, a escala de revezamento é '
+     + '<b>quinzenal</b> e deve favorecer o repouso dominical — ou seja, dois domingos por mês. É norma do capítulo de '
+     + 'proteção ao trabalho da mulher, não foi revogada pela Lei 13.467/2017 e foi confirmada pelo TST e pelo STF. '
+     + 'Para <b>homem</b> não há regra geral equivalente na CLT; o número aqui é parâmetro do escritório e deve ser '
+     + 'conferido contra a CCT da categoria.</p><div class="linha">';
+  [['M', 'homem'], ['F', 'mulher']].forEach(function (x) {
+    h += '<label class="campo">' + x[1] + '<input type="number" data-dom="' + x[0] + '" value="'
+       + CONFIG.minDomingosFolga[x[0]] + '" min="0" max="5" style="width:110px"></label>';
+  });
+  h += '</div></div>';
+
+  h += '<div style="padding:13px 0"><h3 style="margin:0 0 8px;font-size:13px;color:var(--azul-700)">Teto contratual de horas por escala (CCT/ACT)</h3>';
+  h += '<p style="margin:0 0 10px;font-size:12px;color:var(--tinta-fraca);max-width:900px">A CLT não fixa teto mensal de horas — ele vem da jornada contratual e da convenção da categoria. <b>Na vigência da PEC 221/2019</b> o app limita este valor pela referência mensal da jornada legal: 210h na 1ª fase (42h) e 200h na 2ª fase (40h), proporcional aos dias de cada fase no mês; e confere semana a semana (seg–dom) o limite de 44h, 42h ou 40h. O teto que dispara o alerta é o menor entre este valor e as horas geradas mais cerca de uma jornada, para que qualquer dia acrescentado à mão derrube o status. <b>Na 12x36 o teto é também um limite duro:</b> 180h são 15 plantões de 12h, e em mês de 31 dias que começaria com 16 o app suprime o plantão excedente e avisa na auditoria.</p><div class="linha">';
+  ['5x2', '5x2r', '6x1', '12x36'].forEach(function (e2) {
+    h += '<label class="campo">' + ROTULO_ESCALA[e2] + '<input type="number" data-teto="' + e2 + '" value="' + CONFIG.tetoContratualPorEscala[e2] + '" min="1" max="400" style="width:110px"></label>';
+  });
+  h += '</div></div>';
+  el('#formParams').innerHTML = h;
+}
+
+function desenharMeses() {
+  var chaves = Object.keys(ST.meses).sort();
+  if (!chaves.length) {
+    el('#listaMeses').innerHTML = '<p class="vazio">Nenhum mês guardado ainda.</p>';
+    return;
+  }
+  el('#listaMeses').innerHTML = chaves.map(function (k) {
+    var p = k.split('-');
+    return '<span class="chip"><b>' + MESES[+p[1] - 1] + '/' + p[0] + '</b>'
+      + '<span class="op">' + ST.meses[k].length + ' pessoa(s)</span>'
+      + '<button class="mini" data-rmmes="' + k + '">remover</button></span>';
+  }).join('');
+}
+
+function desenharAjuda() {
+  var regras = [
+    ['PEC 221/2019 — fim da escala 6x1', 'Aprovada pelo Senado em 14/10/2026 (75 a 1, em dois turnos), segue para promulgação, prevista para 20/10/2026. Pelo texto aprovado: 60 dias após a promulgação a 6x1 deixa de existir, a escala passa a ser 5x2 e a jornada máxima cai de 44h para 42h semanais (1ª fase); 12 meses depois cai para 40h (2ª fase), sempre sem redução de salário. O app escolhe as regras pela data de cada dia da competência — se a vigência começa no meio do mês, a troca acontece naquele dia. As datas saem da data de promulgação informada na aba Parâmetros, que deve ser conferida no DOU. Medidas específicas por setor ficaram para lei posterior.'],
+    ['Escala pelo cargo', 'Administrativo, escritório, analista, auxiliar e gerência vão para 5x2; portaria, vigilância e segurança para 12x36; o resto para 6x1 antes da vigência da PEC e para 5x2 com rodízio depois dela. É heurística — você troca na coluna Escala.'],
+    ['5x2 com rodízio', 'Para quem opera 7 dias por semana e sai da 6x1. Cada pessoa trabalha 5 dias e folga 2 por semana (seg–dom), em um par de dias que varia por funcionário para a operação não ficar sem ninguém no mesmo dia. O rodízio de domingos continua: na semana do domingo de folga, o domingo é o DSR e substitui o segundo dia do par. Jornada de 8h por dia = 40h por semana, dentro do limite das duas fases. Um dos dois dias da semana é marcado como DSR e o outro como folga da escala (F) — se o texto promulgado tratar os dois como descanso remunerado, o efeito é só de rótulo, a folha não muda.'],
+    ['12x36 e a PEC', 'A 12x36 dá média de 42h semanais: cabe na 1ª fase, mas passa das 40h da 2ª. Ainda não está claro se a emenda alcança a 12x36 (art. 59-A da CLT) ou se isso fica para a lei de regulamentação — por isso o app só alerta, sem mudar a escala.'],
+    ['Turno é rótulo, não jornada', 'M, T, N e D (dia todo) marcam em que turno a pessoa trabalha. A quantidade de horas do dia vem da ESCALA, não do turno: 8h na 5x2 e na 5x2 com rodízio, 7h20 na 6x1 e 12h na 12x36. Escolher "dia todo" não muda o total de horas do mês.'],
+    ['Feriado é "ou", nunca "e"', 'Feriado trabalhado ou vira folga compensatória (FER_COMP, pago simples) ou é pago em dobro (FER_DOBRO). Marcar as duas coisas seria pagamento em duplicidade. Nada fica pendente para o mês seguinte. Base: art. 9º da Lei 605/1949.'],
+    ['12x36 e feriado é decisão explícita', 'O art. 59-A, parágrafo único, da CLT diz que a remuneração mensal da 12x36 já abrange DSR e feriados; a Súmula 444 do TST diz o contrário. O app adota a primeira por padrão, marca a célula como FER_59A e deixa a troca visível na aba Parâmetros.'],
+    ['Seis dias consecutivos', 'Art. 67 da CLT. O DSR concedido após o 7º dia consecutivo viola o art. 7º, XV, da CF e é devido em dobro (OJ 410 da SBDI-1 do TST — não confunda com a OJ 359, que trata de outro assunto).'],
+    ['Domingos de folga por sexo', 'Mulher: 2 por mês, porque o art. 386 da CLT manda organizar escala de revezamento QUINZENAL que favoreça o repouso dominical — norma do capítulo de proteção ao trabalho da mulher, não revogada pela Lei 13.467/2017 e confirmada pelo TST e pelo STF. Homem: 1 por mês, parâmetro do escritório. Atenção: no comércio, o art. 6º, parágrafo único, da Lei 10.101/2000 pede folga dominical a cada três semanas, o que em mês de 5 domingos é mais estrito que 1 por mês — nesse caso ligue a guarda extra na aba Parâmetros.'],
+    ['Folgas por setor', 'Pessoas com o mesmo setor recebem posições vizinhas no rodízio e, se duas folgas ainda coincidirem, o app desloca uma delas em até 3 dias sem quebrar as demais regras. Limite padrão: 1 pessoa do setor de folga por dia. É regra da empresa, não da CLT — fica configurável em Parâmetros.'],
+    ['Rodízio que mantém a operação de pé', 'Cada pessoa na 6x1 tem folga semanal própria, de segunda a sábado — nunca domingo, que fica para o rodízio. Quais domingos cada um folga também é distribuído pela equipe. A defasagem é pela posição dentro da escala: sem ela, todo mundo folga no mesmo dia e o domingo fica descoberto.'],
+    ['Folga fixa x folga variável', 'Na folga FIXA a pessoa folga sempre no mesmo dia da semana — o ciclo 6+1 fecha exatamente uma semana, então ela trava ali. Na VARIÁVEL a folga anda um dia da semana para trás a cada três semanas: as semanas normais seguem com 6 dias trabalhados e só a semana do giro tem 5, que é o que desloca a fase. Por isso o total de horas do mês fica praticamente igual ao da folga fixa. O giro é para trás porque adiar a folga abriria 7 dias seguidos de trabalho, o que viola o art. 67 da CLT. O número de semanas está na aba Parâmetros.'],
+    ['Teto de 180h na 12x36', 'São 15 plantões de 12h. A alternância dia sim, dia não dá 16 plantões em mês de 31 dias que começa trabalhando, o que passaria para 192h — nesse caso o app suprime o plantão excedente do fim do mês e aponta na auditoria, para você conferir a cobertura daquele dia.'],
+    ['Continuidade entre meses', 'O app lê o mês anterior guardado neste navegador para emendar os contadores de dias e domingos seguidos, em vez de zerar no dia 1.'],
+    ['Alerta que consegue disparar', 'O teto de horas é calibrado sobre as horas efetivamente geradas, e as checagens de verdade são estruturais: dias seguidos, domingos seguidos, feriado sem tratamento e folgas abaixo do mínimo.'],
+    ['Interjornada: só o que dá para checar', 'As 11h do art. 66 da CLT dependem de horário de entrada e saída, que não entra aqui. O app aponta plantões 12x36 em dias adjacentes e avisa que o resto é conferência manual.'],
+    ['Legenda com granularidade de folha', 'Cada código diz sozinho qual é a consequência no pagamento, para a folha não ter que adivinhar.']
+  ];
+  var passos = [
+    ['Cadastre a equipe', 'Na aba <b>Equipe</b>, clique em <b>+ Adicionar funcionário</b>, em <b>Colar lista…</b> (uma pessoa por linha: <code>Nome; Cargo; Turno; Sexo; Setor</code>) ou em <b>Carregar exemplo</b> para ver o app funcionando. Nome e cargo bastam; o resto tem padrão.'],
+    ['Confira cada coluna', '<b>Setor</b>: preencha quando pessoas do mesmo setor não puderem folgar no mesmo dia (ex.: dois caixas). <b>Sexo</b>: define o mínimo de domingos de folga. <b>Turno</b>: só o rótulo do dia trabalhado (M, T, N, D). <b>Escala</b>: “auto” sugere pelo cargo; troque se precisar. <b>Folga semanal</b>: só na 6x1 — dia fixo ou variável.'],
+    ['Escolha o mês e o ano', 'No topo da aba Equipe. Logo abaixo aparece o <b>regime da competência</b>: antes da PEC, 1ª fase (5x2, 42h) ou 2ª fase (40h). Se a vigência começar no meio do mês, o app mostra os dois períodos e troca as regras no dia certo.'],
+    ['Confira os feriados', 'Na aba <b>Feriados</b> os nacionais já vêm calculados. Carnaval e Corpus Christi vêm desmarcados (ponto facultativo). <b>Acrescente os feriados municipais e estaduais</b> — o app não tem como saber os da sua cidade.'],
+    ['Revise os parâmetros', 'Na aba <b>Parâmetros</b>: data de promulgação da PEC (confira no DOU), quantas pessoas do mesmo setor podem folgar juntas, conversão automática da 6x1, domingos de folga, feriados e tetos de horas. Cada campo explica a consequência.'],
+    ['Gere a escala', 'Clique em <b>Gerar escala</b>. A aba <b>Escala</b> mostra o mês dia a dia, com horas, folgas, domingos de folga e o status de cada pessoa.'],
+    ['Leia a auditoria', 'A aba <b>Auditoria</b> lista, por funcionário, cada <b>violação</b> (vermelho — corrija antes da folha) e cada <b>atenção</b> (amarelo — confira), com a base legal. Mostra também as folgas que o app deslocou para respeitar o setor.'],
+    ['Exporte e guarde', '<b>Exportar .xlsx</b> gera planilha com três abas (escala, auditoria e parâmetros). <b>Imprimir / PDF</b> para afixar. Em Parâmetros, <b>Salvar backup</b> leva equipe, feriados e histórico para outro computador.'],
+    ['Gere os meses em sequência', 'O app guarda cada mês gerado neste navegador e usa o mês anterior para emendar dias e domingos seguidos na virada. Gere outubro antes de novembro, e assim por diante.']
+  ];
+  var codigos = [
+    ['M / T / N / D', 'dia trabalhado no turno indicado', 'pago normal'],
+    ['P12', 'plantão de 12h (12x36)', 'pago normal'],
+    ['DSR', 'descanso semanal remunerado', 'remunerado'],
+    ['F', 'folga da escala (2º dia de folga da 5x2, folga da 12x36)', 'sem efeito na folha'],
+    ['FER', 'feriado não trabalhado', 'remunerado'],
+    ['FER_COMP', 'feriado trabalhado e compensado com folga', 'pago simples'],
+    ['FOLGA_COMP', 'folga compensatória do feriado trabalhado', 'sem efeito na folha'],
+    ['FER_DOBRO', 'feriado trabalhado sem folga compensatória', 'pagar em dobro'],
+    ['FER_59A', 'feriado na 12x36 já coberto pelo salário (art. 59-A)', 'pago normal']
+  ];
+  var dP = datasPEC(CONFIG);
+  var h = '';
+  h += '<h3 style="margin:4px 0 10px;color:var(--azul-700)">1. Passo a passo</h3><ol style="padding-left:20px;margin:0">';
+  passos.forEach(function (p) { h += '<li style="margin:0 0 10px"><b>' + p[0] + '.</b> ' + p[1] + '</li>'; });
+  h += '</ol>';
+
+  h += '<h3 style="margin:22px 0 10px;color:var(--azul-700)">2. Como ler a escala</h3>'
+     + '<div class="rolagem" style="max-height:none"><table><thead><tr><th>Código</th><th>Significado</th><th>Na folha</th></tr></thead><tbody>';
+  codigos.forEach(function (c) { h += '<tr><td><b>' + c[0] + '</b></td><td>' + c[1] + '</td><td>' + c[2] + '</td></tr>'; });
+  h += '</tbody></table></div>'
+     + '<p style="font-size:12.5px;margin:8px 0 0">Colunas de totais: <b>Horas normais</b> e <b>Horas dobro</b> (feriado a pagar em dobro), <b>DSR</b>, <b>Folgas</b>, <b>Máx. dias</b> seguidos de trabalho e <b>Dom. de folga</b> (folgados / mínimo). O <b>Status</b> resume as violações e atenções.</p>';
+
+  h += '<h3 style="margin:22px 0 10px;color:var(--azul-700)">3. PEC 221/2019 — fim da escala 6x1</h3>'
+     + '<div class="rolagem" style="max-height:none"><table><thead><tr><th>Período</th><th>Escala</th><th>Jornada máxima</th><th>Referência mensal</th></tr></thead><tbody>'
+     + '<tr><td>até ' + (dP ? fmtBR(new Date(dP.fase1.getTime() - 864e5)) : '—') + '</td><td>5x2, 6x1 ou 12x36</td><td>44h semanais</td><td>220h</td></tr>'
+     + '<tr><td>' + (dP ? 'de ' + fmtBR(dP.fase1) + ' a ' + fmtBR(new Date(dP.fase2.getTime() - 864e5)) : '—') + '</td><td>5x2 (6x1 vedada)</td><td>42h semanais</td><td>210h</td></tr>'
+     + '<tr><td>' + (dP ? 'a partir de ' + fmtBR(dP.fase2) : '—') + '</td><td>5x2 (6x1 vedada)</td><td>40h semanais</td><td>200h</td></tr>'
+     + '</tbody></table></div>'
+     + '<p style="font-size:12.5px;margin:8px 0 0">Datas calculadas a partir da promulgação informada em Parâmetros ('
+     + (dP ? fmtBR(dP.promulgacao) : '—') + ', previsão). Sem redução de salário. Na vigência, quem está na 6x1 passa '
+     + 'automaticamente para a <b>5x2 com rodízio</b>, e a auditoria confere semana a semana o limite de horas da fase.</p>';
+
+  h += '<h3 style="margin:22px 0 10px;color:var(--azul-700)">4. Setores — quem não pode folgar junto</h3>'
+     + '<p style="font-size:13px;margin:0">Preencha a coluna <b>Setor</b> na aba Equipe com o mesmo nome para quem divide a mesma função (ex.: “Caixa”). '
+     + 'Ao gerar, o app: (1) coloca as pessoas do mesmo setor em posições vizinhas do rodízio, que já caem em folgas diferentes; '
+     + '(2) se ainda assim duas folgas coincidirem — feriado compensado, domingo de folga, semana de transição da PEC —, desloca uma delas em até 3 dias, '
+     + 'para um dia em que o setor tem cobertura, sem quebrar dias seguidos, limite de horas nem domingos de folga; '
+     + '(3) o que não tiver solução aparece como atenção na auditoria, para ajuste manual. O limite (padrão 1 pessoa por dia) fica em Parâmetros. '
+     + 'Vale para 5x2 rodízio, 6x1 e 12x36. A 5x2 fixa (segunda a sexta) fica de fora porque nela o setor fecha no fim de semana — se o setor abre aos sábados e domingos, use a 5x2 rodízio.</p>';
+
+  h += '<h3 style="margin:22px 0 10px;color:var(--azul-700)">5. Regras aplicadas e por quê</h3><ol style="padding-left:20px;margin:0">';
+  regras.forEach(function (r) {
+    h += '<li style="margin:0 0 12px"><b style="color:var(--azul-700)">' + r[0] + '.</b> ' + esc(r[1]) + '</li>';
+  });
+  h += '</ol>';
+  h += '<h3 style="margin:22px 0 10px;color:var(--azul-700)">6. O que o app não faz</h3><ul style="padding-left:20px;margin:0;font-size:13px">'
+     + '<li>Não valida a interjornada de 11h (art. 66 da CLT) fora da 12x36: não há horário de entrada e saída.</li>'
+     + '<li>Não conhece a convenção coletiva (CCT/ACT) da categoria — tetos e regras de domingo devem ser conferidos nela.</li>'
+     + '<li>As regras da PEC seguem o texto aprovado pelo Senado em 14/10/2026 conforme noticiado; confira a Emenda publicada no DOU e a futura lei de regulamentação dos setores.</li>'
+     + '<li>Não substitui advogado trabalhista, contador ou o RH responsável antes do uso em folha de pagamento.</li></ul>';
+  h += '<div class="nota"><b>Como este arquivo funciona.</b> É um arquivo único de HTML. Não faz nenhuma requisição de rede, '
+     + 'não usa CDN e não envia dado nenhum para fora — dá para rodar com a máquina desconectada. '
+     + 'A equipe, os feriados e os meses gerados ficam guardados no armazenamento local <i>deste</i> navegador, '
+     + 'nesta máquina. Copiar o arquivo para outro computador leva o app, não os dados. '
+     + 'Para levar os dados, use <b>Parâmetros &rarr; Salvar backup</b>.</div>';
+  el('#textoAjuda').innerHTML = h;
+}
+
+/* ========================================================================
+   EXPORTAÇÃO .XLSX  (sem biblioteca: ZIP store + CRC32 + OOXML na mão)
+   ======================================================================== */
+
+var CRC_TAB = (function () {
+  var t = new Uint32Array(256);
+  for (var i = 0; i < 256; i++) {
+    var c = i;
+    for (var j = 0; j < 8; j++) c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1);
+    t[i] = c >>> 0;
+  }
+  return t;
+})();
+function crc32(u8) {
+  var c = 0xFFFFFFFF;
+  for (var i = 0; i < u8.length; i++) c = CRC_TAB[(c ^ u8[i]) & 0xFF] ^ (c >>> 8);
+  return (c ^ 0xFFFFFFFF) >>> 0;
+}
+function bytes(str) { return new TextEncoder().encode(str); }
+
+function zipar(arquivos) {
+  var enc = arquivos.map(function (f) { return { nome: bytes(f.nome), dado: f.dado, crc: crc32(f.dado) }; });
+  var tam = 22;
+  enc.forEach(function (f) { tam += 30 + f.nome.length + f.dado.length + 46 + f.nome.length; });
+  var buf = new Uint8Array(tam), dv = new DataView(buf.buffer), off = 0, centrais = [];
+
+  enc.forEach(function (f) {
+    var ini = off;
+    dv.setUint32(off, 0x04034b50, true); off += 4;
+    dv.setUint16(off, 20, true); off += 2;
+    dv.setUint16(off, 0, true); off += 2;
+    dv.setUint16(off, 0, true); off += 2;     // store
+    dv.setUint16(off, 0, true); off += 2;
+    dv.setUint16(off, 0x2821, true); off += 2;
+    dv.setUint32(off, f.crc, true); off += 4;
+    dv.setUint32(off, f.dado.length, true); off += 4;
+    dv.setUint32(off, f.dado.length, true); off += 4;
+    dv.setUint16(off, f.nome.length, true); off += 2;
+    dv.setUint16(off, 0, true); off += 2;
+    buf.set(f.nome, off); off += f.nome.length;
+    buf.set(f.dado, off); off += f.dado.length;
+    centrais.push({ f: f, ini: ini });
+  });
+
+  var iniCentral = off;
+  centrais.forEach(function (x) {
+    var f = x.f;
+    dv.setUint32(off, 0x02014b50, true); off += 4;
+    dv.setUint16(off, 20, true); off += 2;
+    dv.setUint16(off, 20, true); off += 2;
+    dv.setUint16(off, 0, true); off += 2;
+    dv.setUint16(off, 0, true); off += 2;
+    dv.setUint16(off, 0, true); off += 2;
+    dv.setUint16(off, 0x2821, true); off += 2;
+    dv.setUint32(off, f.crc, true); off += 4;
+    dv.setUint32(off, f.dado.length, true); off += 4;
+    dv.setUint32(off, f.dado.length, true); off += 4;
+    dv.setUint16(off, f.nome.length, true); off += 2;
+    dv.setUint16(off, 0, true); off += 2;
+    dv.setUint16(off, 0, true); off += 2;
+    dv.setUint16(off, 0, true); off += 2;
+    dv.setUint16(off, 0, true); off += 2;
+    dv.setUint32(off, 0, true); off += 4;
+    dv.setUint32(off, x.ini, true); off += 4;
+    buf.set(f.nome, off); off += f.nome.length;
+  });
+
+  var tamCentral = off - iniCentral;
+  dv.setUint32(off, 0x06054b50, true); off += 4;
+  dv.setUint16(off, 0, true); off += 2;
+  dv.setUint16(off, 0, true); off += 2;
+  dv.setUint16(off, enc.length, true); off += 2;
+  dv.setUint16(off, enc.length, true); off += 2;
+  dv.setUint32(off, tamCentral, true); off += 4;
+  dv.setUint32(off, iniCentral, true); off += 4;
+  dv.setUint16(off, 0, true); off += 2;
+  return buf.subarray(0, off);
+}
+
+function colLetra(n) { var s = ''; n++; while (n > 0) { var r = (n - 1) % 26; s = String.fromCharCode(65 + r) + s; n = (n - r - 1) / 26; } return s; }
+function celula(v, lin, c, estilo) {
+  var ref = colLetra(c) + lin;
+  var st = estilo ? ' s="' + estilo + '"' : '';
+  if (typeof v === 'number' && isFinite(v)) return '<c r="' + ref + '"' + st + '><v>' + v + '</v></c>';
+  var t = esc(String(v == null ? '' : v).replace(/[\x00-\x08\x0B\x0C\x0E-\x1F]/g, ''));
+  if (t === '') return '<c r="' + ref + '"' + st + '/>';
+  return '<c r="' + ref + '"' + st + ' t="inlineStr"><is><t xml:space="preserve">' + t + '</t></is></c>';
+}
+function planilhaXml(cols, linhas, congelarCols) {
+  var largs = cols.map(function (c, i) { return '<col min="' + (i + 1) + '" max="' + (i + 1) + '" width="' + c.w + '" customWidth="1"/>'; }).join('');
+  var xml = '<row r="1" ht="30" customHeight="1">' + cols.map(function (c, i) { return celula(c.t, 1, i, 1); }).join('') + '</row>';
+  var l = 2;
+  linhas.forEach(function (lin) {
+    xml += '<row r="' + l + '">' + lin.map(function (v, i) {
+      var est = 2;
+      if (v && typeof v === 'object') { est = v.s; v = v.v; }
+      return celula(v, l, i, est);
+    }).join('') + '</row>';
+    l++;
+  });
+  var xs = congelarCols || 0;
+  var topo = colLetra(xs) + '2';
+  return '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+    + '<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">'
+    + '<sheetViews><sheetView workbookViewId="0"><pane xSplit="' + xs + '" ySplit="1" topLeftCell="' + topo + '" activePane="bottomRight" state="frozen"/></sheetView></sheetViews>'
+    + '<sheetFormatPr defaultRowHeight="15"/>'
+    + '<cols>' + largs + '</cols><sheetData>' + xml + '</sheetData></worksheet>';
+}
+
+function exportarXlsx() {
+  var a = ST.atual;
+  if (!a) { aviso('Gere a escala antes de exportar.', 'err'); return; }
+
+  /* Aba 1 — escala dia a dia */
+  var c1 = [{ t: 'Matrícula', w: 11 }, { t: 'Funcionário', w: 30 }, { t: 'Cargo', w: 26 }, { t: 'Setor', w: 18 },
+            { t: 'Sexo', w: 12 }, { t: 'Turno', w: 11 }, { t: 'Escala', w: 22 },
+            { t: 'Folga semanal', w: 15 }];
+  for (var d = 1; d <= a.dias; d++) {
+    var w = diaSemana(a.ano, a.mes, d);
+    c1.push({ t: d + ' ' + DS_CURTO[w], w: 11 });
+  }
+  c1 = c1.concat([{ t: 'Horas normais', w: 14 }, { t: 'Horas feriado (dobro)', w: 20 },
+                  { t: 'Total DSR', w: 11 }, { t: 'Total folgas', w: 13 },
+                  { t: 'Máx. dias seguidos', w: 18 }, { t: 'Domingos de folga', w: 18 },
+                  { t: 'Mín. domingos exigido', w: 20 },
+                  { t: 'Feriados a pagar em dobro', w: 24 }, { t: 'Status CLT / Compliance', w: 70 }]);
+
+  var l1 = a.linhas.map(function (l) {
+    var lin = [l.matricula, l.nome, l.cargo || '', l.setor || '', SEXOS[l.sexo], TURNOS[l.turno], rotuloEscalaLinha(l),
+               rotuloFolgaLinha(l)];
+    l.codigos.forEach(function (c) {
+      var s = 2;
+      if (c === COD.FER_DOBRO) s = 4;
+      else if (c === COD.FOLGA_COMP || c === COD.FER_COMP) s = 3;
+      else if (c === COD.DSR || c === COD.FOLGA_ESCALA) s = 6;
+      lin.push({ v: c, s: s });
+    });
+    var grau = l.problemas.length
+      ? (l.problemas.some(function (p) { return p.grau === 'vi'; }) ? 4 : 5) : 3;
+    var txt = l.problemas.length
+      ? l.problemas.map(function (p) { return (p.grau === 'vi' ? 'VIOLAÇÃO: ' : 'ALERTA: ') + p.txt; }).join(' ')
+      : 'OK — nenhuma violação detectada';
+    lin.push({ v: Math.round(l.horasNormais * 100) / 100, s: 7 });
+    lin.push({ v: Math.round(l.horasDobro * 100) / 100, s: l.horasDobro ? 8 : 7 });
+    lin.push(l.escala === '12x36' ? '—' : l.totalDSR, l.totalFolgas, l.maxDias,
+             { v: l.domingosDeFolga, s: l.domingosDeFolga < l.minDomingos ? 4 : 2 }, l.minDomingos);
+    lin.push({ v: l.emDobro.length ? 'Dia(s) ' + l.emDobro.join(', ') : 'Nenhum', s: l.emDobro.length ? 4 : 2 });
+    lin.push({ v: txt, s: grau });
+    return lin;
+  });
+
+  /* Aba 2 — auditoria item a item */
+  var c2 = [{ t: 'Funcionário', w: 30 }, { t: 'Sexo', w: 12 }, { t: 'Escala', w: 9 },
+            { t: 'Grau', w: 11 }, { t: 'Ponto encontrado', w: 74 }, { t: 'Base legal', w: 60 }];
+  var l2 = [];
+  a.linhas.forEach(function (l) {
+    if (!l.problemas.length) {
+      l2.push([l.nome, SEXOS[l.sexo], rotuloEscalaLinha(l), { v: 'OK', s: 3 }, 'Nenhuma violação estrutural detectada.', '']);
+    } else {
+      l.problemas.forEach(function (p) {
+        l2.push([l.nome, SEXOS[l.sexo], rotuloEscalaLinha(l),
+                 { v: p.grau === 'vi' ? 'Violação' : 'Atenção', s: p.grau === 'vi' ? 4 : 5 },
+                 p.txt, p.lei]);
+      });
+    }
+  });
+
+  /* Aba 3 — parâmetros e ressalvas */
+  var c3 = [{ t: 'Parâmetro', w: 44 }, { t: 'Valor', w: 90 }];
+  var l3 = [
+    ['Competência', MESES[a.mes - 1] + '/' + a.ano],
+    ['Regime da competência', a.regime || ''],
+    ['PEC 221/2019 — datas adotadas', (function () {
+      var d = datasPEC(CONFIG);
+      return d ? 'promulgação ' + fmtBR(d.promulgacao) + ' (conferir no DOU); 1ª fase (5x2, 42h) a partir de '
+        + fmtBR(d.fase1) + '; 2ª fase (40h) a partir de ' + fmtBR(d.fase2) : 'data de promulgação não informada';
+    })()],
+    ['Folga por setor', 'no máximo ' + CONFIG.maxFolgaMesmoSetor + ' pessoa(s) do mesmo setor de folga no mesmo dia (regra da empresa); '
+      + (a.setor ? a.setor.movidas + ' folga(s) deslocada(s), ' + a.setor.conflitos + ' choque(s) sem solução' : '')],
+    ['6x1 na vigência da PEC', CONFIG.converter6x1 ? 'convertida automaticamente para 5x2 com rodízio' : 'mantida para simulação — apontada como violação'],
+    ['Dias no mês', a.dias],
+    ['Funcionários', a.linhas.length],
+    ['Feriados considerados', a.feriados.length
+      ? a.feriados.map(function (f) { return f.split('-').reverse().join('/') + ' (' + descricaoFeriado(f) + ')'; }).join('; ')
+      : 'Nenhum'],
+    ['Máximo de dias consecutivos', CONFIG.limiteDiasConsecutivos + ' — art. 67 da CLT; DSR após o 7º dia viola o art. 7º, XV, da CF (OJ 410 da SBDI-1 do TST)'],
+    ['Mínimo de domingos de folga — mulher', CONFIG.minDomingosFolga.F
+      + ' por mês — art. 386 da CLT (escala de revezamento quinzenal que favoreça o repouso dominical); norma não revogada pela Lei 13.467/2017, confirmada pelo TST e pelo STF'],
+    ['Mínimo de domingos de folga — homem', CONFIG.minDomingosFolga.M
+      + ' por mês — parâmetro do escritório; no comércio o art. 6º, parágrafo único, da Lei 10.101/2000 é mais estrito (uma folga dominical a cada três semanas)'],
+    ['Máximo de domingos seguidos (guarda extra)', CONFIG.limiteDomingosSeguidos > 0
+      ? CONFIG.limiteDomingosSeguidos + ' — art. 6º, parágrafo único, da Lei 10.101/2000'
+      : 'desligado — quem rege é o mínimo mensal acima'],
+    ['Teto da 12x36', CONFIG.tetoContratualPorEscala['12x36'] + 'h = '
+      + Math.floor(CONFIG.tetoContratualPorEscala['12x36'] / 12) + ' plantões de 12h. Limite duro: plantão excedente é suprimido e apontado na auditoria'],
+    ['Folga variável', 'gira o dia da folga a cada ' + CONFIG.girarFolgaACadaSemanas
+      + ' semana(s), andando um dia para trás; a semana do giro tem 5 dias trabalhados em vez de 6'],
+    ['Feriado trabalhado', CONFIG.politicaFeriado === 'dobro'
+      ? 'Sempre pago em dobro (art. 9º da Lei 605/1949)'
+      : 'Compensado com folga no mês; sem dia livre, pago em dobro (art. 9º da Lei 605/1949)'],
+    ['Feriado na 12x36', CONFIG.feriado12x36ConformeArt59A
+      ? 'Já coberto pelo salário mensal — art. 59-A, parágrafo único, da CLT (Lei 13.467/2017)'
+      : 'Pago em dobro — Súmula 444 do TST'],
+    ['Tetos contratuais (CCT/ACT)', '5x2: ' + CONFIG.tetoContratualPorEscala['5x2'] + 'h; 5x2 rodízio: '
+      + CONFIG.tetoContratualPorEscala['5x2r'] + 'h; 6x1: '
+      + CONFIG.tetoContratualPorEscala['6x1'] + 'h; 12x36: ' + CONFIG.tetoContratualPorEscala['12x36'] + 'h'],
+    ['Gerado em', new Date().toLocaleString('pt-BR')],
+    ['Gerado por', 'Escala CLT v' + VERSAO + ' — Prisma Contabilidade'],
+    ['Ressalva 1', 'A interjornada de 11h (art. 66 da CLT) NÃO é validada integralmente: a entrada de dados não traz horário de entrada e saída. O app só aponta plantões 12x36 em dias adjacentes.'],
+    ['Ressalva 2', 'Os tetos de horas são parâmetros de referência, não valores fixados pela CLT. Confira contra a CCT/ACT da categoria.'],
+    ['Ressalva 3', 'A regra de folga em domingo da Lei 10.101/2000 é do comércio e se aplica por analogia às demais categorias. Confirme na convenção coletiva.'],
+    ['Ressalva 4', 'Esta planilha não substitui advogado trabalhista, contador ou o setor de RH responsável antes de uso em folha de pagamento.']
+  ];
+
+  var abas = [
+    { nome: 'Escala', xml: planilhaXml(c1, l1, 7) },
+    { nome: 'Auditoria', xml: planilhaXml(c2, l2, 1) },
+    { nome: 'Parametros', xml: planilhaXml(c3, l3, 1) }
+  ];
+
+  var ct = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+    + '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">'
+    + '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>'
+    + '<Default Extension="xml" ContentType="application/xml"/>'
+    + '<Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>'
+    + abas.map(function (x, i) { return '<Override PartName="/xl/worksheets/sheet' + (i + 1) + '.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>'; }).join('')
+    + '<Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/></Types>';
+
+  var rels = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+    + '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+    + '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>';
+
+  var wb = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+    + '<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets>'
+    + abas.map(function (x, i) { return '<sheet name="' + esc(x.nome) + '" sheetId="' + (i + 1) + '" r:id="rId' + (i + 1) + '"/>'; }).join('')
+    + '</sheets></workbook>';
+
+  var wbRels = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+    + '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+    + abas.map(function (x, i) { return '<Relationship Id="rId' + (i + 1) + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet' + (i + 1) + '.xml"/>'; }).join('')
+    + '<Relationship Id="rId' + (abas.length + 1) + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>';
+
+  var styles = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+    + '<styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">'
+    + '<numFmts count="1"><numFmt numFmtId="164" formatCode="#,##0.00"/></numFmts>'
+    + '<fonts count="4">'
+    + '<font><sz val="11"/><name val="Calibri"/></font>'
+    + '<font><b/><sz val="11"/><color rgb="FFFFFFFF"/><name val="Calibri"/></font>'
+    + '<font><b/><sz val="11"/><color rgb="FF9B2C2C"/><name val="Calibri"/></font>'
+    + '<font><b/><sz val="11"/><color rgb="FF8A5510"/><name val="Calibri"/></font>'
+    + '</fonts>'
+    + '<fills count="7">'
+    + '<fill><patternFill patternType="none"/></fill>'
+    + '<fill><patternFill patternType="gray125"/></fill>'
+    + '<fill><patternFill patternType="solid"><fgColor rgb="FF0C447C"/><bgColor indexed="64"/></patternFill></fill>'
+    + '<fill><patternFill patternType="solid"><fgColor rgb="FFE6F6EC"/><bgColor indexed="64"/></patternFill></fill>'
+    + '<fill><patternFill patternType="solid"><fgColor rgb="FFFDEAEA"/><bgColor indexed="64"/></patternFill></fill>'
+    + '<fill><patternFill patternType="solid"><fgColor rgb="FFFDF0DA"/><bgColor indexed="64"/></patternFill></fill>'
+    + '<fill><patternFill patternType="solid"><fgColor rgb="FFE3EBF5"/><bgColor indexed="64"/></patternFill></fill>'
+    + '</fills>'
+    + '<borders count="2"><border><left/><right/><top/><bottom/><diagonal/></border>'
+    + '<border><left style="thin"><color rgb="FFDCE6F2"/></left><right style="thin"><color rgb="FFDCE6F2"/></right>'
+    + '<top style="thin"><color rgb="FFDCE6F2"/></top><bottom style="thin"><color rgb="FFDCE6F2"/></bottom><diagonal/></border></borders>'
+    + '<cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>'
+    + '<cellXfs count="9">'
+    + '<xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/>'
+    + '<xf numFmtId="0" fontId="1" fillId="2" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment vertical="center" horizontal="center" wrapText="1"/></xf>'
+    + '<xf numFmtId="0" fontId="0" fillId="0" borderId="1" xfId="0" applyBorder="1" applyAlignment="1"><alignment horizontal="center"/></xf>'
+    + '<xf numFmtId="0" fontId="0" fillId="3" borderId="1" xfId="0" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center" wrapText="1"/></xf>'
+    + '<xf numFmtId="0" fontId="2" fillId="4" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center" wrapText="1"/></xf>'
+    + '<xf numFmtId="0" fontId="3" fillId="5" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center" wrapText="1"/></xf>'
+    + '<xf numFmtId="0" fontId="0" fillId="6" borderId="1" xfId="0" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center"/></xf>'
+    + '<xf numFmtId="164" fontId="0" fillId="0" borderId="1" xfId="0" applyNumberFormat="1" applyBorder="1"/>'
+    + '<xf numFmtId="164" fontId="2" fillId="4" borderId="1" xfId="0" applyNumberFormat="1" applyFont="1" applyFill="1" applyBorder="1"/>'
+    + '</cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles><dxfs count="0"/></styleSheet>';
+
+  var pacote = [
+    { nome: '[Content_Types].xml', dado: bytes(ct) },
+    { nome: '_rels/.rels', dado: bytes(rels) },
+    { nome: 'xl/workbook.xml', dado: bytes(wb) },
+    { nome: 'xl/_rels/workbook.xml.rels', dado: bytes(wbRels) },
+    { nome: 'xl/styles.xml', dado: bytes(styles) }
+  ];
+  abas.forEach(function (x, i) { pacote.push({ nome: 'xl/worksheets/sheet' + (i + 1) + '.xml', dado: bytes(x.xml) }); });
+
+  var blob = new Blob([zipar(pacote)], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  var nome = 'Escala_CLT_' + a.ano + '-' + (a.mes < 10 ? '0' + a.mes : a.mes) + '_Prisma.xlsx';
+  baixar(blob, nome);
+  aviso('Planilha "' + nome + '" gerada com ' + a.linhas.length + ' funcionário(s).', 'ok');
+}
+
+function baixar(blob, nome) {
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url; a.download = nome;
+  document.body.appendChild(a); a.click();
+  setTimeout(function () { URL.revokeObjectURL(url); a.remove(); }, 1500);
+}
+
+/* ========================================================================
+   PERSISTÊNCIA E UI
+   ======================================================================== */
+
+var CHAVE = 'prisma_escala_clt_v1';
+
+/** O armazenamento local pode estar bloqueado (origem opaca, modo privado,
+ *  política do navegador). Melhor avisar do que falhar calado — é dele que
+ *  depende a emenda dos contadores na virada do mês. */
+function armazenamentoOk() {
+  try {
+    localStorage.setItem('__pt', '1');
+    var v = localStorage.getItem('__pt') === '1';
+    localStorage.removeItem('__pt');
+    return v;
+  } catch (e) { return false; }
+}
+
+function montarBackup() {
+  return {
+    app: 'Escala CLT — Prisma Contabilidade', versao: VERSAO,
+    exportadoEm: new Date().toISOString(),
+    equipe: ST.equipe, feriadosExtras: ST.feriadosExtras,
+    ferDesmarcados: ST.ferDesmarcados, meses: ST.meses, config: CONFIG
+  };
+}
+function baixarBackup() {
+  var blob = new Blob([JSON.stringify(montarBackup(), null, 2)], { type: 'application/json' });
+  baixar(blob, 'Escala_CLT_backup_' + new Date().toISOString().slice(0, 10) + '.json');
+  aviso('Backup salvo.', 'ok');
+}
+function aplicarBackup(texto) {
+  var d;
+  try { d = JSON.parse(texto); } catch (e) { aviso('Arquivo inválido — não é um backup deste app.', 'err'); return; }
+  if (!d || (!d.equipe && !d.meses)) { aviso('Arquivo inválido — não é um backup deste app.', 'err'); return; }
+  ST.equipe = d.equipe || [];
+  ST.feriadosExtras = d.feriadosExtras || [];
+  ST.ferDesmarcados = d.ferDesmarcados || [];
+  ST.meses = d.meses || {};
+  if (d.config) { Object.keys(PADRAO).forEach(function (k) { if (k in d.config) CONFIG[k] = d.config[k]; }); completarConfig(); }
+  salvar();
+  desenharEquipe(); desenharFeriados(); desenharRegime(); desenharParams(); desenharMeses();
+  aviso('Backup carregado: ' + ST.equipe.length + ' funcionário(s) e '
+    + Object.keys(ST.meses).length + ' mês(es) de histórico.', 'ok');
+  irPara('equipe');
+}
+
+function salvar() {
+  try {
+    localStorage.setItem(CHAVE, JSON.stringify({
+      equipe: ST.equipe, feriadosExtras: ST.feriadosExtras,
+      ferDesmarcados: ST.ferDesmarcados, meses: ST.meses, config: CONFIG
+    }));
+  } catch (e) { /* armazenamento indisponível: o app segue sem guardar */ }
+}
+/** Config gravada pela v1.0 não tem a escala 5x2r nos objetos aninhados. */
+function completarConfig() {
+  ['jornadaHoras', 'tetoContratualPorEscala'].forEach(function (k) {
+    CONFIG[k] = CONFIG[k] || {};
+    Object.keys(PADRAO[k]).forEach(function (e) { if (!(e in CONFIG[k])) CONFIG[k][e] = PADRAO[k][e]; });
+  });
+}
+function carregar() {
+  try {
+    var raw = localStorage.getItem(CHAVE);
+    if (!raw) return;
+    var d = JSON.parse(raw);
+    if (d.equipe) {
+      ST.equipe = d.equipe.map(function (f) {
+        // cadastros salvos antes de existirem sexo e tipo de folga
+        if (f.sexo !== 'F' && f.sexo !== 'M') f.sexo = 'M';
+        if (f.tipoFolga !== 'variavel') f.tipoFolga = 'fixa';
+        return f;
+      });
+    }
+    if (d.feriadosExtras) ST.feriadosExtras = d.feriadosExtras;
+    if (d.ferDesmarcados) ST.ferDesmarcados = d.ferDesmarcados;
+    if (d.meses) ST.meses = d.meses;
+    if (d.config) {
+      var anterior = !('minDomingosFolga' in d.config);
+      Object.keys(PADRAO).forEach(function (k) { if (k in d.config) CONFIG[k] = d.config[k]; });
+      completarConfig();
+      if (anterior) {
+        // Config gravada antes do mínimo de domingos por sexo e do teto de
+        // 180h da 12x36. Manter os valores velhos aqui reintroduziria as
+        // regras antigas sem o usuário perceber, então esses voltam ao padrão.
+        CONFIG.minDomingosFolga = JSON.parse(JSON.stringify(PADRAO.minDomingosFolga));
+        CONFIG.limiteDomingosSeguidos = PADRAO.limiteDomingosSeguidos;
+        CONFIG.girarFolgaACadaSemanas = PADRAO.girarFolgaACadaSemanas;
+        CONFIG.tetoContratualPorEscala['12x36'] = PADRAO.tetoContratualPorEscala['12x36'];
+      }
+    }
+  } catch (e) { /* dado corrompido: começa limpo */ }
+}
+
+function el(s) { return document.querySelector(s); }
+function els(s) { return Array.prototype.slice.call(document.querySelectorAll(s)); }
+
+var tToast = null;
+function aviso(msg, tipo) {
+  var t = el('#toast');
+  t.textContent = msg;
+  t.className = 'ver ' + (tipo || '');
+  clearTimeout(tToast);
+  tToast = setTimeout(function () { t.className = tipo || ''; }, 5200);
+}
+function irPara(nome) {
+  els('nav button').forEach(function (b) { b.classList.toggle('on', b.dataset.aba === nome); });
+  els('.aba').forEach(function (s) { s.classList.toggle('on', s.id === 'aba-' + nome); });
+}
+
+function proximaMatricula() {
+  var max = 1000;
+  ST.equipe.forEach(function (f) { if (f.matricula > max) max = f.matricula; });
+  return max + 1;
+}
+function addFuncionario(nome, cargo, turno, sexo, tipoFolga, setor) {
+  ST.equipe.push({
+    matricula: proximaMatricula(), nome: nome || '', cargo: cargo || '', setor: setor || '',
+    turno: turno || 'M', sexo: sexo === 'F' ? 'F' : 'M', escala: '',
+    tipoFolga: tipoFolga === 'variavel' ? 'variavel' : 'fixa'
+  });
+}
+
+var EXEMPLO = [
+  ['Ana Paula Silva',  'Analista Contábil',      'M', 'F', 'fixa',     'Administrativo'],
+  ['Roberto Carlos',   'Atendente de Vendas',    'T', 'M', 'fixa',     'Loja'],
+  ['Marcos Souza',     'Vigilante / Portaria',   'N', 'M', 'fixa',     'Portaria'],
+  ['Juliana Lima',     'Auxiliar de Escritório', 'D', 'F', 'fixa',     'Administrativo'],
+  ['Lucas Mendes',     'Op. de Caixa',           'T', 'M', 'variavel', 'Caixa'],
+  ['Fernanda Rocha',   'Vendedora',              'D', 'F', 'fixa',     'Loja'],
+  ['Paulo Henrique',   'Op. de Caixa',           'M', 'M', 'fixa',     'Caixa']
+];
+
+function iniciar() {
+  // seletor de mês/ano
+  el('#mes').innerHTML = MESES.map(function (m, i) {
+    return '<option value="' + (i + 1) + '">' + m.charAt(0).toUpperCase() + m.slice(1) + '</option>';
+  }).join('');
+  var hoje = new Date();
+  el('#mes').value = hoje.getMonth() + 1;
+  el('#ano').value = hoje.getFullYear();
+
+  carregar();
+  desenharEquipe();
+  desenharFeriados();
+  desenharRegime();
+  desenharParams();
+  desenharMeses();
+  desenharAjuda();
+
+  // navegação
+  els('nav button').forEach(function (b) {
+    b.addEventListener('click', function () { irPara(b.dataset.aba); });
+  });
+
+  // período
+  el('#mes').addEventListener('change', function () { desenharFeriados(); desenharRegime(); desenharEquipe(); });
+  el('#ano').addEventListener('input', function () { desenharFeriados(); desenharRegime(); desenharEquipe(); });
+  el('#btGerar').addEventListener('click', gerar);
+
+  // equipe
+  el('#btAddFunc').addEventListener('click', function () {
+    addFuncionario(); desenharEquipe(); salvar();
+    var ins = els('#tbEquipe input[data-c="nome"]');
+    if (ins.length) ins[ins.length - 1].focus();
+  });
+  el('#btExemplo').addEventListener('click', function () {
+    EXEMPLO.forEach(function (x) { addFuncionario(x[0], x[1], x[2], x[3], x[4], x[5]); });
+    desenharEquipe(); salvar();
+    aviso('Exemplo carregado com ' + EXEMPLO.length + ' funcionários.', 'ok');
+  });
+  el('#btLimparEquipe').addEventListener('click', function () {
+    if (!ST.equipe.length) return;
+    if (!confirm('Remover todos os ' + ST.equipe.length + ' funcionários da lista?')) return;
+    ST.equipe = []; desenharEquipe(); salvar();
+  });
+  el('#tbEquipe').addEventListener('input', function (ev) {
+    var t = ev.target;
+    if (t.dataset.i == null) return;
+    ST.equipe[+t.dataset.i][t.dataset.c] = t.value;
+    salvar();
+  });
+  el('#tbEquipe').addEventListener('change', function (ev) {
+    var t = ev.target;
+    if (t.dataset.i == null) return;
+    ST.equipe[+t.dataset.i][t.dataset.c] = t.value;
+    salvar();
+    if (t.dataset.c === 'cargo' || t.dataset.c === 'escala') desenharEquipe();
+  });
+  el('#tbEquipe').addEventListener('click', function (ev) {
+    var i = ev.target.dataset.rm;
+    if (i == null) return;
+    ST.equipe.splice(+i, 1); desenharEquipe(); salvar();
+  });
+
+  // colar lista
+  el('#btColar').addEventListener('click', function () { el('#areaColar').hidden = false; el('#txColar').focus(); });
+  el('#btCancelarColar').addEventListener('click', function () { el('#areaColar').hidden = true; });
+  el('#btImportar').addEventListener('click', function () {
+    var txt = el('#txColar').value;
+    var n = 0;
+    txt.split(/\r?\n/).forEach(function (ln) {
+      if (!ln.trim()) return;
+      var p = ln.split(/[;\t]/).map(function (x) { return x.trim(); });
+      if (!p[0]) return;
+      var turno = (p[2] || 'M').toUpperCase().charAt(0);
+      if ('MTND'.indexOf(turno) === -1) turno = 'M';
+      var sx = (p[3] || '').toUpperCase().charAt(0);
+      if (sx !== 'F' && sx !== 'M') sx = 'M';
+      addFuncionario(p[0], p[1] || '', turno, sx, 'fixa', p[4] || '');
+      n++;
+    });
+    el('#txColar').value = '';
+    el('#areaColar').hidden = true;
+    desenharEquipe(); salvar();
+    aviso(n ? n + ' funcionário(s) importado(s).' : 'Nada foi importado — confira o formato.', n ? 'ok' : 'err');
+  });
+
+  // feriados
+  el('#listaFeriados').addEventListener('change', function (ev) {
+    var t = ev.target;
+    if (!t.dataset.fer) return;
+    var data = t.dataset.fer, certo = t.dataset.certo === '1';
+    if (certo) {
+      var p = ST.ferDesmarcados.indexOf(data);
+      if (t.checked && p !== -1) ST.ferDesmarcados.splice(p, 1);
+      if (!t.checked && p === -1) ST.ferDesmarcados.push(data);
+    } else {
+      var q = ST.ferDesmarcados.indexOf('+' + data);
+      if (t.checked && q === -1) ST.ferDesmarcados.push('+' + data);
+      if (!t.checked && q !== -1) ST.ferDesmarcados.splice(q, 1);
+    }
+    salvar(); desenharFeriados();
+  });
+  el('#listaFeriados').addEventListener('click', function (ev) {
+    var d = ev.target.dataset.rmfer;
+    if (!d) return;
+    ST.feriadosExtras = ST.feriadosExtras.filter(function (f) { return f.data !== d; });
+    salvar(); desenharFeriados();
+  });
+  el('#btAddFer').addEventListener('click', function () {
+    var data = el('#novoFerData').value;
+    var desc = el('#novoFerDesc').value.trim();
+    if (!data) { aviso('Informe a data do feriado.', 'err'); return; }
+    if (ST.feriadosExtras.some(function (f) { return f.data === data; })) {
+      aviso('Esse feriado já está na lista.', 'err'); return;
+    }
+    ST.feriadosExtras.push({ data: data, desc: desc || 'Feriado municipal/estadual' });
+    el('#novoFerData').value = ''; el('#novoFerDesc').value = '';
+    salvar(); desenharFeriados();
+    var p = data.split('-');
+    if (+p[1] !== +el('#mes').value || +p[0] !== +el('#ano').value) {
+      aviso('Feriado guardado. Ele é de ' + MESES[+p[1] - 1] + '/' + p[0] + ', então só aparece ao selecionar esse mês.');
+    } else {
+      aviso('Feriado acrescentado.', 'ok');
+    }
+  });
+
+  // parâmetros
+  el('#formParams').addEventListener('change', function (ev) {
+    var t = ev.target;
+    if (t.dataset.p) {
+      var v = t.value;
+      if (t.type === 'number') v = parseInt(v, 10);
+      else if (v === 'true' || v === 'false') v = (v === 'true');
+      CONFIG[t.dataset.p] = v;
+      salvar();
+      desenharRegime(); desenharEquipe(); desenharAjuda();
+      aviso('Parâmetro atualizado. Gere a escala de novo para aplicar.');
+    }
+    if (t.dataset.teto) {
+      CONFIG.tetoContratualPorEscala[t.dataset.teto] = parseInt(t.value, 10) || 220;
+      salvar();
+      aviso('Teto atualizado. Gere a escala de novo para aplicar.');
+    }
+    if (t.dataset.dom) {
+      var v2 = parseInt(t.value, 10);
+      CONFIG.minDomingosFolga[t.dataset.dom] = isNaN(v2) ? 0 : v2;
+      salvar();
+      aviso('Mínimo de domingos atualizado. Gere a escala de novo para aplicar.');
+    }
+  });
+  el('#btRestaurar').addEventListener('click', function () {
+    CONFIG = JSON.parse(JSON.stringify(PADRAO));
+    desenharParams(); desenharRegime(); desenharEquipe(); desenharAjuda(); salvar();
+    aviso('Parâmetros restaurados ao padrão.', 'ok');
+  });
+
+  // meses guardados
+  el('#listaMeses').addEventListener('click', function (ev) {
+    var k = ev.target.dataset.rmmes;
+    if (!k) return;
+    delete ST.meses[k]; salvar(); desenharMeses();
+  });
+  el('#btLimparMeses').addEventListener('click', function () {
+    var n = Object.keys(ST.meses).length;
+    if (!n) return;
+    if (!confirm('Apagar o histórico de ' + n + ' mês(es)? A emenda dos contadores na virada do mês deixa de funcionar.')) return;
+    ST.meses = {}; salvar(); desenharMeses();
+  });
+
+  // exportação
+  el('#btXlsx').addEventListener('click', exportarXlsx);
+  el('#btImprimir').addEventListener('click', function () { window.print(); });
+
+  // backup em arquivo
+  el('#btBackup').addEventListener('click', baixarBackup);
+  el('#btRestaurarBackup').addEventListener('click', function () { el('#arqBackup').click(); });
+  el('#arqBackup').addEventListener('change', function (ev) {
+    var f = ev.target.files && ev.target.files[0];
+    if (!f) return;
+    var fr = new FileReader();
+    fr.onload = function () { aplicarBackup(String(fr.result)); };
+    fr.onerror = function () { aviso('Não consegui ler o arquivo.', 'err'); };
+    fr.readAsText(f, 'utf-8');
+    ev.target.value = '';
+  });
+
+  // avisa se o navegador bloqueou o armazenamento, em vez de falhar calado
+  if (!armazenamentoOk()) el('#avisoArmazenamento').hidden = false;
+
+  if (!ST.equipe.length) {
+    el('#tbEquipe tbody').innerHTML = '<tr><td colspan="9" class="vazio">Nenhum funcionário cadastrado. Clique em <b>Adicionar funcionário</b> ou em <b>Carregar exemplo</b>.</td></tr>';
+  }
+}
+
+document.addEventListener('DOMContentLoaded', iniciar);
+</script>
+</body>
+</html>
