@@ -1,0 +1,1499 @@
+diff --git a/SPRINT_MELHORIAS_1.md b/SPRINT_MELHORIAS_1.md
+new file mode 100644
+index 0000000..90fbec7
+--- /dev/null
++++ b/SPRINT_MELHORIAS_1.md
+@@ -0,0 +1,122 @@
++# NEXBUY — Sprint de Melhorias 1
++
++**Objetivo:** deixar o NEXBUY mais seguro, mais confiável e mais fácil de usar
++**sem mudar a essência do sistema**: o limite de compra do dia, a aprovação e a
++análise do mês continuam funcionando exatamente como antes. Nenhum módulo novo,
++nenhuma dependência nova.
++
++---
++
++## O que muda para quem usa
++
++| # | Melhoria | O que a pessoa percebe |
++|---|---|---|
++| 1 | **Histórico de compras paginado** (50 por página) | A tela abre leve mesmo com anos de compras. O total do rodapé e o CSV continuam com **todas** as compras. |
++| 2 | **Custos variáveis paginados** (50 por página) | Mesma coisa na lista de custos variáveis. |
++| 3 | **Aprovações em cartões no celular** | No celular, cada compra/provisão aparece como um cartão com valor e botões **Aprovar / Rejeitar / Decidir** sempre visíveis (antes a tabela cortava o valor e o botão). |
++| 4 | **"Sábado é dia de compra"** | Nova opção em **Financeiro → Calendário Operacional**. Ligada, todo sábado tem limite de compra próprio, como dia útil — sem precisar marcar sábado por sábado. **Vem desligada**: nenhum número muda para quem já usa. |
++| 5 | **Resultado do mês mais honesto no painel** | Com o mês em andamento, o **último mês fechado** aparece primeiro e em destaque; o mês atual vira **"Lucro (prévia)"**. |
++| 6 | **Aviso claro quando a receita do mês não foi lançada** | Em vez de vários "Dia crítico à frente (R$ 0,00)", aparece **um** aviso: "Receita do mês não lançada — lance em Financeiro → Receitas". A compra feita nesse período também explica o motivo de ir para aprovação. |
++| 7 | **Recomendação sem frase falsa** | Mês sem compras lançadas não mostra mais "as compras já passam da receita". Fica só o aviso de "Análise incompleta". |
++| 8 | **Valores dos painéis sem quebra no celular** | "R$ 452.908" não quebra mais em duas linhas. |
++
++## O que muda na segurança (o cliente não vê, mas protege a todos)
++
++| # | Correção | Risco que fecha |
++|---|---|---|
++| 9 | **Assistente de Implantação só para o suporte** (superusuário) | Qualquer Proprietário conseguia criar empresas novas sem contrato e "reservar" o CNPJ de outra empresa. O atalho some do Centro de Configurações para o cliente. |
++| 10 | **Conta do suporte protegida** | O Proprietário não consegue mais editar nem gerar senha para usuário superusuário/equipe (antes isso dava acesso ao /admin de todas as empresas). |
++| 11 | **Perfil de acesso global protegido** | Um cliente não consegue mais editar (e "adotar") um perfil global usado por outras empresas. |
++| 12 | **Senha inicial forte** | No cadastro de usuário e no Assistente: nada de senha só com números, senha comum ou parecida com o login/nome/e-mail. |
++| 13 | **Limite de tentativas de login** | 5 erros no mesmo usuário em 15 minutos pausam o acesso dele por 15 minutos, com mensagem clara. 20 erros do mesmo IP público também pausam aquele IP (atrás do balanceador do PythonAnywhere, onde o IP é igual para todos, essa regra fica desligada sozinha para nunca pausar o site inteiro). Vale também para o /admin. Usa as tentativas que a Central de Auditoria já gravava — **sem tabela nova**. |
++| 14 | **CSV sem fórmula do Excel** | Um nome como `=HYPERLINK(...)` não executa mais ao abrir o CSV. Números negativos (`-3.300,00`) continuam números. |
++| 15 | **Troca de empresa sem redirecionar para outro site** | O parâmetro "próxima página" só aceita páginas do próprio NEXBUY. |
++
++## Ajuste técnico
++
++- Teste `core/tests_pythonanywhere_uso_real.py` corrigido: no Linux ele "saía"
++  do ambiente virtual ao resolver o caminho do Python e falhava sem motivo.
++
++---
++
++## Como instalar a atualização
++
++Há **1 migração nova** (`empresas/0007_sabado_dia_de_compra` — só adiciona a
++opção do sábado, desligada).
++
++**PythonAnywhere** (mesmo procedimento do `docs/PYTHONANYWHERE_USO_REAL.md`):
++suba o `NEXBUY_PYTHONANYWHERE.zip` desta entrega pela aba **Files** e, no
++console Bash:
++
++```bash
++cd ~
++rm -rf ~/nexbuy_antigo
++mv nexbuy nexbuy_antigo
++unzip -o NEXBUY_PYTHONANYWHERE.zip
++cd ~/nexbuy
++cp ../nexbuy_antigo/.env .
++chmod 600 .env
++bash deploy/pythonanywhere/atualizar.sh
++```
++
++O `atualizar.sh` faz backup do banco, aplica a migração e o `collectstatic`.
++Depois, **Reload** na aba Web.
++
++**VPS:** suba o código para o GitHub (veja abaixo) e rode o atualizador de
++sempre: `bash /opt/nexbuy/app/deploy/atualizar.sh` — ele faz backup, `migrate`,
++`collectstatic` e reinicia.
++
++**GitHub:** a pasta `nexbuy/` do zip de código-fonte já está pronta; copie os
++arquivos por cima do seu repositório e faça o commit, ou aplique o
++`SPRINT_MELHORIAS_1.patch` com `git apply SPRINT_MELHORIAS_1.patch`.
++
++### Configuração opcional (.env)
++
++O limite de login já vem com valores seguros. Só mexa se precisar:
++
++```
++LOGIN_JANELA_MINUTOS=15
++LOGIN_MAX_FALHAS_USUARIO=5
++LOGIN_MAX_FALHAS_IP=20
++```
++
++### Depois de atualizar, avise os clientes
++
++1. **Se a loja compra aos sábados:** Financeiro → Calendário Operacional →
++   **"Ligar sábado como dia de compra"**.
++2. **Senhas novas** precisam ser fortes (as já existentes continuam valendo).
++3. **Novo CNPJ / nova empresa:** passa a ser feito pelo suporte do NEXBUY.
++
++---
++
++## Testes
++
++- **25 testes novos** em `core/tests_sprint_melhorias_1.py`, um grupo por melhoria.
++- Suíte completa rodada depois das mudanças (ver resultado no relatório da entrega).
++
++Para rodar só os testes desta sprint:
++
++```bash
++python manage.py test core.tests_sprint_melhorias_1 --settings=nexbuy.settings_demo
++```
++
++## Arquivos alterados
++
++| Área | Arquivos |
++|---|---|
++| Segurança | `core/limite_login.py` (novo), `core/relatorios.py`, `core/views.py`, `nexbuy/urls.py`, `nexbuy/settings.py`, `empresas/views_wizard.py`, `empresas/forms_wizard.py`, `empresas/views_ncc.py`, `empresas/forms_ncc.py`, `templates/registration/login.html`, `templates/empresas/ncc/estrutura.html` |
++| Paginação | `compras/views.py`, `financeiro/views.py` (custos variáveis), `templates/partials/_paginacao.html` (novo), `templates/compras/compra_list.html`, `templates/financeiro/custovariavel_list.html` |
++| Celular | `templates/dashboard/aprovacoes.html`, `static/css/nexbuy.css` |
++| Sábado | `empresas/models.py`, `empresas/migrations/0007_sabado_dia_de_compra.py` (novo), `finance_engine/calendario_operacional.py`, `finance_engine/services.py`, `financeiro/views.py` (Calendário Operacional), `templates/financeiro/calendario_operacional.html` |
++| Avisos e análise | `finance_engine/alertas.py`, `compras/views.py` (mensagem da compra), `financeiro/services_analise.py`, `templates/financeiro/analise/_widget_resultado_mes.html`, `static/css/analise.css` |
++| Testes | `core/tests_sprint_melhorias_1.py` (novo), `empresas/tests_wizard.py`, `core/tests_pythonanywhere_uso_real.py` |
++
++## O que ficou para a próxima sprint (de propósito)
++
++Para não complicar esta entrega:
++
++- **Custos fixos com vigência** (mudar o aluguel hoje não alterar os meses passados) — precisa de migração de dados com cuidado.
++- **Modo simples** do menu do Proprietário (5 itens + "Mais").
++- **Lembretes do dia 1 e do dia 5** (lançar a receita / corrigir a receita real).
++- Paginação da Agenda Financeira e de Contas a Pagar (são telas agrupadas por data).
++- Comprometimento futuro com base proporcional à janela (30/60/90 dias).
+diff --git a/compras/views.py b/compras/views.py
+index f8473e1..b7e08f3 100644
+--- a/compras/views.py
++++ b/compras/views.py
+@@ -3,6 +3,7 @@ from datetime import date
+ from decimal import Decimal
+ 
+ from django.contrib import messages
++from django.core.paginator import Paginator
+ from django.db.models import Count, Sum
+ from django.shortcuts import get_object_or_404, redirect, render
+ from django.urls import reverse, reverse_lazy
+@@ -111,12 +112,23 @@ def nova_compra(request):
+             if avaliacao.limite_diario <= 0:
+                 from finance_engine.calendario_operacional import dia_conta_capacidade, rotulo_do_tipo, tipo_do_dia
+ 
++                from finance_engine.services import receita_configurada
++
+                 tipo = tipo_do_dia(compra.empresa, compra.data_compra)
+                 if not dia_conta_capacidade(tipo):
+                     nota_dia = (
+                         f" {compra.data_compra:%d/%m/%Y} é {rotulo_do_tipo(tipo)}: pela regra do Calendário "
+                         "Operacional, este dia não tem limite de compra próprio."
+                     )
++                elif not receita_configurada(compra.filial, compra.data_compra.year, compra.data_compra.month):
++                    # Sprint de Melhorias 1: sem receita lançada no mês não
++                    # existe limite — a mensagem diz o motivo e o que fazer,
++                    # em vez de um "limite ultrapassado" sem explicação.
++                    nota_dia = (
++                        f" A receita de {compra.data_compra:%m/%Y} da filial {compra.filial.nome} ainda não foi "
++                        "lançada — sem ela o NEXBUY não sabe quanto pode ser comprado. Peça ao Financeiro "
++                        "para lançar em Financeiro → Receitas."
++                    )
+ 
+             if compra.status == Compra.Status.BLOQUEADA:
+                 messages.error(
+@@ -148,6 +160,9 @@ def nova_compra(request):
+     )
+ 
+ 
++COMPRAS_POR_PAGINA = 50
++
++
+ @perfil_required(*PERFIS_VISUALIZACAO_COMPRAS)
+ def lista_compras(request):
+     """RC do Épico 01 (Correção 01): o escopo por perfil vem do service —
+@@ -192,7 +207,14 @@ def lista_compras(request):
+     # comprado (`STATUS_REALIZADO` = Aprovada) — Rejeitada/Bloqueada/
+     # Pendente não são valor comprado e não podem inflar esse número.
+     total_valor = compras.filter(status__in=STATUS_REALIZADO).aggregate(total=Sum("valor"))["total"] or 0
+-    return render(request, "compras/compra_list.html", {"compras": compras, "total_valor": total_valor})
++    # Sprint de Melhorias 1 (usabilidade): 50 compras por página — com um ano
++    # de uso a lista inteira passava de 600 linhas numa página só. O total do
++    # rodapé e o CSV continuam sobre TODAS as compras, não só a página.
++    page_obj = Paginator(compras, COMPRAS_POR_PAGINA).get_page(request.GET.get("page"))
++    return render(
++        request, "compras/compra_list.html",
++        {"compras": page_obj, "page_obj": page_obj, "total_valor": total_valor},
++    )
+ 
+ 
+ # --------------------------------------------------------------------------
+diff --git a/core/limite_login.py b/core/limite_login.py
+new file mode 100644
+index 0000000..02e3834
+--- /dev/null
++++ b/core/limite_login.py
+@@ -0,0 +1,91 @@
++"""Limite de tentativas de login (Sprint de Melhorias 1 — segurança).
++
++Antes, o login aceitava tentativas sem fim: no PythonAnywhere não havia
++nenhum freio, e na VPS só o nginx limitava a página /accounts/login/ (o
++/admin e o primeiro acesso ficavam de fora). Uma senha fraca de comprador
++era questão de tempo.
++
++Sem dependência nova e sem migração: a Central de Auditoria JÁ grava toda
++tentativa que falha (`auditoria/signals.py`, categoria LOGIN_FALHO, com o
++usuário tentado e o IP). Aqui só contamos essas linhas numa janela de
++tempo — funciona igual com 1 ou vários processos do servidor, porque a
++contagem vem do banco.
++
++Regra (ajustável no .env):
++- 5 falhas para o MESMO usuário em 15 minutos → esse usuário fica 15
++  minutos sem conseguir entrar;
++- 20 falhas do MESMO IP em 15 minutos → esse IP fica 15 minutos sem
++  conseguir entrar (freia quem testa vários usuários). Só vale para IP
++  PÚBLICO: atrás de um balanceador (ex.: PythonAnywhere) o IP visto pode ser
++  o do próprio balanceador, igual para todos — contar por ele pausaria o
++  site inteiro. Nesses casos fica só a regra por usuário.
++
++Enquanto bloqueado, nem chega a testar a senha — então as tentativas
++seguintes não renovam o bloqueio: 15 minutos depois da última falha real,
++o acesso volta sozinho. Nada muda para quem acerta a senha.
++"""
++import ipaddress
++from datetime import timedelta
++
++from django import forms
++from django.conf import settings
++from django.contrib.admin.forms import AdminAuthenticationForm
++from django.contrib.auth.forms import AuthenticationForm
++from django.utils import timezone
++
++MENSAGEM_BLOQUEIO = (
++    "Muitas tentativas de login sem sucesso. Por segurança, o acesso foi pausado por "
++    "{minutos} minutos. Se esqueceu a senha, fale com o administrador da sua empresa."
++)
++
++
++def _descricao_falha(username):
++    # Mesmo texto gravado por auditoria.signals._registrar_login_falho.
++    return f"Tentativa de login falhou para o usuário '{username}'."
++
++
++def _ip_publico(ip):
++    try:
++        return ipaddress.ip_address(ip).is_global
++    except ValueError:
++        return False
++
++
++def login_bloqueado(username, ip):
++    """True se o usuário ou o IP passou do limite de falhas na janela."""
++    from auditoria.models import RegistroAuditoria
++
++    janela = timezone.now() - timedelta(minutes=settings.LOGIN_JANELA_MINUTOS)
++    falhas = RegistroAuditoria.objects.filter(
++        categoria=RegistroAuditoria.Categoria.LOGIN_FALHO, criado_em__gte=janela
++    )
++    if username and falhas.filter(descricao=_descricao_falha(username)).count() >= settings.LOGIN_MAX_FALHAS_USUARIO:
++        return True
++    if ip and _ip_publico(ip) and falhas.filter(ip=ip).count() >= settings.LOGIN_MAX_FALHAS_IP:
++        return True
++    return False
++
++
++class _LimiteDeTentativasMixin:
++    # A tela de login mostra uma mensagem fixa ("Usuário ou senha inválidos")
++    # para qualquer erro; com o bloqueio ela mostra o motivo verdadeiro.
++    login_bloqueado = False
++
++    def clean(self):
++        from auditoria.services import ip_do_request
++
++        username = (self.data.get("username") or "").strip()
++        if login_bloqueado(username, ip_do_request(self.request)):
++            self.login_bloqueado = True
++            raise forms.ValidationError(
++                MENSAGEM_BLOQUEIO.format(minutos=settings.LOGIN_JANELA_MINUTOS), code="login_bloqueado"
++            )
++        return super().clean()
++
++
++class LoginComLimiteForm(_LimiteDeTentativasMixin, AuthenticationForm):
++    """Formulário da tela de login do NEXBUY."""
++
++
++class AdminLoginComLimiteForm(_LimiteDeTentativasMixin, AdminAuthenticationForm):
++    """Formulário do login do /admin (suporte técnico)."""
+diff --git a/core/relatorios.py b/core/relatorios.py
+index c3c2e69..9f14a56 100644
+--- a/core/relatorios.py
++++ b/core/relatorios.py
+@@ -7,9 +7,25 @@ perfil/permissão/empresa ativa) — este módulo só sabe transformar
+ cabeçalho + linhas numa resposta HTTP de download.
+ """
+ import csv
++import re
+ 
+ from django.http import HttpResponse
+ 
++# Sprint de Melhorias 1 (segurança): uma célula que começa com = + - @ (ou
++# tab/CR) vira FÓRMULA quando o CSV é aberto no Excel — um nome de comprador
++# como =HYPERLINK(...) executaria no computador da proprietária. Essas células
++# ganham um apóstrofo na frente (o Excel mostra o texto como digitado).
++# Números negativos no formato brasileiro (-3.300,00) continuam números.
++_INICIO_DE_FORMULA = ("=", "+", "-", "@", "\t", "\r")
++_NUMERO_BR = re.compile(r"-?[\d.]+(,\d+)?")
++
++
++def celula_segura(valor):
++    """Neutraliza fórmula numa célula de CSV; números e não-textos passam iguais."""
++    if isinstance(valor, str) and valor.startswith(_INICIO_DE_FORMULA) and not _NUMERO_BR.fullmatch(valor):
++        return "'" + valor
++    return valor
++
+ 
+ def resposta_csv(nome_arquivo: str, cabecalho, linhas) -> HttpResponse:
+     """Gera o download de um CSV pronto para abrir no Excel brasileiro:
+@@ -19,6 +35,6 @@ def resposta_csv(nome_arquivo: str, cabecalho, linhas) -> HttpResponse:
+     response["Content-Disposition"] = f'attachment; filename="{nome_arquivo}"'
+     response.write("﻿")
+     escritor = csv.writer(response, delimiter=";", lineterminator="\r\n")
+-    escritor.writerow(cabecalho)
+-    escritor.writerows(linhas)
++    escritor.writerow([celula_segura(c) for c in cabecalho])
++    escritor.writerows([celula_segura(c) for c in linha] for linha in linhas)
+     return response
+diff --git a/core/tests_pythonanywhere_uso_real.py b/core/tests_pythonanywhere_uso_real.py
+index 9d67e3a..27bc2c4 100644
+--- a/core/tests_pythonanywhere_uso_real.py
++++ b/core/tests_pythonanywhere_uso_real.py
+@@ -463,7 +463,9 @@ class ExecucaoUsoRealTestCase(SimpleTestCase):
+         if cls.bash is None:
+             return
+         cls.base = Path(tempfile.mkdtemp(prefix="nexbuy_uso_real_"))
+-        cls.python = Path(sys.executable).resolve()
++        # Sem .resolve(): no Linux o python do venv é um link simbólico para
++        # o do sistema, e resolvê-lo "saía" do venv (Django não encontrado).
++        cls.python = Path(sys.executable).absolute()
+         cls.venv = cls.python.parent.parent
+         modelo = cls.base / "modelo"
+         (modelo / "nexbuy_dados" / "media").mkdir(parents=True)
+diff --git a/core/tests_sprint_melhorias_1.py b/core/tests_sprint_melhorias_1.py
+new file mode 100644
+index 0000000..3413c7a
+--- /dev/null
++++ b/core/tests_sprint_melhorias_1.py
+@@ -0,0 +1,303 @@
++"""Sprint de Melhorias 1 — segurança e usabilidade, sem mudar a essência do
++NEXBUY (limite de compra do dia, aprovação e análise do mês).
++
++Cada classe trava uma melhoria:
++- CSV sem fórmula do Excel;
++- Assistente de Implantação só para o suporte;
++- conta do suporte e perfil global fora do alcance do cliente;
++- senha inicial com as regras completas;
++- limite de tentativas de login;
++- troca de empresa sem redirecionar para outro site;
++- histórico de compras paginado;
++- "Sábado é dia de compra";
++- alertas e recomendações honestos quando falta lançamento.
++"""
++from datetime import date, timedelta
++from decimal import Decimal
++
++from django.test import Client, TestCase
++from django.test.utils import override_settings
++from django.utils import timezone
++
++from auditoria.models import RegistroAuditoria
++from cadastros.models import Categoria
++from compras.models import Compra, Fornecedor
++from core.relatorios import celula_segura, resposta_csv
++from empresas.models import Empresa
++from filiais.models import Filial
++from financeiro.models import ConfiguracaoFinanceira, Receita
++from usuarios.models import PerfilAcesso, Permissao, Usuario
++
++SENHA = "Farmacia#Forte2026"
++
++
++def _empresa(nome, cnpj):
++    empresa = Empresa.objects.create(nome=nome, cnpj=cnpj)
++    filial = Filial.objects.create(empresa=empresa, nome="Matriz")
++    return empresa, filial
++
++
++class CsvSemFormulaTestCase(TestCase):
++    def test_celula_que_comeca_com_formula_ganha_apostrofo(self):
++        for perigosa in ("=HYPERLINK(\"http://x\";\"clique\")", "+1+1", "@SOMA(A1)", "-2+3", "\t=1"):
++            self.assertTrue(celula_segura(perigosa).startswith("'"), perigosa)
++
++    def test_numeros_e_textos_comuns_nao_mudam(self):
++        for comum in ("-3.300,00", "1.500,00", "-15", "Juliana Ramos", "", "Medicamentos"):
++            self.assertEqual(celula_segura(comum), comum)
++        self.assertEqual(celula_segura(Decimal("10")), Decimal("10"))
++
++    def test_resposta_csv_aplica_a_protecao(self):
++        conteudo = resposta_csv("x.csv", ["Nome"], [["=1+1"], ["-10,00"]]).content.decode("utf-8-sig")
++        self.assertIn("'=1+1", conteudo)
++        self.assertIn("-10,00", conteudo)
++        self.assertNotIn("'-10,00", conteudo)
++
++
++@override_settings(ALLOWED_HOSTS=["*"])
++class AssistenteSoParaSuporteTestCase(TestCase):
++    def setUp(self):
++        self.empresa, self.filial = _empresa("Farmácia A", "11.444.777/0001-61")
++        self.proprietario = Usuario.objects.create_user(
++            username="dono_a", password=SENHA, perfil=Usuario.Perfil.PROPRIETARIO, empresa=self.empresa,
++        )
++        self.suporte = Usuario.objects.create_user(
++            username="suporte", password=SENHA, perfil=Usuario.Perfil.PROPRIETARIO, empresa=self.empresa,
++            is_superuser=True, is_staff=True,
++        )
++
++    def test_proprietario_nao_abre_o_assistente(self):
++        self.client.force_login(self.proprietario)
++        self.assertEqual(self.client.get("/ncc/implantacao/").status_code, 403)
++        self.assertEqual(self.client.post("/ncc/implantacao/", {"acao": "avancar"}).status_code, 403)
++
++    def test_proprietario_nao_ve_o_atalho_do_assistente(self):
++        self.client.force_login(self.proprietario)
++        self.assertNotContains(self.client.get("/ncc/"), "/ncc/implantacao/")
++
++    def test_suporte_continua_usando_o_assistente(self):
++        self.client.force_login(self.suporte)
++        self.assertEqual(self.client.get("/ncc/implantacao/").status_code, 200)
++        self.assertContains(self.client.get("/ncc/"), "/ncc/implantacao/")
++
++
++@override_settings(ALLOWED_HOSTS=["*"])
++class ContaDoSuporteEPerfilGlobalTestCase(TestCase):
++    def setUp(self):
++        self.empresa, self.filial = _empresa("Farmácia B", "22.555.888/0001-02")
++        self.proprietario = Usuario.objects.create_user(
++            username="dono_b", password=SENHA, perfil=Usuario.Perfil.PROPRIETARIO, empresa=self.empresa,
++        )
++        self.suporte = Usuario.objects.create_user(
++            username="suporte_b", password=SENHA, perfil=Usuario.Perfil.PROPRIETARIO, empresa=self.empresa,
++            is_superuser=True, is_staff=True,
++        )
++        self.client.force_login(self.proprietario)
++
++    def test_proprietario_nao_gera_senha_para_a_conta_do_suporte(self):
++        senha_antes = Usuario.objects.get(pk=self.suporte.pk).password
++        resposta = self.client.post(f"/ncc/usuarios/{self.suporte.pk}/", {"gerar_senha": "1"})
++        self.assertEqual(resposta.status_code, 404)
++        self.assertEqual(Usuario.objects.get(pk=self.suporte.pk).password, senha_antes)
++
++    def test_perfil_global_nao_e_editado_nem_adotado_pelo_cliente(self):
++        global_ = PerfilAcesso.objects.create(nome="Global", empresa=None)
++        resposta = self.client.post(
++            f"/ncc/perfis/{global_.pk}/",
++            {"nome": "Sequestrado", "descricao": "", "permissoes": list(Permissao.objects.values_list("pk", flat=True)[:3])},
++        )
++        self.assertEqual(resposta.status_code, 302)
++        global_.refresh_from_db()
++        self.assertEqual(global_.nome, "Global")
++        self.assertIsNone(global_.empresa_id)
++        self.assertEqual(global_.permissoes.count(), 0)
++
++    def test_perfil_da_propria_empresa_continua_editavel(self):
++        proprio = PerfilAcesso.objects.create(nome="Consulta", empresa=self.empresa)
++        self.client.post(f"/ncc/perfis/{proprio.pk}/", {"nome": "Consulta Financeira", "descricao": ""})
++        proprio.refresh_from_db()
++        self.assertEqual(proprio.nome, "Consulta Financeira")
++
++
++@override_settings(ALLOWED_HOSTS=["*"])
++class SenhaInicialForteTestCase(TestCase):
++    def setUp(self):
++        self.empresa, self.filial = _empresa("Farmácia C", "33.666.999/0001-03")
++        self.proprietario = Usuario.objects.create_user(
++            username="dono_c", password=SENHA, perfil=Usuario.Perfil.PROPRIETARIO, empresa=self.empresa,
++        )
++        self.client.force_login(self.proprietario)
++
++    def _criar(self, senha, username="novo_comprador"):
++        return self.client.post("/ncc/usuarios/novo/", {
++            "first_name": "Ana", "last_name": "Lima", "email": "ana@exemplo.com", "username": username,
++            "filial": self.filial.pk, "perfil": Usuario.Perfil.COMPRADOR, "is_active": "on", "senha_inicial": senha,
++        })
++
++    def test_senha_so_de_numeros_ou_comum_e_recusada(self):
++        for fraca in ("12345678", "password", "novo_comprador1"):
++            self._criar(fraca)
++            self.assertFalse(Usuario.objects.filter(username="novo_comprador").exists(), fraca)
++
++    def test_senha_forte_cria_o_usuario(self):
++        self._criar(SENHA)
++        self.assertTrue(Usuario.objects.filter(username="novo_comprador").exists())
++
++
++@override_settings(ALLOWED_HOSTS=["*"], LOGIN_MAX_FALHAS_USUARIO=5, LOGIN_MAX_FALHAS_IP=20, LOGIN_JANELA_MINUTOS=15)
++class LimiteDeTentativasDeLoginTestCase(TestCase):
++    def setUp(self):
++        self.empresa, self.filial = _empresa("Farmácia D", "44.777.000/0001-04")
++        Usuario.objects.create_user(username="juliana", password=SENHA, perfil=Usuario.Perfil.COMPRADOR,
++                                    empresa=self.empresa, filial=self.filial)
++        Usuario.objects.create_user(username="pedro", password=SENHA, perfil=Usuario.Perfil.COMPRADOR,
++                                    empresa=self.empresa, filial=self.filial)
++
++    def _login(self, username, senha, ip="45.10.0.1"):
++        return Client(REMOTE_ADDR=ip).post("/accounts/login/", {"username": username, "password": senha})
++
++    def test_cinco_falhas_pausam_o_usuario_mesmo_com_a_senha_certa(self):
++        for _ in range(5):
++            self.assertEqual(self._login("juliana", "errada").status_code, 200)
++        resposta = self._login("juliana", SENHA)
++        self.assertEqual(resposta.status_code, 200)
++        self.assertContains(resposta, "Muitas tentativas de login")
++
++    def test_outro_usuario_nao_e_afetado(self):
++        for _ in range(5):
++            self._login("juliana", "errada", ip="45.10.0.2")
++        self.assertEqual(self._login("pedro", SENHA, ip="45.10.0.3").status_code, 302)
++
++    def test_bloqueio_acaba_depois_da_janela(self):
++        for _ in range(5):
++            self._login("juliana", "errada")
++        RegistroAuditoria.objects.filter(categoria=RegistroAuditoria.Categoria.LOGIN_FALHO).update(
++            criado_em=timezone.now() - timedelta(days=1)
++        )
++        self.assertEqual(self._login("juliana", SENHA).status_code, 302)
++
++    def test_ip_com_muitas_falhas_e_pausado(self):
++        for i in range(20):
++            self._login(f"inexistente{i}", "errada", ip="45.9.9.9")
++        self.assertContains(self._login("pedro", SENHA, ip="45.9.9.9"), "Muitas tentativas de login")
++        self.assertEqual(self._login("pedro", SENHA, ip="45.10.0.4").status_code, 302)
++
++    def test_ip_interno_de_balanceador_nunca_pausa_o_site_inteiro(self):
++        # PythonAnywhere: todos chegam com o IP interno do balanceador.
++        for i in range(25):
++            self._login(f"inexistente{i}", "errada", ip="10.0.0.9")
++        self.assertEqual(self._login("pedro", SENHA, ip="10.0.0.9").status_code, 302)
++
++
++@override_settings(ALLOWED_HOSTS=["*"])
++class TrocaDeEmpresaSemRedirecionamentoExternoTestCase(TestCase):
++    def test_proxima_de_outro_site_vira_a_tela_inicial(self):
++        empresa, filial = _empresa("Farmácia E", "55.888.111/0001-05")
++        dono = Usuario.objects.create_user(username="dono_e", password=SENHA,
++                                           perfil=Usuario.Perfil.PROPRIETARIO, empresa=empresa)
++        self.client.force_login(dono)
++        resposta = self.client.post("/trocar-empresa/", {"empresa_id": empresa.pk, "proxima": "https://golpe.exemplo/"})
++        self.assertEqual(resposta.status_code, 302)
++        self.assertNotIn("golpe.exemplo", resposta["Location"])
++        resposta = self.client.post("/trocar-empresa/", {"empresa_id": empresa.pk, "proxima": "/compras/lista/"})
++        self.assertEqual(resposta["Location"], "/compras/lista/")
++
++
++@override_settings(ALLOWED_HOSTS=["*"])
++class HistoricoPaginadoTestCase(TestCase):
++    def setUp(self):
++        self.empresa, self.filial = _empresa("Farmácia F", "66.999.222/0001-06")
++        self.dono = Usuario.objects.create_user(username="dono_f", password=SENHA,
++                                                perfil=Usuario.Perfil.PROPRIETARIO, empresa=self.empresa)
++        fornecedor = Fornecedor.objects.create(empresa=self.empresa, nome="Distribuidora")
++        categoria = Categoria.objects.create(empresa=self.empresa, nome="Medicamentos")
++        Compra.objects.bulk_create([
++            Compra(empresa=self.empresa, filial=self.filial, fornecedor=fornecedor, categoria=categoria,
++                   usuario=self.dono, valor=Decimal("10.00"), data_compra=date(2026, 6, 1) + timedelta(days=i % 28),
++                   status=Compra.Status.APROVADA)
++            for i in range(60)
++        ])
++        self.client.force_login(self.dono)
++
++    def test_cinquenta_por_pagina_e_total_de_todas(self):
++        resposta = self.client.get("/compras/lista/")
++        self.assertEqual(len(resposta.context["compras"]), 50)
++        self.assertEqual(resposta.context["total_valor"], Decimal("600.00"))
++        self.assertContains(resposta, "Página 1 de 2")
++        self.assertEqual(len(self.client.get("/compras/lista/?page=2").context["compras"]), 10)
++
++    def test_csv_continua_com_todas_as_compras(self):
++        conteudo = self.client.get("/compras/lista/?formato=csv").content.decode("utf-8-sig")
++        self.assertEqual(len([linha for linha in conteudo.splitlines() if linha]) - 1, 60)
++
++
++@override_settings(ALLOWED_HOSTS=["*"])
++class SabadoDiaDeCompraTestCase(TestCase):
++    def setUp(self):
++        self.empresa, self.filial = _empresa("Farmácia G", "77.000.333/0001-07")
++
++    def test_opcao_desligada_mantem_segunda_a_sexta(self):
++        from finance_engine.calendario_operacional import dias_uteis_operacionais
++        # Outubro/2026: 22 dias de segunda a sexta e 5 sábados.
++        self.assertEqual(dias_uteis_operacionais(self.empresa, 2026, 10), 22)
++
++    def test_opcao_ligada_conta_os_sabados(self):
++        from finance_engine.calendario_operacional import dia_conta_capacidade, dias_uteis_operacionais, tipo_do_dia
++        self.empresa.sabado_dia_de_compra = True
++        self.empresa.save()
++        self.assertEqual(dias_uteis_operacionais(self.empresa, 2026, 10), 27)
++        self.assertTrue(dia_conta_capacidade(tipo_do_dia(self.empresa, date(2026, 10, 17))))
++        self.assertFalse(dia_conta_capacidade(tipo_do_dia(self.empresa, date(2026, 10, 18))))  # domingo
++
++    def test_sabado_ligado_recebe_limite_no_motor(self):
++        from finance_engine.services import motor_financeiro
++        ConfiguracaoFinanceira.objects.create(empresa=self.empresa, percentual_compras=Decimal("50"))
++        Receita.objects.create(filial=self.filial, mes=date(2026, 10, 1), faturamento=Decimal("100000"))
++        self.empresa.sabado_dia_de_compra = True
++        self.empresa.save()
++        posicoes = motor_financeiro.calcular_posicoes_do_mes(self.filial, 2026, 10)
++        sabado = next(p for p in posicoes if p.data == date(2026, 10, 17))
++        self.assertGreater(sabado.limite_efetivo, 0)
++
++    def test_tela_liga_e_desliga_com_auditoria(self):
++        dono = Usuario.objects.create_user(username="dono_g", password=SENHA,
++                                           perfil=Usuario.Perfil.PROPRIETARIO, empresa=self.empresa)
++        self.client.force_login(dono)
++        self.client.post("/financeiro/calendario-operacional/", {"acao": "sabado", "sabado_dia_de_compra": "1"})
++        self.empresa.refresh_from_db()
++        self.assertTrue(self.empresa.sabado_dia_de_compra)
++        self.assertTrue(RegistroAuditoria.objects.filter(empresa=self.empresa, acao="sabado_dia_de_compra").exists())
++        self.assertContains(self.client.get("/financeiro/calendario-operacional/"), "Ligado: sábado é dia de compra")
++        self.client.post("/financeiro/calendario-operacional/", {"acao": "sabado", "sabado_dia_de_compra": "0"})
++        self.empresa.refresh_from_db()
++        self.assertFalse(self.empresa.sabado_dia_de_compra)
++
++
++class AlertasSemReceitaTestCase(TestCase):
++    def test_mes_sem_receita_gera_um_aviso_claro_e_nenhum_dia_critico(self):
++        from finance_engine.alertas import gerar_alertas
++        empresa, filial = _empresa("Farmácia H", "88.111.444/0001-08")
++        ConfiguracaoFinanceira.objects.create(empresa=empresa, percentual_compras=Decimal("50"))
++        alertas = gerar_alertas(filial, date(2026, 10, 1))
++        titulos = [a.titulo for a in alertas]
++        self.assertIn("Receita do mês não lançada", titulos)
++        self.assertNotIn("Dia crítico à frente", titulos)
++        self.assertNotIn("Capacidade de hoje excedida", titulos)
++
++
++class RecomendacaoHonestaTestCase(TestCase):
++    def test_sem_ponto_de_equilibrio_por_falta_de_dado_nao_diz_que_compras_passam_da_receita(self):
++        from types import SimpleNamespace
++
++        from financeiro.services_analise import gerar_recomendacoes
++        # Mês sem compras lançadas: margem de contribuição positiva, resultado
++        # negativo (custos fixos altos) e ponto de equilíbrio indisponível.
++        dre = SimpleNamespace(
++            receita_total=Decimal("50000"), resultado=Decimal("-15000"), compras=Decimal("0"),
++            custos_variaveis=Decimal("5000"), custos_fixos=Decimal("60000"),
++            margem_contribuicao=Decimal("45000"), pct=lambda valor: None,
++        )
++        tendencia = {"status": "sem_dado"}
++        comprometimento = {"status": "sem_dado", "janelas": [{}], "vencidas": Decimal("0")}
++        textos = " ".join(r["texto"] for r in gerar_recomendacoes(dre, None, tendencia, comprometimento, None, {}))
++        self.assertNotIn("já passam", textos)
+diff --git a/core/views.py b/core/views.py
+index 40ef60d..ec7ba37 100644
+--- a/core/views.py
++++ b/core/views.py
+@@ -8,6 +8,7 @@ from django.db.models import Q
+ from django.http import Http404
+ from django.shortcuts import redirect, render
+ from django.urls import reverse
++from django.utils.http import url_has_allowed_host_and_scheme
+ from django.views.decorators.http import require_POST
+ 
+ from core.contexto import definir_empresa_ativa, empresa_ativa
+@@ -89,7 +90,12 @@ def trocar_empresa(request):
+             messages.success(request, f"Agora você está trabalhando em: {empresa.nome}.")
+         else:
+             messages.error(request, "Você não tem acesso a esta empresa.")
+-    return redirect(request.POST.get("proxima") or "dashboard:home")
++    # Sprint de Melhorias 1 (segurança): só volta para página DO PRÓPRIO
++    # NEXBUY — um "proxima" apontando para outro site vira a tela inicial.
++    proxima = request.POST.get("proxima") or ""
++    if not url_has_allowed_host_and_scheme(proxima, allowed_hosts={request.get_host()}, require_https=request.is_secure()):
++        proxima = "dashboard:home"
++    return redirect(proxima)
+ 
+ 
+ @login_required
+diff --git a/empresas/forms_ncc.py b/empresas/forms_ncc.py
+index c6a51b7..6b4648d 100644
+--- a/empresas/forms_ncc.py
++++ b/empresas/forms_ncc.py
+@@ -1,5 +1,6 @@
+ """Formulários do NEXBUY Control Center e do RBAC (Épicos 7 e 12)."""
+ from django import forms
++from django.contrib.auth.password_validation import validate_password
+ from django.forms import inlineformset_factory
+ 
+ from core.forms import BootstrapFormMixin, MoedaFormMixin
+@@ -461,7 +462,7 @@ class UsuarioNovoForm(BootstrapFormMixin, forms.ModelForm):
+         label="Senha inicial",
+         min_length=8,
+         widget=forms.PasswordInput(attrs={"autocomplete": "new-password"}),
+-        help_text="Mínimo de 8 caracteres. O usuário poderá trocá-la em Meu Perfil.",
++        help_text="Mínimo de 8 caracteres, sem ser só números nem uma senha comum. O usuário poderá trocá-la em Meu Perfil.",
+     )
+ 
+     class Meta:
+@@ -485,9 +486,7 @@ class UsuarioNovoForm(BootstrapFormMixin, forms.ModelForm):
+     def clean_senha_inicial(self):
+         """A senha pública da demonstração (e variações) nunca vale como
+         senha inicial — na demo publicada na internet a cliente recolocaria
+-        num usuário ativo a senha que qualquer visitante conhece. Só esta
+-        regra: as demais do AUTH_PASSWORD_VALIDATORS continuam fora deste
+-        cadastro (o usuário troca a senha em Meu Perfil)."""
++        num usuário ativo a senha que qualquer visitante conhece."""
+         from core.senha_demo import SenhaPublicaDemoValidator
+ 
+         senha = self.cleaned_data["senha_inicial"]
+@@ -496,6 +495,20 @@ class UsuarioNovoForm(BootstrapFormMixin, forms.ModelForm):
+ 
+     def clean(self):
+         dados = super().clean()
++        # Sprint de Melhorias 1 (segurança): a senha inicial passa por TODAS
++        # as regras do AUTH_PASSWORD_VALIDATORS (comum, só números, parecida
++        # com o login/nome/e-mail) — antes bastavam 8 caracteres, e
++        # "12345678" criava um Financeiro com acesso ao caixa da farmácia.
++        senha = dados.get("senha_inicial")
++        if senha:
++            candidato = Usuario(
++                username=dados.get("username") or "", first_name=dados.get("first_name") or "",
++                last_name=dados.get("last_name") or "", email=dados.get("email") or "",
++            )
++            try:
++                validate_password(senha, user=candidato)
++            except forms.ValidationError as erro:
++                self.add_error("senha_inicial", erro)
+         perfil = dados.get("perfil")
+         if perfil and perfil != Usuario.Perfil.PROPRIETARIO and not dados.get("filial"):
+             self.add_error("filial", "Selecione a filial deste usuário.")
+diff --git a/empresas/forms_wizard.py b/empresas/forms_wizard.py
+index 28a5565..39f756c 100644
+--- a/empresas/forms_wizard.py
++++ b/empresas/forms_wizard.py
+@@ -6,6 +6,7 @@ models/services existentes (nenhuma regra nova de negócio)."""
+ import re
+ 
+ from django import forms
++from django.contrib.auth.password_validation import validate_password
+ 
+ from core.choices import UF_CHOICES
+ from core.forms import BootstrapFormMixin, MoedaFormMixin
+@@ -69,7 +70,7 @@ class WizardUsuarioForm(BootstrapFormMixin, forms.Form):
+     first_name = forms.CharField(label="Nome", max_length=150)
+     last_name = forms.CharField(label="Sobrenome", max_length=150, required=False)
+     perfil = forms.ChoiceField(label="Perfil", choices=Usuario.Perfil.choices)
+-    senha = forms.CharField(label="Senha", widget=forms.PasswordInput, min_length=6)
++    senha = forms.CharField(label="Senha", widget=forms.PasswordInput, min_length=8)
+ 
+     def clean_username(self):
+         username = self.cleaned_data["username"].strip()
+@@ -77,6 +78,23 @@ class WizardUsuarioForm(BootstrapFormMixin, forms.Form):
+             raise forms.ValidationError("Já existe um usuário com este login.")
+         return username
+ 
++    def clean(self):
++        dados = super().clean()
++        # Sprint de Melhorias 1 (segurança): mesmas regras de senha do resto
++        # do sistema (AUTH_PASSWORD_VALIDATORS, inclusive a da senha pública
++        # da demonstração) — antes bastavam 6 caracteres.
++        senha = dados.get("senha")
++        if senha:
++            candidato = Usuario(
++                username=dados.get("username") or "", first_name=dados.get("first_name") or "",
++                last_name=dados.get("last_name") or "",
++            )
++            try:
++                validate_password(senha, user=candidato)
++            except forms.ValidationError as erro:
++                self.add_error("senha", erro)
++        return dados
++
+ 
+ class WizardCompradorForm(WizardUsuarioForm):
+     """Etapa 4 — igual à de usuários, com o perfil travado em Comprador."""
+diff --git a/empresas/migrations/0007_sabado_dia_de_compra.py b/empresas/migrations/0007_sabado_dia_de_compra.py
+new file mode 100644
+index 0000000..718048f
+--- /dev/null
++++ b/empresas/migrations/0007_sabado_dia_de_compra.py
+@@ -0,0 +1,22 @@
++# Generated by Django 6.0.7 on 2026-10-17 23:24
++
++from django.db import migrations, models
++
++
++class Migration(migrations.Migration):
++
++    dependencies = [
++        ("empresas", "0006_normalizar_cnpj_para_digitos"),
++    ]
++
++    operations = [
++        migrations.AddField(
++            model_name="empresa",
++            name="sabado_dia_de_compra",
++            field=models.BooleanField(
++                default=False,
++                help_text="Ligado: todo sábado tem limite de compra próprio, como um dia útil.",
++                verbose_name="Sábado é dia de compra",
++            ),
++        ),
++    ]
+diff --git a/empresas/models.py b/empresas/models.py
+index e5ea446..a16464f 100644
+--- a/empresas/models.py
++++ b/empresas/models.py
+@@ -47,6 +47,15 @@ class Empresa(TimeStampedModel, ModeloAtivavel):
+     cidade = models.CharField("Cidade", max_length=100, blank=True)
+     estado = models.CharField("Estado", max_length=2, choices=UF_CHOICES, blank=True)
+     cep = models.CharField("CEP", max_length=9, blank=True)
++    # Sprint de Melhorias 1: comércio que abre e compra no sábado liga esta
++    # opção no Calendário Operacional e todo sábado passa a ser dia de compra
++    # (entra no divisor do limite diário e recebe limite próprio) — antes era
++    # preciso marcar sábado por sábado como "Especial". Desligada por padrão:
++    # nenhum número muda para quem já usa o sistema.
++    sabado_dia_de_compra = models.BooleanField(
++        "Sábado é dia de compra", default=False,
++        help_text="Ligado: todo sábado tem limite de compra próprio, como um dia útil.",
++    )
+ 
+     class Meta:
+         verbose_name = "Empresa"
+diff --git a/empresas/tests_wizard.py b/empresas/tests_wizard.py
+index f23e6ac..e54dd49 100644
+--- a/empresas/tests_wizard.py
++++ b/empresas/tests_wizard.py
+@@ -117,7 +117,7 @@ class AssistenteImplantacaoTestCase(TestCase):
+ 
+         resposta = self.client.post(f"{self.URL}?etapa=3", {
+             "username": "financeiro_wizard", "first_name": "Ana", "last_name": "Silva",
+-            "perfil": Usuario.Perfil.FINANCEIRO, "senha": "senha123", "acao": "avancar",
++            "perfil": Usuario.Perfil.FINANCEIRO, "senha": "Farmacia#Forte2026", "acao": "avancar",
+         })
+         self.assertEqual(
+             resposta.status_code, 302,
+diff --git a/empresas/views_ncc.py b/empresas/views_ncc.py
+index f01f844..eb34e8a 100644
+--- a/empresas/views_ncc.py
++++ b/empresas/views_ncc.py
+@@ -116,10 +116,14 @@ def ncc_home(request):
+              "descricao": "Quem alterou o quê, e quando, em toda parametrização."},
+             {"titulo": "Central de Auditoria", "icone": "bi-search", "url": "/ncc/central-auditoria/",
+              "descricao": "Login, configuração, compras e provisões — tudo num só lugar, com filtro e busca."},
+-            {"titulo": "Assistente de Implantação", "icone": "bi-magic", "url": "/ncc/implantacao/",
+-             "descricao": "Wizard de 9 etapas para colocar um cliente novo de pé."},
+         ]},
+     ]
++    # Ferramenta do suporte (ver views_wizard.assistente_implantacao).
++    if request.user.is_superuser:
++        categorias[-1]["modulos"].append(
++            {"titulo": "Assistente de Implantação", "icone": "bi-magic", "url": "/ncc/implantacao/",
++             "descricao": "Wizard de 9 etapas para colocar um cliente novo de pé (suporte técnico)."}
++        )
+     return render(request, "empresas/ncc/home.html", {"empresa": empresa, "categorias": categorias})
+ 
+ 
+@@ -441,7 +445,14 @@ def ncc_usuario_editar(request, pk):
+     from core.permissions import DESCRICOES_PERMISSOES
+ 
+     empresa = empresa_ativa(request)
+-    usuario = get_object_or_404(Usuario, pk=pk, empresa=empresa)
++    usuarios_editaveis = Usuario.objects.filter(empresa=empresa)
++    # Sprint de Melhorias 1 (segurança): a conta do suporte técnico
++    # (superusuário/equipe) nunca é editada pelo cliente — sem isto, o
++    # Proprietário gerava uma "senha provisória" para ela e entrava no
++    # /admin com acesso a todas as empresas do servidor.
++    if not request.user.is_superuser:
++        usuarios_editaveis = usuarios_editaveis.filter(is_superuser=False, is_staff=False)
++    usuario = get_object_or_404(usuarios_editaveis, pk=pk)
+ 
+     if request.method == "POST" and "salvar_dados" in request.POST:
+         estado_antes = {
+@@ -623,8 +634,12 @@ def ncc_perfis(request):
+ @permissao_required("ncc.acessar")
+ def ncc_perfil_editar(request, pk):
+     empresa = empresa_ativa(request)
+-    perfil = get_object_or_404(PerfilAcesso, pk=pk)
+-    if perfil.empresa is not None and perfil.empresa != empresa:
++    # Sprint de Melhorias 1 (segurança): só perfis DA empresa ativa. Antes um
++    # perfil global (sem empresa, criado no /admin) podia ser editado — e
++    # "adotado" — por qualquer cliente, mudando as permissões dos usuários
++    # de OUTRAS empresas que o usavam.
++    perfil = PerfilAcesso.objects.filter(pk=pk, empresa=empresa).first()
++    if perfil is None:
+         return redirect("ncc:perfis")
+     if request.method == "POST":
+         form = PerfilAcessoForm(request.POST, instance=perfil, empresa=empresa)
+diff --git a/empresas/views_wizard.py b/empresas/views_wizard.py
+index e10e040..c1904bb 100644
+--- a/empresas/views_wizard.py
++++ b/empresas/views_wizard.py
+@@ -9,6 +9,7 @@ implantador pode voltar etapas sem perder nada.
+ from decimal import Decimal
+ 
+ from django.contrib import messages
++from django.core.exceptions import PermissionDenied
+ from django.db import transaction
+ from django.shortcuts import redirect, render
+ 
+@@ -92,6 +93,13 @@ def _filial_matriz(empresa):
+ 
+ @permissao_required("ncc.acessar")
+ def assistente_implantacao(request):
++    # Sprint de Melhorias 1 (segurança): o passo 1 cria sempre um Grupo e uma
++    # Empresa NOVOS — é ferramenta de implantação de cliente novo pelo
++    # suporte, não do dia a dia da farmácia (os guias de uso já diziam "não
++    # use"). Aberto a qualquer Proprietário, permitia criar empresas sem
++    # contrato e "reservar" o CNPJ de outra empresa. Agora: só superusuário.
++    if not request.user.is_superuser:
++        raise PermissionDenied("O Assistente de Implantação é exclusivo do suporte técnico do NEXBUY.")
+     estado = _estado(request)
+     try:
+         etapa = int(request.GET.get("etapa", estado.get("etapa", 1)))
+diff --git a/finance_engine/alertas.py b/finance_engine/alertas.py
+index 59e7ad3..4af966a 100644
+--- a/finance_engine/alertas.py
++++ b/finance_engine/alertas.py
+@@ -18,7 +18,7 @@ from gestao_compras.models import SolicitacaoAprovacao
+ 
+ from .agenda import parcelas_vencidas, proximos_vencimentos
+ from .calculations import ZERO
+-from .services import motor_financeiro
++from .services import motor_financeiro, receita_configurada
+ 
+ NIVEL_ATENCAO = "atencao"
+ NIVEL_CRITICO = "critico"
+@@ -39,7 +39,23 @@ def gerar_alertas(filial, data_referencia: Optional[date] = None, dias_janela: i
+ 
+     # 1) Capacidade do dia (e dias críticos futuros) — reaproveita o
+     # day-walk do mês, uma única vez.
+-    posicoes = motor_financeiro.calcular_posicoes_do_mes(filial, hoje.year, hoje.month)
++    #
++    # Sprint de Melhorias 1: sem receita lançada no mês não existe limite —
++    # antes TODO dia útil virava "Dia crítico à frente (R$ 0,00
++    # comprometidos)" logo no dia 1, antes do lançamento. Agora sai um único
++    # alerta dizendo o que falta, e os de capacidade esperam a receita.
++    if not receita_configurada(filial, hoje.year, hoje.month):
++        alertas.append(
++            Alerta(
++                NIVEL_ATENCAO, "Receita do mês não lançada",
++                f"Lance a receita esperada de {hoje:%m/%Y} da filial {filial.nome} em Financeiro → Receitas: "
++                "é ela que libera o limite de compra do dia.",
++                hoje,
++            )
++        )
++        posicoes = []
++    else:
++        posicoes = motor_financeiro.calcular_posicoes_do_mes(filial, hoje.year, hoje.month)
+     posicao_hoje = next((p for p in posicoes if p.data == hoje), None)
+     if posicao_hoje is not None and posicao_hoje.saldo_do_dia < ZERO:
+         alertas.append(
+diff --git a/finance_engine/calendario_operacional.py b/finance_engine/calendario_operacional.py
+index a18a200..c8185f4 100644
+--- a/finance_engine/calendario_operacional.py
++++ b/finance_engine/calendario_operacional.py
+@@ -27,13 +27,20 @@ from financeiro.models import DiaOperacional
+ TIPOS_QUE_CONTAM_CAPACIDADE = (DiaOperacional.Tipo.UTIL, DiaOperacional.Tipo.ESPECIAL)
+ 
+ 
+-def tipo_padrao_do_dia(data_referencia: date) -> str:
+-    """Regra padrão, sem consultar o banco: seg-sex útil, sáb/dom próprios."""
++def sabado_e_dia_de_compra(empresa) -> bool:
++    """Opção da empresa (Sprint de Melhorias 1): sábado conta como dia útil."""
++    return bool(getattr(empresa, "sabado_dia_de_compra", False))
++
++
++def tipo_padrao_do_dia(data_referencia: date, sabado_util: bool = False) -> str:
++    """Regra padrão, sem consultar o banco: seg-sex útil, sáb/dom próprios.
++    Com `sabado_util` (opção "Sábado é dia de compra" da empresa), sábado
++    também é útil."""
+     dia_semana = data_referencia.weekday()  # 0=segunda ... 6=domingo
+     if dia_semana < 5:
+         return DiaOperacional.Tipo.UTIL
+     if dia_semana == 5:
+-        return DiaOperacional.Tipo.SABADO
++        return DiaOperacional.Tipo.UTIL if sabado_util else DiaOperacional.Tipo.SABADO
+     return DiaOperacional.Tipo.DOMINGO
+ 
+ 
+@@ -57,13 +64,13 @@ def tipo_do_dia(empresa, data_referencia: date, excecoes: Optional[dict] = None)
+         tipo = excecoes.get(data_referencia.day)
+         if tipo:
+             return tipo
+-        return tipo_padrao_do_dia(data_referencia)
++        return tipo_padrao_do_dia(data_referencia, sabado_e_dia_de_compra(empresa))
+     registro = (
+         DiaOperacional.objects.filter(empresa=empresa, data=data_referencia).values_list("tipo", flat=True).first()
+         if empresa is not None
+         else None
+     )
+-    return registro or tipo_padrao_do_dia(data_referencia)
++    return registro or tipo_padrao_do_dia(data_referencia, sabado_e_dia_de_compra(empresa))
+ 
+ 
+ def dia_conta_capacidade(tipo: str) -> bool:
+@@ -84,9 +91,10 @@ def dias_uteis_operacionais(empresa, ano: int, mes: int, excecoes: Optional[dict
+     if excecoes is None:
+         excecoes = excecoes_do_mes(empresa, ano, mes)
+     total_dias = monthrange(ano, mes)[1]
++    sabado_util = sabado_e_dia_de_compra(empresa)
+     contagem = 0
+     for dia_num in range(1, total_dias + 1):
+-        tipo = excecoes.get(dia_num) or tipo_padrao_do_dia(date(ano, mes, dia_num))
++        tipo = excecoes.get(dia_num) or tipo_padrao_do_dia(date(ano, mes, dia_num), sabado_util)
+         if dia_conta_capacidade(tipo):
+             contagem += 1
+     return contagem
+@@ -96,7 +104,8 @@ def mapa_tipos_do_mes(empresa, ano: int, mes: int) -> dict:
+     """{dia_do_mes: tipo_resolvido} para o mês inteiro — 1 consulta."""
+     excecoes = excecoes_do_mes(empresa, ano, mes)
+     total_dias = monthrange(ano, mes)[1]
++    sabado_util = sabado_e_dia_de_compra(empresa)
+     return {
+-        dia_num: (excecoes.get(dia_num) or tipo_padrao_do_dia(date(ano, mes, dia_num)))
++        dia_num: (excecoes.get(dia_num) or tipo_padrao_do_dia(date(ano, mes, dia_num), sabado_util))
+         for dia_num in range(1, total_dias + 1)
+     }
+diff --git a/finance_engine/services.py b/finance_engine/services.py
+index 8943e34..ebbb12e 100644
+--- a/finance_engine/services.py
++++ b/finance_engine/services.py
+@@ -50,6 +50,7 @@ from .calendario_operacional import (
+     dia_conta_capacidade,
+     dias_uteis_operacionais,
+     excecoes_do_mes,
++    sabado_e_dia_de_compra,
+     tipo_padrao_do_dia,
+ )
+ 
+@@ -264,12 +265,13 @@ class MotorFinanceiro:
+         # dia passa a receber limite E a entrar no divisor, e a soma do mês
+         # continua fechando com a capacidade mensal ajustada.
+         excecoes = excecoes_do_mes(filial.empresa, ano, mes)
++        sabado_util = sabado_e_dia_de_compra(filial.empresa)
+ 
+         posicoes: list[PosicaoDiaria] = []
+         carry_in = ZERO
+         for dia_num in range(1, ate_dia + 1):
+             data_dia = date(ano, mes, dia_num)
+-            tipo_dia = excecoes.get(dia_num) or tipo_padrao_do_dia(data_dia)
++            tipo_dia = excecoes.get(dia_num) or tipo_padrao_do_dia(data_dia, sabado_util)
+             comprado = mapa_comprado.get(dia_num, ZERO)
+ 
+             # Dia que não conta capacidade (fim de semana pela regra padrão,
+diff --git a/financeiro/services_analise.py b/financeiro/services_analise.py
+index fc5db69..da35fcb 100644
+--- a/financeiro/services_analise.py
++++ b/financeiro/services_analise.py
+@@ -1117,7 +1117,12 @@ def gerar_recomendacoes(dre: DreMes, pe, tendencia: dict, comprometimento: dict,
+                 f"ou é preciso reduzir {formatar_brl(-resultado)} de custos fixos.",
+                 links, ("receitas", "custos_fixos"),
+             ))
+-        else:
++        elif dre.margem_contribuicao <= ZERO:
++            # Sprint de Melhorias 1: só quando é verdade. Sem ponto de
++            # equilíbrio por FALTA DE DADO (mês sem compras ou sem custos
++            # fixos lançados) a frase dizia "as compras já passam da receita"
++            # com compras de R$ 0,00 — quem cobre esse caso é o aviso
++            # "Análise incompleta" de montar_saude.
+             recomendacoes.append(_recomendacao(
+                 "critico",
+                 f"As compras e os custos variáveis ({formatar_brl(dre.compras + dre.custos_variaveis)}) já passam "
+diff --git a/financeiro/views.py b/financeiro/views.py
+index 1ed1996..af7b2d7 100644
+--- a/financeiro/views.py
++++ b/financeiro/views.py
+@@ -189,6 +189,9 @@ class CustoVariavelListView(PerfilRequiredMixin, ListView):
+     template_name = "financeiro/custovariavel_list.html"
+     context_object_name = "custos"
+     perfis_permitidos = PERFIS_VISUALIZACAO
++    # Sprint de Melhorias 1 (usabilidade): um ano de lançamentos numa página
++    # só passava de 7 mil pixels de altura.
++    paginate_by = 50
+ 
+     def get_queryset(self):
+         return CustoVariavel.objects.filter(filial__in=filiais_do_contexto(self.request)).select_related("filial")
+@@ -823,6 +826,27 @@ def calendario_operacional(request):
+                     )
+             messages.success(request, "Exceção do calendário removida — o dia voltou à regra padrão.")
+             return redirect(f"{request.path}?ano={ano}&mes={mes}")
++        if request.POST.get("acao") == "sabado":
++            # Sprint de Melhorias 1: liga/desliga "Sábado é dia de compra"
++            # para a empresa inteira (ver Empresa.sabado_dia_de_compra).
++            ligar = request.POST.get("sabado_dia_de_compra") == "1"
++            if ligar != empresa.sabado_dia_de_compra:
++                descricao = (
++                    "Sábado passou a ser dia de compra (limite próprio, como dia útil)."
++                    if ligar else "Sábado deixou de ser dia de compra (volta à regra segunda a sexta)."
++                )
++                with transaction.atomic():
++                    empresa.sabado_dia_de_compra = ligar
++                    empresa.save(update_fields=["sabado_dia_de_compra"])
++                    _registrar_log_financeiro(request, empresa, descricao, area="Calendário Operacional")
++                    registrar_evento(
++                        categoria=RegistroAuditoria.Categoria.DIA_OPERACIONAL_ALTERADO, descricao=descricao,
++                        empresa=empresa, usuario=request.user, ip=ip_do_request(request),
++                        modulo="financeiro", acao="sabado_dia_de_compra", tipo_objeto="Empresa", id_objeto=empresa.pk,
++                        estado_antes={"sabado_dia_de_compra": not ligar}, estado_depois={"sabado_dia_de_compra": ligar},
++                    )
++                messages.success(request, descricao)
++            return redirect(f"{request.path}?ano={ano}&mes={mes}")
+         if request.POST.get("acao") == "confirmar_revisao":
+             # Item 10 do Checklist Guiado de Implantação
+             # (empresas/services_checklist.py): antes deste botão existir, o
+diff --git a/nexbuy/settings.py b/nexbuy/settings.py
+index 056ba57..33c21c5 100644
+--- a/nexbuy/settings.py
++++ b/nexbuy/settings.py
+@@ -413,6 +413,12 @@ AUTH_PASSWORD_VALIDATORS = [
+ ]
+ 
+ LOGIN_URL = "login"
++
++# Sprint de Melhorias 1 (segurança): limite de tentativas de login
++# (core/limite_login.py). Falhas contadas na Central de Auditoria.
++LOGIN_JANELA_MINUTOS = env_inteiro("LOGIN_JANELA_MINUTOS", 15, 1)
++LOGIN_MAX_FALHAS_USUARIO = env_inteiro("LOGIN_MAX_FALHAS_USUARIO", 5, 3)
++LOGIN_MAX_FALHAS_IP = env_inteiro("LOGIN_MAX_FALHAS_IP", 20, 5)
+ LOGIN_REDIRECT_URL = "dashboard:home"
+ LOGOUT_REDIRECT_URL = "login"
+ 
+diff --git a/nexbuy/urls.py b/nexbuy/urls.py
+index 4c7edf9..9168a5e 100644
+--- a/nexbuy/urls.py
++++ b/nexbuy/urls.py
+@@ -5,8 +5,12 @@ from django.contrib.auth import views as auth_views
+ from django.urls import include, path
+ 
+ from core import views as core_views
++from core.limite_login import AdminLoginComLimiteForm, LoginComLimiteForm
+ from core import views_ajuda, views_apresentacao, views_healthcheck, views_primeiro_acesso
+ 
++# Sprint de Melhorias 1 (segurança): limite de tentativas também no /admin.
++admin.site.login_form = AdminLoginComLimiteForm
++
+ urlpatterns = [
+     # Django Admin — uso técnico/suporte. O caminho vem de ADMIN_URL
+     # (padrão "admin/"; em produção pode ser trocado no nexbuy.env).
+@@ -45,7 +49,10 @@ urlpatterns = [
+     path("demo/encerramento/", views_apresentacao.demo_encerramento, name="demo_encerramento"),
+     path(
+         "accounts/login/",
+-        auth_views.LoginView.as_view(template_name="registration/login.html", redirect_authenticated_user=True),
++        auth_views.LoginView.as_view(
++            template_name="registration/login.html", redirect_authenticated_user=True,
++            authentication_form=LoginComLimiteForm,
++        ),
+         name="login",
+     ),
+     path("accounts/logout/", auth_views.LogoutView.as_view(next_page="login"), name="logout"),
+diff --git a/static/css/analise.css b/static/css/analise.css
+index 91d62d1..6e28c46 100644
+--- a/static/css/analise.css
++++ b/static/css/analise.css
+@@ -346,3 +346,11 @@
+     background: linear-gradient(to left, rgba(15, 23, 42, .16), rgba(15, 23, 42, 0));
+   }
+ }
++
++/* Sprint de Melhorias 1: mês em andamento — o último mês FECHADO vem primeiro
++   e em destaque; o mês atual fica como prévia. */
++.an-widget .an-widget-grid--parcial [data-an-widget-ultimo-fechado] {
++  order: -1;
++  border-left: 3px solid var(--nx-primary, #2563eb);
++  padding-left: .75rem;
++}
+diff --git a/static/css/nexbuy.css b/static/css/nexbuy.css
+index e1d4145..6c6343f 100644
+--- a/static/css/nexbuy.css
++++ b/static/css/nexbuy.css
+@@ -1891,3 +1891,41 @@ body.nx-app-collapsed .nx-nav .nx-nav-sub { display: none; }
+   .nx-nav .nx-nav-sublink,
+   .nx-nav .nx-nav-caret { transition: none; }
+ }
++
++/* ==========================================================================
++   Sprint de Melhorias 1 (usabilidade no celular)
++   ========================================================================== */
++
++/* Tabelas de decisão viram cartões no celular: cada linha é um cartão com
++   "Rótulo: valor" e os botões Aprovar/Rejeitar/Decidir sempre à vista.
++   Antes a tabela passava da largura da tela e cortava o valor e o botão —
++   justo a ação que a proprietária mais faz pelo celular.
++   Uso: <table class="... nx-tabela-cartoes"> + <td data-label="Valor">. */
++@media (max-width: 575.98px) {
++  .nx-tabela-cartoes thead { display: none; }
++  .nx-tabela-cartoes,
++  .nx-tabela-cartoes tbody,
++  .nx-tabela-cartoes tr,
++  .nx-tabela-cartoes td { display: block; width: 100%; }
++  .nx-tabela-cartoes tr {
++    border-bottom: 1px solid var(--nx-gray-200, #e5e7eb);
++    padding: .5rem 0;
++  }
++  .nx-tabela-cartoes td {
++    display: flex; justify-content: space-between; align-items: center; gap: .75rem;
++    border: 0; padding: .3rem 1rem; text-align: right !important;
++  }
++  .nx-tabela-cartoes td[data-label]::before {
++    content: attr(data-label);
++    font-size: .8rem; font-weight: 600; color: var(--nx-gray-500, #6b7280); text-align: left;
++  }
++  .nx-tabela-cartoes td.nx-celula-acoes { justify-content: flex-end; gap: .5rem; padding-top: .5rem; }
++  .nx-tabela-cartoes td.nx-celula-acoes .btn { min-height: 40px; }
++}
++
++/* Valores dos cartões de indicador nunca quebram no meio ("R$ 452." numa
++   linha e "908" na outra): no celular a fonte se ajusta à largura. */
++.nx-kpi-value { white-space: nowrap; }
++@media (max-width: 575.98px) {
++  .nx-kpi-value { font-size: clamp(1.05rem, 5.2vw, 1.65rem); }
++}
+diff --git a/templates/base.html b/templates/base.html
+index 764dfdf..f165e4f 100644
+--- a/templates/base.html
++++ b/templates/base.html
+@@ -9,7 +9,7 @@
+ <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+ <link href="{% static 'vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
+ {# Sprint 2A.6: ?v= forca o navegador a baixar o CSS novo a cada release. #}
+-<link href="{% static 'css/nexbuy.css' %}?v=20260927" rel="stylesheet">
++<link href="{% static 'css/nexbuy.css' %}?v=20261018" rel="stylesheet">
+ {% if user.is_authenticated and empresa_ativa.identidade_visual.favicon %}
+ <link rel="icon" href="{{ empresa_ativa.identidade_visual.favicon.url }}">
+ {% else %}
+diff --git a/templates/compras/compra_list.html b/templates/compras/compra_list.html
+index 9df127d..d102b76 100644
+--- a/templates/compras/compra_list.html
++++ b/templates/compras/compra_list.html
+@@ -84,7 +84,7 @@
+       {% if compras %}
+       <tfoot>
+         <tr>
+-          <td colspan="5" class="text-end fw-semibold">Total (compras aprovadas)</td>
++          <td colspan="5" class="text-end fw-semibold">Total{% if page_obj.has_other_pages %} de todas as páginas{% endif %} (compras aprovadas)</td>
+           <td class="text-end fw-semibold">R$ {{ total_valor|floatformat:2 }}</td>
+           <td colspan="3"></td>
+         </tr>
+@@ -92,6 +92,7 @@
+       {% endif %}
+     </table>
+   </div>
++  {% include "partials/_paginacao.html" with page_obj=page_obj %}
+   {% include "core/_relatorio_print_rodape.html" %}
+ </div>
+ </div>
+diff --git a/templates/core/demo_apresentacao.html b/templates/core/demo_apresentacao.html
+index 7c0ccab..bd39987 100644
+--- a/templates/core/demo_apresentacao.html
++++ b/templates/core/demo_apresentacao.html
+@@ -15,7 +15,7 @@ A view só existe com DEMO_MODE=True. {% endcomment %}
+ <title>NEXBUY — Apresentação</title>
+ <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+ <link href="{% static 'vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
+-<link href="{% static 'css/nexbuy.css' %}?v=20260927" rel="stylesheet">
++<link href="{% static 'css/nexbuy.css' %}?v=20261018" rel="stylesheet">
+ <link rel="icon" type="image/svg+xml" href="{% static 'img/nexbuy-n.svg' %}">
+ <style>
+   .nxap-fundo{min-height:100vh;display:flex;flex-direction:column;align-items:center;
+diff --git a/templates/core/demo_encerramento.html b/templates/core/demo_encerramento.html
+index 7a7337f..5f5da6c 100644
+--- a/templates/core/demo_encerramento.html
++++ b/templates/core/demo_encerramento.html
+@@ -12,7 +12,7 @@ A view só existe com DEMO_MODE=True. {% endcomment %}
+ <title>NEXBUY — Encerramento</title>
+ <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+ <link href="{% static 'vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
+-<link href="{% static 'css/nexbuy.css' %}?v=20260927" rel="stylesheet">
++<link href="{% static 'css/nexbuy.css' %}?v=20261018" rel="stylesheet">
+ <link rel="icon" type="image/svg+xml" href="{% static 'img/nexbuy-n.svg' %}">
+ <style>
+   .nxen-fundo{min-height:100vh;display:flex;flex-direction:column;align-items:center;
+diff --git a/templates/dashboard/aprovacoes.html b/templates/dashboard/aprovacoes.html
+index e97b11c..38e44e3 100644
+--- a/templates/dashboard/aprovacoes.html
++++ b/templates/dashboard/aprovacoes.html
+@@ -25,16 +25,16 @@
+   </div>
+   {% if compras_pendentes %}
+   <div class="table-responsive">
+-    <table class="table nx-table mb-0 align-middle">
++    <table class="table nx-table mb-0 align-middle nx-tabela-cartoes">
+       <thead><tr><th>Data</th><th>Comprador</th><th>Fornecedor</th><th class="text-end">Valor</th><th class="text-end">Decisão</th></tr></thead>
+       <tbody>
+         {% for compra in compras_pendentes %}
+         <tr>
+-          <td>{{ compra.data_compra|date:"d/m" }}</td>
+-          <td>{% if compra.usuario %}{{ compra.usuario.get_full_name|default:compra.usuario.username }}{% else %}—{% endif %}</td>
+-          <td>{{ compra.fornecedor.nome }}</td>
+-          <td class="text-end fw-semibold">R$ {{ compra.valor|floatformat:2 }}</td>
+-          <td class="text-end">
++          <td data-label="Data">{{ compra.data_compra|date:"d/m" }}</td>
++          <td data-label="Comprador">{% if compra.usuario %}{{ compra.usuario.get_full_name|default:compra.usuario.username }}{% else %}—{% endif %}</td>
++          <td data-label="Fornecedor">{{ compra.fornecedor.nome }}</td>
++          <td class="text-end fw-semibold" data-label="Valor">R$ {{ compra.valor|floatformat:2 }}</td>
++          <td class="text-end nx-celula-acoes">
+             <form method="post" action="{% url 'compras:aprovar' compra.pk %}" class="d-inline m-0">
+               {% csrf_token %}
+               <button type="submit" class="btn btn-nx-primary btn-sm"><i class="bi bi-check-lg"></i> Aprovar</button>
+@@ -63,23 +63,23 @@
+   </div>
+   {% if solicitacoes %}
+   <div class="table-responsive">
+-    <table class="table nx-table mb-0 align-middle">
++    <table class="table nx-table mb-0 align-middle nx-tabela-cartoes">
+       <thead><tr><th>Desde</th><th>Comprador</th><th>Fornecedor</th><th class="text-end">Valor</th><th>Etapa</th><th class="text-end"></th></tr></thead>
+       <tbody>
+         {% for solicitacao in solicitacoes %}
+         <tr>
+-          <td>{{ solicitacao.criado_em|date:"d/m H:i" }}</td>
+-          <td>{{ solicitacao.provisao.comprador.get_full_name|default:solicitacao.provisao.comprador.username }}</td>
+-          <td>{{ solicitacao.provisao.fornecedor.nome }}</td>
+-          <td class="text-end fw-semibold">R$ {{ solicitacao.provisao.valor_total|floatformat:2 }}</td>
+-          <td>
++          <td data-label="Desde">{{ solicitacao.criado_em|date:"d/m H:i" }}</td>
++          <td data-label="Comprador">{{ solicitacao.provisao.comprador.get_full_name|default:solicitacao.provisao.comprador.username }}</td>
++          <td data-label="Fornecedor">{{ solicitacao.provisao.fornecedor.nome }}</td>
++          <td class="text-end fw-semibold" data-label="Valor">R$ {{ solicitacao.provisao.valor_total|floatformat:2 }}</td>
++          <td data-label="Etapa">
+             {% if solicitacao.etapa_atual %}
+               <span class="nx-badge nx-badge-blue"><span class="nx-badge-dot"></span>Etapa {{ solicitacao.etapa_atual.ordem }} · {{ solicitacao.etapa_atual.get_perfil_aprovador_display }}</span>
+             {% else %}
+               <span class="nx-badge nx-badge-gray"><span class="nx-badge-dot"></span>Etapa única</span>
+             {% endif %}
+           </td>
+-          <td class="text-end">
++          <td class="text-end nx-celula-acoes">
+             {% if solicitacao.pode_decidir %}
+             <a href="{% url 'gestao_compras:aprovacao_list' %}" class="btn btn-nx-primary btn-sm" title="Decidir com histórico, itens e justificativa">
+               Decidir &raquo;
+diff --git a/templates/empresas/ncc/estrutura.html b/templates/empresas/ncc/estrutura.html
+index 270ceef..6ec332c 100644
+--- a/templates/empresas/ncc/estrutura.html
++++ b/templates/empresas/ncc/estrutura.html
+@@ -16,7 +16,7 @@
+         </li>
+         {% empty %}<li class="text-muted">Empresa sem grupo econômico cadastrado.</li>{% endfor %}
+       </ul>
+-      <div class="nx-form-help mt-2">Para incluir um novo CNPJ, use o <a href="{% url 'ncc:implantacao' %}">Assistente de Implantação</a>. Para corrigir um CNPJ já cadastrado, fale com o suporte técnico.</div>
++      <div class="nx-form-help mt-2">{% if request.user.is_superuser %}Para incluir um novo CNPJ, use o <a href="{% url 'ncc:implantacao' %}">Assistente de Implantação</a>. {% else %}Para incluir um novo CNPJ, fale com o suporte técnico do NEXBUY. {% endif %}Para corrigir um CNPJ já cadastrado, fale com o suporte técnico.</div>
+     </div>
+   </div>
+   <div class="col-12 col-lg-6">
+diff --git a/templates/financeiro/analise/_base.html b/templates/financeiro/analise/_base.html
+index 648a31d..b274ba3 100644
+--- a/templates/financeiro/analise/_base.html
++++ b/templates/financeiro/analise/_base.html
+@@ -12,7 +12,7 @@
+   USE_THOUSAND_SEPARATOR ele sairia "2.026"); nos <select> o ano usa
+   |stringformat:"d".
+ {% endcomment %}
+-<link href="{% static 'css/analise.css' %}?v=2" rel="stylesheet">
++<link href="{% static 'css/analise.css' %}?v=3" rel="stylesheet">
+ <div class="nx-analise nx-print-landscape">
+ {% include "core/_relatorio_print_header.html" with nome_relatorio=titulo_pagina periodo=periodo filtros=filtros_impressao %}
+ 
+diff --git a/templates/financeiro/analise/_widget_resultado_mes.html b/templates/financeiro/analise/_widget_resultado_mes.html
+index c499d21..976c10c 100644
+--- a/templates/financeiro/analise/_widget_resultado_mes.html
++++ b/templates/financeiro/analise/_widget_resultado_mes.html
+@@ -12,7 +12,7 @@
+   fechado aparece como referência.
+   Uso: {% include "financeiro/analise/_widget_resultado_mes.html" with resultado=resultado_mes %}
+ {% endcomment %}
+-<link href="{% static 'css/analise.css' %}?v=2" rel="stylesheet">
++<link href="{% static 'css/analise.css' %}?v=3" rel="stylesheet">
+ <script src="{% static 'js/analise.js' %}?v=2" defer></script>
+ <div class="nx-card mb-4 an-widget" data-an-widget="resultado-mes">
+   <div class="nx-card-header">
+@@ -51,7 +51,10 @@
+       A receita já é a do mês inteiro e as compras dos próximos dias ainda vão entrar — o resultado costuma cair até o fim do mês.
+     </div>
+     {% endif %}
+-    <div class="an-widget-grid">
++    {% comment %} Sprint de Melhorias 1: com o mês em andamento, o último mês
++       FECHADO vem primeiro e em destaque (é o número confiável); o mês atual
++       aparece como prévia ao lado. {% endcomment %}
++    <div class="an-widget-grid{% if resultado.em_andamento and resultado.ultimo_fechado %} an-widget-grid--parcial{% endif %}">
+       {% if resultado.detalhar_valores %}
+       <div class="an-widget-item">
+         <div class="nx-kpi-label">Receita total</div>
+@@ -63,7 +66,7 @@
+         {% if resultado.em_andamento %}<div class="nx-kpi-hint">compras até {{ resultado.parcial_ate_fmt }}</div>{% endif %}
+       </div>
+       <div class="an-widget-item">
+-        <div class="nx-kpi-label"><i class="bi {% if resultado.lucro %}bi-arrow-up-right{% else %}bi-arrow-down-right{% endif %}" aria-hidden="true"></i> {% if resultado.lucro %}Lucro{% else %}Prejuízo{% endif %}</div>
++        <div class="nx-kpi-label"><i class="bi {% if resultado.lucro %}bi-arrow-up-right{% else %}bi-arrow-down-right{% endif %}" aria-hidden="true"></i> {% if resultado.lucro %}Lucro{% else %}Prejuízo{% endif %}{% if resultado.em_andamento %} (prévia){% endif %}</div>
+         <div class="nx-kpi-value{% if not resultado.lucro %} an-valor-negativo{% endif %}" data-an-widget-valor="resultado">{{ resultado.resultado_fmt }}</div>
+         {% if resultado.incompleto %}<div class="nx-kpi-hint" data-an-widget-incompleto-rotulo><i class="bi bi-hourglass-split" aria-hidden="true"></i> incompleto: faltam {{ resultado.lacunas.faltando_texto }}</div>{% elif resultado.em_andamento %}<div class="nx-kpi-hint" data-an-widget-parcial-rotulo><i class="bi bi-calendar-week" aria-hidden="true"></i> parcial, até {{ resultado.parcial_ate_fmt }}</div>{% endif %}
+       </div>
+@@ -83,7 +86,7 @@
+       </div>
+       {% if resultado.ultimo_fechado %}
+       <div class="an-widget-item" data-an-widget-ultimo-fechado>
+-        <div class="nx-kpi-label">Mês fechado — {{ resultado.ultimo_fechado.rotulo_curto }}</div>
++        <div class="nx-kpi-label">{% if resultado.em_andamento %}<i class="bi bi-check2-circle" aria-hidden="true"></i> {% endif %}Mês fechado — {{ resultado.ultimo_fechado.rotulo_curto }}</div>
+         {% if resultado.detalhar_valores %}
+         <div class="nx-kpi-value{% if not resultado.ultimo_fechado.lucro %} an-valor-negativo{% endif %}">{{ resultado.ultimo_fechado.resultado_fmt }}</div>
+         <div class="nx-kpi-hint">{% if resultado.ultimo_fechado.faltando_texto %}incompleto: faltam {{ resultado.ultimo_fechado.faltando_texto }}{% else %}{% if resultado.ultimo_fechado.lucro %}lucro{% else %}prejuízo{% endif %} · margem {{ resultado.ultimo_fechado.margem_fmt }}{% endif %}</div>
+diff --git a/templates/financeiro/calendario_operacional.html b/templates/financeiro/calendario_operacional.html
+index f70bc81..8e8b8c1 100644
+--- a/templates/financeiro/calendario_operacional.html
++++ b/templates/financeiro/calendario_operacional.html
+@@ -15,7 +15,7 @@
+       <div class="nx-kpi-tint nx-kpi-tint-teal mb-3">
+         <div class="nx-kpi-label">Dias que contam capacidade neste mês</div>
+         <div class="nx-kpi-value">{{ dias_que_contam }}</div>
+-        <div class="nx-kpi-hint">a capacidade diária é recalculada a cada exceção salva; sem exceções, vale a regra padrão (segunda a sexta)</div>
++        <div class="nx-kpi-hint">a capacidade diária é recalculada a cada exceção salva; sem exceções, vale a regra padrão ({% if empresa.sabado_dia_de_compra %}segunda a sábado{% else %}segunda a sexta{% endif %})</div>
+         <span class="nx-kpi-bubble"><i class="bi bi-calendar2-check" aria-hidden="true"></i></span>
+       </div>
+       <div class="table-responsive">
+@@ -56,6 +56,23 @@
+     </div>
+   </div>
+   <div class="col-12 col-lg-4">
++    <div class="nx-card mb-3" data-nx-sabado>
++      <h2 class="nx-card-title mb-2">Sábado é dia de compra?</h2>
++      <p class="nx-form-help mb-2">Se a loja abre e compra aos sábados, ligue: todo sábado passa a ter limite de compra próprio, como um dia útil. Sem isto, compra de sábado vai para aprovação.</p>
++      <form method="post" class="m-0">
++        {% csrf_token %}
++        <input type="hidden" name="acao" value="sabado">
++        {% if empresa.sabado_dia_de_compra %}
++        <input type="hidden" name="sabado_dia_de_compra" value="0">
++        <p class="mb-2"><span class="nx-badge nx-badge-green"><span class="nx-badge-dot"></span>Ligado: sábado é dia de compra</span></p>
++        <button type="submit" class="btn btn-nx-outline btn-sm">Desligar</button>
++        {% else %}
++        <input type="hidden" name="sabado_dia_de_compra" value="1">
++        <p class="mb-2"><span class="nx-badge nx-badge-gray"><span class="nx-badge-dot"></span>Desligado: compra só de segunda a sexta</span></p>
++        <button type="submit" class="btn btn-nx-primary btn-sm">Ligar sábado como dia de compra</button>
++        {% endif %}
++      </form>
++    </div>
+     <div class="nx-card mb-3">
+       <h2 class="nx-card-title mb-2">Revisão do calendário</h2>
+       {% if revisao_confirmada %}
+@@ -92,7 +109,7 @@
+         <div class="mb-3">
+           <label class="nx-form-label" for="{{ form.tipo.id_for_label }}">Tipo do dia <span class="nx-form-required">*</span></label>
+           {{ form.tipo }}
+-          <div class="nx-form-help">Sábado e domingo não têm limite de compra pela regra padrão. "Especial" faz o dia contar capacidade (ex.: um sábado em que a farmácia compra) e entra na divisão do mês; Feriado/Bloqueado zeram o dia.</div>
++          <div class="nx-form-help">{% if empresa.sabado_dia_de_compra %}Domingo não tem limite de compra pela regra padrão (sábado está ligado como dia de compra).{% else %}Sábado e domingo não têm limite de compra pela regra padrão.{% endif %} "Especial" faz o dia contar capacidade (ex.: um sábado em que a farmácia compra) e entra na divisão do mês; Feriado/Bloqueado zeram o dia.</div>
+         </div>
+         <div class="mb-3">
+           <label class="nx-form-label" for="{{ form.observacao.id_for_label }}">Observação</label>
+diff --git a/templates/financeiro/custovariavel_list.html b/templates/financeiro/custovariavel_list.html
+index 8b369dd..1a1da04 100644
+--- a/templates/financeiro/custovariavel_list.html
++++ b/templates/financeiro/custovariavel_list.html
+@@ -37,5 +37,6 @@
+       </tbody>
+     </table>
+   </div>
++  {% include "partials/_paginacao.html" with page_obj=page_obj %}
+ </div>
+ {% endblock %}
+diff --git a/templates/partials/_paginacao.html b/templates/partials/_paginacao.html
+new file mode 100644
+index 0000000..ff12190
+--- /dev/null
++++ b/templates/partials/_paginacao.html
+@@ -0,0 +1,25 @@
++{% comment %}
++Sprint de Melhorias 1 (usabilidade): paginação comum das listas longas.
++Uso: {% include "partials/_paginacao.html" with page_obj=page_obj %}
++O {% querystring %} mantém os outros filtros da URL ao trocar de página.
++{% endcomment %}
++{% if page_obj.has_other_pages %}
++<div class="nx-card-body nx-no-print d-flex flex-wrap align-items-center justify-content-between gap-2">
++  <span class="nx-text-muted" style="font-size:.85rem;">
++    Mostrando {{ page_obj.start_index }}–{{ page_obj.end_index }} de {{ page_obj.paginator.count }}
++  </span>
++  <nav aria-label="Paginação">
++    <ul class="pagination pagination-sm mb-0">
++      {% if page_obj.has_previous %}
++        <li class="page-item"><a class="page-link" href="{% querystring page=1 %}" aria-label="Primeira página">«</a></li>
++        <li class="page-item"><a class="page-link" href="{% querystring page=page_obj.previous_page_number %}">Anterior</a></li>
++      {% endif %}
++      <li class="page-item disabled"><span class="page-link">Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span></li>
++      {% if page_obj.has_next %}
++        <li class="page-item"><a class="page-link" href="{% querystring page=page_obj.next_page_number %}">Próxima</a></li>
++        <li class="page-item"><a class="page-link" href="{% querystring page=page_obj.paginator.num_pages %}" aria-label="Última página">»</a></li>
++      {% endif %}
++    </ul>
++  </nav>
++</div>
++{% endif %}
+diff --git a/templates/registration/login.html b/templates/registration/login.html
+index 51a6583..ff01ccf 100644
+--- a/templates/registration/login.html
++++ b/templates/registration/login.html
+@@ -33,7 +33,7 @@
+     {% if form.errors %}
+       <div class="alert alert-danger py-2 d-flex align-items-center gap-2" role="alert">
+         <i class="bi bi-exclamation-circle-fill" aria-hidden="true"></i>
+-        <span>Usuário ou senha inválidos.</span>
++        <span>{% if form.login_bloqueado %}{{ form.non_field_errors.0 }}{% else %}Usuário ou senha inválidos.{% endif %}</span>
+       </div>
+     {% endif %}
+ 
