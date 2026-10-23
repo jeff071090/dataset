@@ -163,7 +163,7 @@ td input:hover,td select:hover{border-color:var(--linha);background:#fff}
     <h1>Escala de Trabalho com Compliance CLT</h1>
     <p>Digital para você ter mais tempo.</p>
   </div>
-  <div class="cab-versao naoimprime">v1.1 &middot; PEC 221/2019 &middot; 100% offline</div>
+  <div class="cab-versao naoimprime">v1.2 &middot; EC 141/2026 &middot; 100% offline</div>
 </header>
 
 <div id="avisoArmazenamento" class="naoimprime" hidden>
@@ -269,6 +269,7 @@ td input:hover,td select:hover{border-color:var(--linha);background:#fff}
     </div>
     <div id="grade"><p class="vazio">Nenhuma escala gerada ainda. Cadastre a equipe e clique em <b>Gerar escala</b>.</p></div>
     <div class="legenda" id="legenda" hidden></div>
+    <div id="explicaEscala" hidden></div>
     <div class="nota" id="notaEscala" hidden>
       <b>Limites desta planilha</b>
       <ol>
@@ -331,7 +332,7 @@ td input:hover,td select:hover{border-color:var(--linha);background:#fff}
 </main>
 
 <div class="rodape">
-  <b>Prisma Contabilidade</b> &middot; Escala CLT v1.1 &middot; roda 100% no seu computador, sem internet e sem enviar dado nenhum para fora.
+  <b>Prisma Contabilidade</b> &middot; Escala CLT v1.2 &middot; roda 100% no seu computador, sem internet e sem enviar dado nenhum para fora.
 </div>
 
 <div id="toast"></div>
@@ -345,25 +346,31 @@ td input:hover,td select:hover{border-color:var(--linha);background:#fff}
    é portado 1:1 do gerador_escala_clt.gs da skill escala-clt-sheets.
    ========================================================================== */
 
-var VERSAO = '1.1';
+var VERSAO = '1.2';
 
 /* ----------------------------------------------------- configuração padrão */
 var PADRAO = {
   // 5x2r = 5x2 com folgas em rodízio, para operação de 7 dias (comércio,
-  // restaurante, indústria) que sai da 6x1 por força da PEC 221/2019.
+  // restaurante, indústria) que sai da 6x1 por força da EC 141/2026.
   jornadaHoras: { '5x2': 8, '5x2r': 8, '6x1': 44 / 6, '12x36': 12 },
   // 12x36: 180h = 15 plantões de 12h. É teto, e o app suprime plantão
   // excedente em mês de 31 dias que começaria com 16.
   tetoContratualPorEscala: { '5x2': 220, '5x2r': 220, '6x1': 220, '12x36': 180 },
 
-  // PEC 221/2019 (fim da 6x1), aprovada pelo Senado em 14/10/2026.
-  // Fase 1: 60 dias após a promulgação — escala 5x2 obrigatória e jornada de
-  //         até 42h semanais. Fase 2: 12 meses depois — jornada de até 40h.
-  // A data de promulgação é PREVISÃO (sessão marcada para 20/10/2026) e deve
-  // ser conferida no Diário Oficial da União.
-  dataPromulgacaoPEC: '2026-10-20',
-  diasAteFase1: 60,
+  // Emenda Constitucional 141/2026 (origem: PEC 221/2019), promulgada e
+  // publicada no DOU (edição extra) em 16/10/2026. Nova redação do art. 7º:
+  //  XIII — até 8h diárias e 40h semanais;
+  //  XV   — repouso semanal remunerado de 2 dias, um preferencialmente
+  //         aos domingos (não precisam ser seguidos).
+  // Etapa 1: 2 meses após a publicação (16/12/2026) — até 42h e 2 dias de
+  //          repouso remunerado. Etapa 2: 1 ano depois (16/12/2027) — até 40h.
+  dataPromulgacaoPEC: '2026-10-16',
+  mesesAteFase1: 2,
   mesesAteFase2: 12,
+  // § 2º do art. 7º: convenção ou acordo coletivo pode, excepcionalmente,
+  // adotar regime compensatório que garanta EM MÉDIA 2 dias de repouso por
+  // semana no mês, com pelo menos 1 em cada semana.
+  regimeCompensatorioCCT: false,
   // Na vigência, quem está na 6x1 passa para a 5x2 com rodízio. Desligar
   // mantém a 6x1 só para simular o impacto — e a auditoria aponta violação.
   converter6x1: true,
@@ -434,12 +441,12 @@ function fmtData(ano, mes, dia) {
   return ano + '-' + (mes < 10 ? '0' + mes : mes) + '-' + (dia < 10 ? '0' + dia : dia);
 }
 
-/* ----------------------------------------------- PEC 221/2019 — vigência */
+/* ------------------------------------- EC 141/2026 (PEC 221/2019) — vigência */
 
 var REGIMES = [
-  { nome: 'Regime anterior à PEC (até 44h semanais, 6x1 permitida)', curto: 'pré-PEC · 44h', semanal: 44, mensal: 220 },
-  { nome: 'PEC 221/2019 — 1ª fase (escala 5x2, até 42h semanais)', curto: 'PEC fase 1 · 5x2 · 42h', semanal: 42, mensal: 210 },
-  { nome: 'PEC 221/2019 — 2ª fase (escala 5x2, até 40h semanais)', curto: 'PEC fase 2 · 5x2 · 40h', semanal: 40, mensal: 200 }
+  { nome: 'Regime anterior à EC 141 (até 44h semanais, 1 DSR por semana, 6x1 permitida)', curto: 'pré-EC 141 · 44h', semanal: 44, mensal: 220 },
+  { nome: 'EC 141/2026 — 1ª etapa (até 42h semanais, 2 dias de repouso remunerado)', curto: 'EC 141 etapa 1 · 42h · 2 DSR', semanal: 42, mensal: 210 },
+  { nome: 'EC 141/2026 — 2ª etapa (até 40h semanais, 2 dias de repouso remunerado)', curto: 'EC 141 etapa 2 · 40h · 2 DSR', semanal: 40, mensal: 200 }
 ];
 var ROTULO_ESCALA = { '5x2': '5x2', '5x2r': '5x2 rodízio', '6x1': '6x1', '12x36': '12x36' };
 
@@ -448,7 +455,7 @@ function datasPEC(cfg) {
   var p = String(cfg.dataPromulgacaoPEC || '').split('-').map(Number);
   if (p.length !== 3 || !p[0] || !p[1] || !p[2]) return null;
   var promulgacao = new Date(p[0], p[1] - 1, p[2]);
-  var f1 = new Date(p[0], p[1] - 1, p[2] + (+cfg.diasAteFase1 || 0));
+  var f1 = new Date(p[0], p[1] - 1 + (+cfg.mesesAteFase1 || 0), p[2]);
   var f2 = new Date(f1.getFullYear(), f1.getMonth() + (+cfg.mesesAteFase2 || 0), f1.getDate());
   return { promulgacao: promulgacao, fase1: f1, fase2: f2 };
 }
@@ -481,7 +488,7 @@ function fmtBR(dt) {
 /**
  * Atribui a escala pelo cargo. Heurística — o usuário pode sobrescrever.
  * Quem cairia na 6x1 vai para a 5x2 com rodízio quando a competência já
- * começa na vigência da PEC. Se a vigência começa no meio do mês, fica 6x1
+ * começa na vigência da EC 141. Se a vigência começa no meio do mês, fica 6x1
  * e a troca é feita dia a dia em montarEscalaDoFuncionario.
  */
 function definirEscalaPorCargo(cargo, ano, mes) {
@@ -641,7 +648,7 @@ function montarEscalaDoFuncionario(ano, mes, func, escala, feriados, estado, cfg
     : [];
   var par = PARES_5X2R[(estado.parFolga != null ? estado.parFolga : (estado.ordem || 0)) % PARES_5X2R.length];
   var escalaDia = [], fases = [], conversaoDia = 0;
-  var trabNaSemana = 0, dsrNaSemana = false;   // semana seg–dom, para a 5x2r
+  var trabNaSemana = 0, dsrSemana = 0;   // semana seg–dom: dias trabalhados e DSR já dados
   var folgasTransicao = null;                    // dias de folga da semana em que a 6x1 vira 5x2r
 
   for (var dia = 1; dia <= dias; dia++) {
@@ -649,9 +656,16 @@ function montarEscalaDoFuncionario(ano, mes, func, escala, feriados, estado, cfg
     var ehFeriado = feriados.indexOf(fmtData(ano, mes, dia)) !== -1;
     var ehDomingo = (w === 0);
     var cod, fechouCicloSemanal = false;
-    if (w === 1) { trabNaSemana = 0; dsrNaSemana = false; }
+    if (w === 1) { trabNaSemana = 0; dsrSemana = 0; }
     var fase = faseNaData(ano, mes, dia, cfg);
-    // PEC 221/2019: a partir da vigência a 6x1 deixa de existir.
+    // Quantos dias de repouso REMUNERADO a semana tem: 1 antes da EC 141
+    // (o 2º dia de folga da 5x2 era compensação do sábado, código F) e 2 na
+    // vigência (art. 7º, XV, nova redação). Passou disso, é folga da escala.
+    // A semana (seg–dom) que TERMINA na vigência já tem direito aos 2 dias —
+    // leitura mais protetiva para a semana em que a emenda começa a valer.
+    var faseSem = faseNaData(ano, mes, dia + ((7 - w) % 7), cfg);
+    var repouso = (dsrSemana < (faseSem >= 1 ? 2 : 1)) ? COD.DSR : COD.FOLGA_ESCALA;
+    // EC 141/2026: na vigência a semana tem 2 dias de repouso — a 6x1 acaba.
     var esc = (escala === '6x1' && fase >= 1 && cfg.converter6x1) ? '5x2r' : escala;
     if (esc !== escala && !conversaoDia) {
       conversaoDia = dia;
@@ -687,26 +701,27 @@ function montarEscalaDoFuncionario(ano, mes, func, escala, feriados, estado, cfg
       // é o DSR e substitui o segundo dia do par.
       var domFolgaSemana = domingoDaSemanaEhFolga(ano, mes, dia, domingosFolga);
       if (folgasTransicao) {
-        if (folgasTransicao.indexOf(dia) !== -1) cod = dsrNaSemana ? COD.FOLGA_ESCALA : COD.DSR;
+        if (folgasTransicao.indexOf(dia) !== -1) cod = repouso;
         else if (diasSeguidos >= cfg.limiteDiasConsecutivos) cod = COD.DSR;
         else if (ehFeriado) { cod = COD.PENDENTE; pendentes.push(dia - 1); }
         else cod = turno;
       }
       else if (ehDomingo && domingosFolga.indexOf(dia) !== -1) cod = COD.DSR;
-      else if (w === par[0]) cod = domFolgaSemana ? COD.FOLGA_ESCALA : COD.DSR;
-      else if (w === par[1] && !domFolgaSemana) cod = COD.FOLGA_ESCALA;
+      else if (w === par[0]) cod = (domFolgaSemana && faseSem === 0) ? COD.FOLGA_ESCALA : repouso;
+      else if (w === par[1] && !domFolgaSemana) cod = repouso;
       else if (diasSeguidos >= cfg.limiteDiasConsecutivos) cod = COD.DSR;
       // Nunca mais de 5 dias trabalhados na semana — cobre a semana em que a
       // 6x1 vira 5x2r, quando os dias da 6x1 já consumiram a semana.
-      else if (trabNaSemana >= 5) cod = dsrNaSemana ? COD.FOLGA_ESCALA : COD.DSR;
+      else if (trabNaSemana >= 5) cod = repouso;
       else if (ehFeriado) { cod = COD.PENDENTE; pendentes.push(dia - 1); }
       else cod = turno;
 
     } else if (esc === '5x2') {
-      // Segunda a sexta. Domingo é o DSR; sábado é folga da escala — em 5x2
-      // apenas um dos dois dias é o descanso semanal remunerado.
+      // Segunda a sexta. Domingo é DSR. O sábado era folga da escala (F) —
+      // compensação das horas do sábado — e, na vigência da EC 141, passa a
+      // ser o 2º dia de repouso semanal REMUNERADO (DSR).
       if (ehDomingo) cod = COD.DSR;
-      else if (w === 6) cod = COD.FOLGA_ESCALA;
+      else if (w === 6) cod = faseSem >= 1 ? COD.DSR : COD.FOLGA_ESCALA;
       else if (ehFeriado) cod = COD.FER;
       else cod = turno;
 
@@ -746,7 +761,7 @@ function montarEscalaDoFuncionario(ano, mes, func, escala, feriados, estado, cfg
 
     var trabalhou = !ehDescanso(cod);
     if (trabalhou) trabNaSemana++;
-    else if (cod === COD.DSR) dsrNaSemana = true;
+    else if (cod === COD.DSR) dsrSemana++;
     if (trabalhou) {
       diasSeguidos++; diasDesdeFolga++;
       if (ehDomingo) domingosSeguidos++;
@@ -925,6 +940,7 @@ function escalaAindaValida(it, ano, mes, cfg) {
       Math.max(ap.maxDomingosSeguidos, sequenciaInicial(cods, true, ano, mes) + est.domingosSeguidos) > cfg.limiteDomingosSeguidos) return false;
   if (contarDomingosDeFolga(cods, ano, mes) < Math.min(r.minDomingosExigido, it.domingosOriginais)) return false;
   if (semanasAcimaDoLimite(cods, r.escalaDia, r.fases, it.codTrab, ano, mes, cfg).length) return false;
+  if (problemasDeRepouso(cods, r.escalaDia, r.fases, ano, mes, cfg).length) return false;
   return true;
 }
 
@@ -1035,6 +1051,39 @@ function semanasAcimaDoLimite(codigos, escalaDia, fases, codTrab, ano, mes, cfg)
   }
   return out;
 }
+/**
+ * Semanas (seg–dom) inteiras dentro do mês, na vigência da EC 141, com a
+ * contagem de DSR. Exigência: 2 por semana (art. 7º, XV). Com regime
+ * compensatório por CCT/ACT (§ 2º): ao menos 1 por semana e média de 2.
+ * A 12x36 fica de fora — na alternância já há 3 ou 4 dias livres por semana.
+ */
+function semanasDeRepouso(codigos, escalaDia, fases, ano, mes) {
+  var out = [];
+  for (var i = 0; i < codigos.length; i++) {
+    if (diaSemana(ano, mes, i + 1) !== 1 || i + 6 >= codigos.length) continue;
+    if (fases[i + 6] < 1) continue;   // vale a fase do domingo que fecha a semana
+    var tem12x36 = false, dsr = [];
+    for (var k = i; k <= i + 6; k++) {
+      if (escalaDia[k] === '12x36') tem12x36 = true;
+      if (codigos[k] === COD.DSR) dsr.push(k + 1);
+    }
+    if (!tem12x36) out.push({ de: i + 1, ate: i + 7, dsr: dsr });
+  }
+  return out;
+}
+function problemasDeRepouso(codigos, escalaDia, fases, ano, mes, cfg) {
+  var sem = semanasDeRepouso(codigos, escalaDia, fases, ano, mes), out = [];
+  var minSemana = cfg.regimeCompensatorioCCT ? 1 : 2;
+  sem.forEach(function (s) {
+    if (s.dsr.length < minSemana) out.push({ de: s.de, ate: s.ate, n: s.dsr.length, min: minSemana });
+  });
+  if (cfg.regimeCompensatorioCCT && sem.length) {
+    var total = sem.reduce(function (a, s) { return a + s.dsr.length; }, 0);
+    if (total < 2 * sem.length) out.push({ media: true, total: total, semanas: sem.length });
+  }
+  return out;
+}
+
 /** Referência mensal proporcional aos dias de cada regime no mês. */
 function referenciaMensalLegal(fases) {
   var s = 0;
@@ -1210,36 +1259,44 @@ function gerar() {
 
     var problemas = [];
 
-    // ---- PEC 221/2019 ----
+    // ---- EC 141/2026 ----
     var dias6x1NaVigencia = [];
     r.escalaDia.forEach(function (e, i) { if (e === '6x1' && r.fases[i] >= 1) dias6x1NaVigencia.push(i + 1); });
     if (dias6x1NaVigencia.length) {
       problemas.push({ grau: 'vi',
-        txt: 'Escala 6x1 mantida na vigência da PEC (a partir do dia ' + dias6x1NaVigencia[0] + '). Simulação apenas — a 6x1 deixa de ser permitida.',
-        lei: 'PEC 221/2019 (fim da escala 6x1), aprovada pelo Senado em 14/10/2026 — confira a Emenda Constitucional publicada no DOU' });
+        txt: 'Escala 6x1 mantida na vigência da EC 141 (a partir do dia ' + dias6x1NaVigencia[0] + '). Simulação apenas — com 1 dia de repouso por semana ela não cumpre os 2 dias exigidos.',
+        lei: 'art. 7º, XV, da CF, na redação da EC 141/2026 — repouso semanal remunerado de 2 dias' });
     }
     if (r.conversaoDia) {
       problemas.push({ grau: 'al',
         txt: (r.conversaoDia === 1 ? 'Convertido de 6x1 para 5x2 com rodízio' : 'Convertido de 6x1 para 5x2 com rodízio a partir do dia ' + r.conversaoDia)
-             + ' por causa da vigência da PEC. Atualize o contrato/aditivo e o controle de ponto.',
-        lei: 'PEC 221/2019 — escala 5x2, sem redução salarial' });
+             + ' por causa da vigência da EC 141. Atualize o contrato/aditivo e o controle de ponto.',
+        lei: 'EC 141/2026 — 2 dias de repouso remunerado por semana, sem redução salarial' });
     }
     if (escala === '6x1' && faseMax === 0 && dPEC) {
       problemas.push({ grau: 'al',
-        txt: 'A 6x1 deixa de ser permitida em ' + fmtBR(dPEC.fase1) + ' (previsão). Planeje a migração para a 5x2.',
-        lei: 'PEC 221/2019 — vigência 60 dias após a promulgação; data de promulgação é parâmetro (aba Parâmetros)' });
+        txt: 'A partir de ' + fmtBR(dPEC.fase1) + ' a semana passa a ter 2 dias de repouso remunerado e a 6x1 deixa de ser possível. Planeje a migração para a 5x2.',
+        lei: 'EC 141/2026, publicada em ' + fmtBR(dPEC.promulgacao) + ' — vigência 2 meses após a publicação' });
     }
+    problemasDeRepouso(r.codigos, r.escalaDia, r.fases, ano, mes, CONFIG).forEach(function (pb) {
+      problemas.push(pb.media
+        ? { grau: 'vi', txt: 'Média de repouso abaixo de 2 dias por semana no mês: ' + pb.total + ' DSR em ' + pb.semanas + ' semana(s) inteira(s).',
+            lei: 'art. 7º, § 2º, da CF (EC 141/2026) — regime compensatório por CCT/ACT exige média de 2 dias de repouso por semana' }
+        : { grau: 'vi', txt: 'Semana de ' + pb.de + ' a ' + pb.ate + ' com ' + pb.n + ' dia(s) de repouso remunerado; o mínimo é ' + pb.min + '.',
+            lei: pb.min === 2 ? 'art. 7º, XV, da CF (EC 141/2026) — repouso semanal remunerado de 2 dias'
+                              : 'art. 7º, § 2º, da CF (EC 141/2026) — ao menos 1 dia de repouso em cada semana' });
+    });
     if (escalaFinal !== '12x36') {
       semanasAcimaDoLimite(r.codigos, r.escalaDia, r.fases, codTrab, ano, mes, CONFIG).forEach(function (s) {
         problemas.push({ grau: 'vi',
           txt: 'Semana de ' + s.de + ' a ' + s.ate + ': ' + n2(s.horas) + 'h, acima do limite de ' + s.limite + 'h semanais.',
-          lei: s.limite < 44 ? 'PEC 221/2019 — jornada máxima de ' + s.limite + 'h semanais na fase vigente'
+          lei: s.limite < 44 ? 'EC 141/2026 — jornada máxima de ' + s.limite + 'h semanais na etapa vigente'
                              : 'art. 7º, XIII, da CF — 44h semanais' });
       });
     } else if (r.fases.indexOf(2) !== -1) {
       problemas.push({ grau: 'al',
-        txt: 'A 12x36 tem média de 42h semanais, acima das 40h da 2ª fase da PEC. Ainda não está claro se a emenda alcança a 12x36 — confirme no texto promulgado e na lei de regulamentação.',
-        lei: 'PEC 221/2019 x art. 59-A da CLT — ponto em aberto' });
+        txt: 'A 12x36 tem média de 42h semanais, acima das 40h da 2ª etapa da EC 141. A emenda não cita a 12x36: há quem entenda que o art. 59-A da CLT segue valendo e quem exija convenção ou acordo coletivo pelo novo § 2º do art. 7º. Formalize por CCT/ACT para reduzir o risco.',
+        lei: 'EC 141/2026 (art. 7º, XIII e § 2º) x art. 59-A da CLT — ponto em aberto' });
     }
     if (r.maxDiasSeguidos > CONFIG.limiteDiasConsecutivos) {
       problemas.push({ grau: 'vi', txt: 'Mais de ' + CONFIG.limiteDiasConsecutivos + ' dias seguidos de trabalho (chegou a ' + r.maxDiasSeguidos + ').',
@@ -1304,6 +1361,8 @@ function gerar() {
       maxDias: r.maxDiasSeguidos, maxDomingos: r.maxDomingosSeguidos,
       domingosDeFolga: r.domingosDeFolga, minDomingos: r.minDomingosExigido,
       plantoesSuprimidos: r.plantoesSuprimidos, ciclosFolga: r.ciclosFolga,
+      parFolga: PARES_5X2R[(it.parFolga != null ? it.parFolga : it.ordem) % PARES_5X2R.length],
+      escalaDia: r.escalaDia, fases: r.fases, codTrab: codTrab,
       emDobro: r.feriadosEmDobro, compensados: r.compensados,
       teto: teto, minFolgas: minFolgas, problemas: problemas
     });
@@ -1391,7 +1450,7 @@ function desenharGrade() {
     h += '<td>' + rotuloFolgaLinha(l) + '</td>';
     for (var d2 = 0; d2 < l.codigos.length; d2++) {
       var w2 = diaSemana(a.ano, a.mes, d2 + 1);
-      h += '<td class="' + (w2 === 0 ? 'dom' : '') + '"><span class="cod ' + classeCod(l.codigos[d2]) + '">'
+      h += '<td class="' + (w2 === 0 ? 'dom' : '') + '" title="' + esc(motivoDoDia(l, d2, a)) + '"><span class="cod ' + classeCod(l.codigos[d2]) + '">'
          + l.codigos[d2] + '</span></td>';
     }
     h += '<td class="tot">' + n2(l.horasNormais) + '</td>';
@@ -1421,8 +1480,8 @@ function desenharGrade() {
   var leg = [
     ['c-trab', 'M / T / N', 'turno trabalhado'],
     ['c-trab', 'P12', 'plantão de 12h'],
-    ['c-f', 'F', 'folga da escala'],
-    ['c-dsr', 'DSR', 'descanso semanal remunerado'],
+    ['c-f', 'F', 'folga da escala (não é DSR)'],
+    ['c-dsr', 'DSR', 'descanso semanal remunerado (2 por semana na EC 141)'],
     ['c-fer', 'FER', 'feriado não trabalhado'],
     ['c-fercomp', 'FER_COMP', 'feriado trabalhado e compensado (pago simples)'],
     ['c-ferdobro', 'FER_DOBRO', 'feriado trabalhado sem compensação — pagar em dobro'],
@@ -1434,6 +1493,148 @@ function desenharGrade() {
   }).join('');
   el('#legenda').hidden = false;
   el('#notaEscala').hidden = false;
+  desenharExplicacao(a);
+}
+
+/* ----------------------------------------- explicação das folgas e do DSR */
+
+function dataDoDia(a, d) { return new Date(a.ano, a.mes - 1, d); }
+function ddmm(dt) { return (dt.getDate() < 10 ? '0' : '') + dt.getDate() + '/' + (dt.getMonth() < 9 ? '0' : '') + (dt.getMonth() + 1); }
+/** Segunda-feira e domingo da semana (seg–dom) que contém o dia d. */
+function semanaDoDia(a, d) {
+  var w = diaSemana(a.ano, a.mes, d), desdeSeg = (w + 6) % 7;
+  return { seg: new Date(a.ano, a.mes - 1, d - desdeSeg), dom: new Date(a.ano, a.mes - 1, d - desdeSeg + 6), iniDia: d - desdeSeg };
+}
+/** Repousos exigidos na semana: 2 na vigência da EC 141 (pela segunda-feira), 1 antes. */
+function repousosExigidos(l, iniDia) {
+  var i = Math.max(0, iniDia - 1), dom = Math.min(l.fases.length, iniDia + 6) - 1;
+  if (l.escalaDia[i] === '12x36') return null;
+  return l.fases[dom] >= 1 ? (CONFIG.regimeCompensatorioCCT ? 1 : 2) : 1;
+}
+
+/** Por que este dia tem este código — texto para o usuário (tooltip e explicação). */
+function motivoDoDia(l, i, a) {
+  var d = i + 1, c = l.codigos[i], esc2 = l.escalaDia ? l.escalaDia[i] : l.escala;
+  var fase = l.fases ? l.fases[i] : 0, w = diaSemana(a.ano, a.mes, d);
+  var dataTxt = DIAS_SEMANA[w] + ', ' + ddmm(dataDoDia(a, d)) + ': ';
+  var fer = descricaoFeriado(fmtData(a.ano, a.mes, d));
+  var comp = (l.compensados || []).filter(function (x) { return x.folga === d || x.feriado === d; })[0];
+  var mov = (l.folgasMovidas || []).filter(function (m) { return m.para === d; })[0];
+  if (c === COD.FOLGA_COMP) return dataTxt + 'folga compensatória do feriado do dia ' + (comp ? comp.feriado : '?') + ', que foi trabalhado e por isso é pago simples.' + (mov ? ' Deslocada do dia ' + mov.de + ' para não coincidir com colega do setor.' : '');
+  if (c === COD.FER) return dataTxt + 'feriado (' + fer + ') não trabalhado — dia remunerado.';
+  if (c === COD.FER_COMP) return dataTxt + 'feriado (' + fer + ') trabalhado; a folga compensatória é no dia ' + (comp ? comp.folga : '?') + ', então o dia é pago simples.';
+  if (c === COD.FER_DOBRO) return dataTxt + 'feriado (' + fer + ') trabalhado sem dia livre para compensar no mês — pagar em dobro (art. 9º da Lei 605/1949).';
+  if (c === COD.FER_59A) return dataTxt + 'feriado (' + fer + ') em plantão 12x36 — já coberto pelo salário mensal (art. 59-A, p. único, da CLT).';
+  if (!ehDescanso(c)) {
+    return dataTxt + 'dia trabalhado — ' + n2(jornadaDoDia(esc2, CONFIG)) + 'h (' + (ROTULO_ESCALA[esc2] || esc2) + ').';
+  }
+  var por = '';
+  if (esc2 === '12x36') por = 'descanso de 36h depois do plantão de 12h.';
+  else if (esc2 === '5x2') {
+    if (w === 0) por = 'domingo — repouso semanal remunerado da semana.';
+    else if (w === 6) por = c === COD.DSR ? 'sábado — 2º dia de repouso semanal remunerado (art. 7º, XV, na redação da EC 141/2026).'
+                                      : 'sábado — folga de compensação: as 44h da semana já foram cumpridas de segunda a sexta, por isso não é DSR.';
+    else por = 'folga.';
+  } else if (w === 0) {
+    por = 'domingo de folga do rodízio — cada pessoa folga ao menos ' + l.minDomingos + ' domingo(s) no mês ('
+        + (l.sexo === 'F' ? 'mulher: art. 386 da CLT' : 'homem: parâmetro do escritório') + ').';
+  } else if (esc2 === '5x2r' && l.parFolga && l.parFolga.indexOf(w) !== -1) {
+    por = 'dia de folga desta pessoa no rodízio (' + DIAS_SEMANA[l.parFolga[0]] + ' e ' + DIAS_SEMANA[l.parFolga[1]]
+        + '); colegas folgam em outros dias para a operação não parar.';
+  } else if (esc2 === '6x1') {
+    por = 'folga semanal da 6x1 (' + (l.tipoFolga === 'variavel' ? 'variável' : 'dia fixo') + ') — 1 dia de repouso a cada 6 trabalhados (art. 67 da CLT).';
+  } else {
+    por = 'folga para a semana não passar de 5 dias trabalhados (semana em que a escala mudou ou ajuste de cobertura).';
+  }
+  if (mov) por += ' Deslocada do dia ' + mov.de + ' para não coincidir com colega do setor ' + l.setor + '.';
+  var sem = semanaDoDia(a, d);
+  var tipo = c === COD.DSR ? ' Conta como DSR (remunerado) da semana ' + ddmm(sem.seg) + ' a ' + ddmm(sem.dom) + '.'
+                           : ' Folga da escala — não é DSR.';
+  return dataTxt + por + (esc2 === '12x36' ? '' : tipo);
+}
+
+function desenharExplicacao(a) {
+  var temAntes = false, temDepois = false;
+  a.linhas.forEach(function (l) { (l.fases || []).forEach(function (f) { if (f >= 1) temDepois = true; else temAntes = true; }); });
+  var dP = datasPEC(CONFIG);
+  var h = '<div class="cartao" style="margin:16px 0 0;box-shadow:none;border:1px solid var(--linha)">'
+    + '<h2 style="margin-top:0">Entenda as folgas e o DSR desta escala</h2>'
+    + '<p class="sub">Passe o mouse sobre qualquer dia da grade para ver o motivo daquele código. Abaixo, a regra geral e a leitura semana a semana de cada funcionário.</p>'
+    + '<div style="font-size:13px;line-height:1.6;max-width:1000px">';
+  h += '<p><b>A semana vai de segunda a domingo.</b> É assim que o app conta os repousos: cada semana precisa ter os seus. '
+     + 'O DSR (descanso semanal remunerado) é um direito por semana — a lei fixa o mínimo de cada semana, não proíbe que dois repousos fiquem lado a lado.</p>';
+  if (temAntes) {
+    h += '<p><b>Antes da EC 141/2026</b>' + (dP ? ' (até ' + ddmm(new Date(dP.fase1.getTime() - 864e5)) + '/' + dP.fase1.getFullYear() + ')' : '')
+       + ': a lei garante <b>1 DSR por semana</b> (art. 7º, XV, da CF, art. 67 da CLT e Lei 605/1949), de preferência no domingo. '
+       + 'Na 5x2, o segundo dia livre — normalmente o sábado — é <b>folga de compensação</b> (código F): as 44h da semana já cabem de segunda a sexta, então esse dia não é DSR.</p>';
+  }
+  if (temDepois) {
+    h += '<p><b>Na vigência da EC 141/2026</b>' + (dP ? ' (a partir de ' + fmtBR(dP.fase1) + ')' : '')
+       + ': o art. 7º, XV, passa a garantir <b>2 dias de repouso semanal remunerado</b>, um deles preferencialmente no domingo. '
+       + '<b>Os dois são DSR</b> — por isso aparecem com o mesmo código. Eles <b>não precisam ser seguidos</b>. '
+       + 'A jornada cai para até 42h semanais (40h a partir de ' + (dP ? fmtBR(dP.fase2) : '—') + '): 5 dias de 8h = 40h, dentro dos dois limites. '
+       + (temAntes && dP ? 'Na semana em que a emenda começa a valer (' + ddmm(semanaDoDia({ ano: dP.fase1.getFullYear(), mes: dP.fase1.getMonth() + 1 }, dP.fase1.getDate()).seg)
+          + ' a ' + ddmm(semanaDoDia({ ano: dP.fase1.getFullYear(), mes: dP.fase1.getMonth() + 1 }, dP.fase1.getDate()).dom)
+          + ') o app já exige os 2 dias de repouso remunerado, porque a semana termina na vigência — é a leitura mais segura. ' : '')
+       + (CONFIG.regimeCompensatorioCCT ? 'Como você marcou <b>regime compensatório por CCT/ACT</b> (§ 2º), basta 1 repouso em cada semana, desde que a média do mês seja de 2 por semana.' : '')
+       + '</p>';
+  }
+  h += '<p><b>Por que aparecem dois DSR seguidos (ou até três dias de folga em sequência)?</b> Acontece quando o domingo de folga '
+     + 'fecha uma semana e o dia de folga do rodízio da pessoa é a segunda-feira (e a terça) da semana seguinte. '
+     + 'O domingo é repouso da semana que termina; a segunda é repouso da semana que começa. '
+     + 'Cada semana continua com o número certo de repousos — a pessoa só ganha um descanso mais longo. Não é erro nem irregularidade. '
+     + 'Pelo mesmo motivo, depois desse bloco de folgas vêm 5 dias de trabalho, nunca mais que 6 seguidos (art. 67 da CLT).</p>';
+  h += '<p><b>Por que cada pessoa folga em dias diferentes?</b> Na 5x2 com rodízio e na 6x1 a operação abre todos os dias. '
+     + 'Cada funcionário recebe um par fixo de dias de folga (por exemplo segunda e terça), diferente dos colegas — principalmente dos colegas do mesmo <b>setor</b>, que não podem folgar juntos. '
+     + 'O domingo de folga também gira: no mínimo 2 por mês para mulheres (art. 386 da CLT) e o mínimo dos homens definido em Parâmetros. '
+     + 'Na semana em que a pessoa folga no domingo, o domingo ocupa o lugar de um dos dias do par.</p>';
+  h += '<p><b>Feriados.</b> Feriado trabalhado vira <b>FER_COMP</b> e ganha uma <b>FOLGA_COMP</b> em outro dia do mês (pago simples). '
+     + 'Se não houver dia livre para compensar, vira <b>FER_DOBRO</b> (pagar em dobro). A folga compensatória não conta como DSR: ela paga o feriado, não o descanso da semana.</p>';
+  h += '</div>';
+
+  // Leitura semana a semana, por funcionário
+  h += '<h3 style="margin:18px 0 8px;font-size:14px;color:var(--azul-700)">Leitura semana a semana</h3>';
+  a.linhas.forEach(function (l) {
+    var semanas = [], vistos = {};
+    for (var d = 1; d <= a.dias; d++) {
+      var sm = semanaDoDia(a, d);
+      if (vistos[sm.iniDia]) continue;
+      vistos[sm.iniDia] = true;
+      semanas.push(sm);
+    }
+    var falhas = 0;
+    var linhasTab = semanas.map(function (sm) {
+      var ini = Math.max(1, sm.iniDia), fim = Math.min(a.dias, sm.iniDia + 6);
+      var trab = 0, horas = 0, rep = [], dsr = 0;
+      for (var x = ini; x <= fim; x++) {
+        var c = l.codigos[x - 1];
+        if (!ehDescanso(c)) { trab++; horas += jornadaDoDia(l.escalaDia[x - 1], CONFIG); }
+        else {
+          if (c === COD.DSR) dsr++;
+          rep.push('<b>' + DS_CURTO[diaSemana(a.ano, a.mes, x)] + ' ' + x + '</b> ' + c);
+        }
+      }
+      var parcial = (sm.iniDia < 1 || sm.iniDia + 6 > a.dias);
+      var exig = repousosExigidos(l, ini);
+      var sit;
+      if (exig === null) sit = '12x36 — descanso de 36h a cada plantão';
+      else if (parcial) sit = 'semana dividida com o mês ' + (sm.iniDia < 1 ? 'anterior' : 'seguinte') + ' — confira com ele';
+      else if (dsr >= exig) sit = '<span style="color:var(--ok-tx)">OK — ' + dsr + ' DSR (mínimo ' + exig + ')</span>';
+      else { sit = '<span style="color:var(--erro-tx)">' + dsr + ' DSR — mínimo ' + exig + '</span>'; falhas++; }
+      return '<tr><td>' + ddmm(sm.seg) + ' a ' + ddmm(sm.dom) + '</td><td class="tot">' + trab + '</td><td class="tot">' + n2(horas)
+        + '</td><td style="text-align:left">' + (rep.join(' · ') || '—') + '</td><td style="text-align:left">' + sit + '</td></tr>';
+    }).join('');
+    h += '<details style="margin:0 0 8px;border:1px solid var(--linha);border-radius:8px;padding:8px 12px">'
+       + '<summary style="cursor:pointer"><b>' + esc(l.nome) + '</b> <span style="color:var(--tinta-fraca);font-size:12px">— '
+       + esc(rotuloEscalaLinha(l)) + (l.setor ? ' · setor ' + esc(l.setor) : '')
+       + (l.escala === '5x2r' && l.parFolga ? ' · folgas do rodízio: ' + DIAS_SEMANA[l.parFolga[0]] + ' e ' + DIAS_SEMANA[l.parFolga[1]] : '')
+       + (falhas ? ' · <b style="color:var(--erro-tx)">' + falhas + ' semana(s) abaixo do mínimo</b>' : '') + '</span></summary>'
+       + '<div class="rolagem" style="max-height:none;margin-top:8px"><table><thead><tr><th>Semana (seg–dom)</th><th>Dias trab.</th><th>Horas</th>'
+       + '<th>Dias de folga no mês</th><th>Repouso da semana</th></tr></thead><tbody>' + linhasTab + '</tbody></table></div></details>';
+  });
+  h += '</div>';
+  el('#explicaEscala').innerHTML = h;
+  el('#explicaEscala').hidden = false;
 }
 
 function desenharAuditoria() {
@@ -1493,8 +1694,8 @@ function desenharAuditoria() {
   h += '<div class="nota"><b>O que esta auditoria não cobre:</b> a interjornada de 11h do art. 66 da CLT depende de horário '
      + 'de entrada e saída, que não entra aqui — o app só aponta plantões 12x36 em dias adjacentes. '
      + 'E o teto de horas é parâmetro contratual da CCT/ACT, não um número fixado pela CLT. '
-     + '<b>PEC 221/2019:</b> as regras de vigência e de jornada seguem o que foi noticiado na aprovação pelo Senado '
-     + '(14/10/2026); a data de promulgação é previsão. Confira a Emenda Constitucional publicada no DOU e a lei de '
+     + '<b>EC 141/2026:</b> as regras seguem a Emenda Constitucional publicada no DOU em 16/10/2026 (2 dias de repouso '
+     + 'remunerado, 42h e depois 40h). Confira a redação oficial no site do Planalto, a convenção coletiva e a lei de '
      + 'regulamentação dos setores antes de rodar a folha.</div>';
   el('#listaAuditoria').innerHTML = h;
 }
@@ -1550,8 +1751,8 @@ function desenharRegime() {
   if (!ano || !mes || ano < 2000 || ano > 2100) { el('#infoRegime').textContent = ''; return; }
   var d = datasPEC(CONFIG);
   el('#infoRegime').innerHTML = '<b>Regime da competência:</b> ' + esc(resumoRegime(ano, mes))
-    + (d ? '<br><span style="color:var(--tinta-fraca)">PEC 221/2019: promulgação ' + fmtBR(d.promulgacao)
-      + ' (previsão — conferir no DOU) · 5x2 e 42h a partir de ' + fmtBR(d.fase1)
+    + (d ? '<br><span style="color:var(--tinta-fraca)">EC 141/2026 publicada em ' + fmtBR(d.promulgacao)
+      + ' · 2 dias de repouso remunerado e 42h a partir de ' + fmtBR(d.fase1)
       + ' · 40h a partir de ' + fmtBR(d.fase2) + '. Ajuste na aba Parâmetros.</span>' : '');
 }
 
@@ -1600,13 +1801,16 @@ function desenharFeriados() {
 }
 
 var DEF_PARAMS = [
-  { k: 'dataPromulgacaoPEC', rot: 'PEC 221/2019 (fim da 6x1): data de promulgação', tipo: 'data',
-    ajuda: 'A PEC foi aprovada pelo Senado em 14/10/2026. A sessão de promulgação está PREVISTA para 20/10/2026 — confira a data no Diário Oficial da União e ajuste aqui. Todas as datas de vigência saem desta.' },
-  { k: 'diasAteFase1', rot: 'Dias entre a promulgação e a 1ª fase (5x2 obrigatória, 42h semanais)', tipo: 'num', min: 0, max: 730,
-    ajuda: 'Pelo texto aprovado, 60 dias após a promulgação a 6x1 deixa de existir, a escala passa a ser 5x2 e a jornada cai de 44h para 42h semanais, sem redução de salário.' },
-  { k: 'mesesAteFase2', rot: 'Meses entre a 1ª fase e a 2ª fase (40h semanais)', tipo: 'num', min: 0, max: 60,
-    ajuda: 'Pelo texto aprovado, 12 meses depois da 1ª fase a jornada cai para 40h semanais.' },
-  { k: 'converter6x1', rot: 'Funcionário em 6x1 na vigência da PEC', tipo: 'sel',
+  { k: 'dataPromulgacaoPEC', rot: 'EC 141/2026 (fim da 6x1): data de publicação no DOU', tipo: 'data',
+    ajuda: 'A Emenda Constitucional 141 foi promulgada e publicada em edição extra do Diário Oficial da União em 16/10/2026. Todas as datas de vigência saem desta — só mude se houver retificação.' },
+  { k: 'mesesAteFase1', rot: 'Meses entre a publicação e a 1ª etapa (2 dias de repouso remunerado, 42h)', tipo: 'num', min: 0, max: 24,
+    ajuda: 'A emenda diz: 2 meses após a publicação. Com publicação em 16/10/2026, vale a partir de 16/12/2026 — jornada de até 42h semanais e 2 dias de repouso semanal remunerado, sem redução de salário.' },
+  { k: 'mesesAteFase2', rot: 'Meses entre a 1ª e a 2ª etapa (40h semanais)', tipo: 'num', min: 0, max: 60,
+    ajuda: 'A emenda diz: 1 ano depois da 1ª etapa. Com os padrões, a jornada cai para 40h semanais em 16/12/2027.' },
+  { k: 'regimeCompensatorioCCT', rot: 'Convenção ou acordo coletivo com regime compensatório (art. 7º, § 2º)', tipo: 'sel',
+    ops: [['false', 'Não — exigir 2 dias de repouso remunerado em toda semana'], ['true', 'Sim — exigir ao menos 1 por semana e média de 2 por semana no mês']],
+    ajuda: 'O novo § 2º do art. 7º permite, excepcionalmente e só por convenção ou acordo coletivo, um regime compensatório: na média do mês, 2 dias de repouso por semana, com pelo menos 1 em cada semana. Marque "Sim" apenas se a CCT/ACT da categoria prever isso.' },
+  { k: 'converter6x1', rot: 'Funcionário em 6x1 na vigência da EC 141', tipo: 'sel',
     ops: [['true', 'Converter automaticamente para 5x2 com rodízio'], ['false', 'Manter 6x1 (só para simular o impacto — a auditoria aponta violação)']],
     ajuda: 'Na conversão, os dias de folga passam a ser dois por semana, em dias que variam por funcionário para a operação seguir coberta, e o rodízio de domingos (art. 386 da CLT e Lei 10.101/2000) continua valendo. A jornada diária fica em 8h, o que dá 40h por semana — dentro do limite das duas fases.' },
   { k: 'maxFolgaMesmoSetor', rot: 'Máximo de pessoas do mesmo setor de folga no mesmo dia', tipo: 'num', min: 1, max: 20,
@@ -1663,7 +1867,7 @@ function desenharParams() {
   h += '</div></div>';
 
   h += '<div style="padding:13px 0"><h3 style="margin:0 0 8px;font-size:13px;color:var(--azul-700)">Teto contratual de horas por escala (CCT/ACT)</h3>';
-  h += '<p style="margin:0 0 10px;font-size:12px;color:var(--tinta-fraca);max-width:900px">A CLT não fixa teto mensal de horas — ele vem da jornada contratual e da convenção da categoria. <b>Na vigência da PEC 221/2019</b> o app limita este valor pela referência mensal da jornada legal: 210h na 1ª fase (42h) e 200h na 2ª fase (40h), proporcional aos dias de cada fase no mês; e confere semana a semana (seg–dom) o limite de 44h, 42h ou 40h. O teto que dispara o alerta é o menor entre este valor e as horas geradas mais cerca de uma jornada, para que qualquer dia acrescentado à mão derrube o status. <b>Na 12x36 o teto é também um limite duro:</b> 180h são 15 plantões de 12h, e em mês de 31 dias que começaria com 16 o app suprime o plantão excedente e avisa na auditoria.</p><div class="linha">';
+  h += '<p style="margin:0 0 10px;font-size:12px;color:var(--tinta-fraca);max-width:900px">A CLT não fixa teto mensal de horas — ele vem da jornada contratual e da convenção da categoria. <b>Na vigência da EC 141/2026</b> o app limita este valor pela referência mensal da jornada legal: 210h na 1ª fase (42h) e 200h na 2ª fase (40h), proporcional aos dias de cada fase no mês; e confere semana a semana (seg–dom) o limite de 44h, 42h ou 40h. O teto que dispara o alerta é o menor entre este valor e as horas geradas mais cerca de uma jornada, para que qualquer dia acrescentado à mão derrube o status. <b>Na 12x36 o teto é também um limite duro:</b> 180h são 15 plantões de 12h, e em mês de 31 dias que começaria com 16 o app suprime o plantão excedente e avisa na auditoria.</p><div class="linha">';
   ['5x2', '5x2r', '6x1', '12x36'].forEach(function (e2) {
     h += '<label class="campo">' + ROTULO_ESCALA[e2] + '<input type="number" data-teto="' + e2 + '" value="' + CONFIG.tetoContratualPorEscala[e2] + '" min="1" max="400" style="width:110px"></label>';
   });
@@ -1687,10 +1891,11 @@ function desenharMeses() {
 
 function desenharAjuda() {
   var regras = [
-    ['PEC 221/2019 — fim da escala 6x1', 'Aprovada pelo Senado em 14/10/2026 (75 a 1, em dois turnos), segue para promulgação, prevista para 20/10/2026. Pelo texto aprovado: 60 dias após a promulgação a 6x1 deixa de existir, a escala passa a ser 5x2 e a jornada máxima cai de 44h para 42h semanais (1ª fase); 12 meses depois cai para 40h (2ª fase), sempre sem redução de salário. O app escolhe as regras pela data de cada dia da competência — se a vigência começa no meio do mês, a troca acontece naquele dia. As datas saem da data de promulgação informada na aba Parâmetros, que deve ser conferida no DOU. Medidas específicas por setor ficaram para lei posterior.'],
-    ['Escala pelo cargo', 'Administrativo, escritório, analista, auxiliar e gerência vão para 5x2; portaria, vigilância e segurança para 12x36; o resto para 6x1 antes da vigência da PEC e para 5x2 com rodízio depois dela. É heurística — você troca na coluna Escala.'],
-    ['5x2 com rodízio', 'Para quem opera 7 dias por semana e sai da 6x1. Cada pessoa trabalha 5 dias e folga 2 por semana (seg–dom), em um par de dias que varia por funcionário para a operação não ficar sem ninguém no mesmo dia. O rodízio de domingos continua: na semana do domingo de folga, o domingo é o DSR e substitui o segundo dia do par. Jornada de 8h por dia = 40h por semana, dentro do limite das duas fases. Um dos dois dias da semana é marcado como DSR e o outro como folga da escala (F) — se o texto promulgado tratar os dois como descanso remunerado, o efeito é só de rótulo, a folha não muda.'],
-    ['12x36 e a PEC', 'A 12x36 dá média de 42h semanais: cabe na 1ª fase, mas passa das 40h da 2ª. Ainda não está claro se a emenda alcança a 12x36 (art. 59-A da CLT) ou se isso fica para a lei de regulamentação — por isso o app só alerta, sem mudar a escala.'],
+    ['EC 141/2026 — fim da escala 6x1', 'A PEC 221/2019 foi aprovada pelo Senado em 14/10/2026 e promulgada como Emenda Constitucional 141, publicada em edição extra do DOU em 16/10/2026. Nova redação do art. 7º da CF: inciso XIII — jornada de até 8h diárias e 40h semanais; inciso XV — repouso semanal remunerado de 2 dias, um deles preferencialmente aos domingos; § 2º — por convenção ou acordo coletivo, excepcionalmente, regime compensatório com média de 2 dias de repouso por semana no mês e ao menos 1 em cada semana. Transição: 2 meses após a publicação (16/12/2026) valem os 2 dias de repouso e o limite de 42h; 1 ano depois (16/12/2027), 40h. Sem redução de salário. O app escolhe as regras pela data de cada dia da competência.'],
+    ['Escala pelo cargo', 'Administrativo, escritório, analista, auxiliar e gerência vão para 5x2; portaria, vigilância e segurança para 12x36; o resto para 6x1 antes da vigência da EC 141 e para 5x2 com rodízio depois dela. É heurística — você troca na coluna Escala.'],
+    ['5x2 com rodízio', 'Para quem opera 7 dias por semana e sai da 6x1. Cada pessoa trabalha 5 dias e folga 2 por semana (seg–dom), em um par de dias que varia por funcionário para a operação não ficar sem ninguém no mesmo dia. O rodízio de domingos continua: na semana do domingo de folga, o domingo ocupa o lugar de um dos dias do par. Jornada de 8h por dia = 40h por semana. Na vigência da EC 141 os dois dias de folga são DSR (remunerados); antes dela, só um é DSR e o outro é folga da escala (F).'],
+    ['DSR seguidos não são erro', 'O app conta a semana de segunda a domingo. Quando o domingo de folga fecha uma semana e a folga do rodízio é a segunda-feira seguinte, aparecem dois DSR lado a lado — um de cada semana. A lei fixa o mínimo de repousos por semana; não proíbe repousos vizinhos nem exige que os dois dias da EC 141 sejam seguidos. A aba Escala mostra a leitura semana a semana de cada funcionário.'],
+    ['12x36 e a EC 141', 'A 12x36 dá média de 42h semanais: cabe na 1ª etapa, mas passa das 40h da 2ª. A emenda não cita a 12x36. Há quem entenda que o art. 59-A da CLT (acordo individual, convenção ou acordo coletivo) continua valendo e quem sustente que, a partir das 40h, ela depende de convenção ou acordo coletivo pelo novo § 2º do art. 7º. O app só alerta; a recomendação prudente é formalizar por CCT/ACT.'],
     ['Turno é rótulo, não jornada', 'M, T, N e D (dia todo) marcam em que turno a pessoa trabalha. A quantidade de horas do dia vem da ESCALA, não do turno: 8h na 5x2 e na 5x2 com rodízio, 7h20 na 6x1 e 12h na 12x36. Escolher "dia todo" não muda o total de horas do mês.'],
     ['Feriado é "ou", nunca "e"', 'Feriado trabalhado ou vira folga compensatória (FER_COMP, pago simples) ou é pago em dobro (FER_DOBRO). Marcar as duas coisas seria pagamento em duplicidade. Nada fica pendente para o mês seguinte. Base: art. 9º da Lei 605/1949.'],
     ['12x36 e feriado é decisão explícita', 'O art. 59-A, parágrafo único, da CLT diz que a remuneração mensal da 12x36 já abrange DSR e feriados; a Súmula 444 do TST diz o contrário. O app adota a primeira por padrão, marca a célula como FER_59A e deixa a troca visível na aba Parâmetros.'],
@@ -1708,9 +1913,9 @@ function desenharAjuda() {
   var passos = [
     ['Cadastre a equipe', 'Na aba <b>Equipe</b>, clique em <b>+ Adicionar funcionário</b>, em <b>Colar lista…</b> (uma pessoa por linha: <code>Nome; Cargo; Turno; Sexo; Setor</code>) ou em <b>Carregar exemplo</b> para ver o app funcionando. Nome e cargo bastam; o resto tem padrão.'],
     ['Confira cada coluna', '<b>Setor</b>: preencha quando pessoas do mesmo setor não puderem folgar no mesmo dia (ex.: dois caixas). <b>Sexo</b>: define o mínimo de domingos de folga. <b>Turno</b>: só o rótulo do dia trabalhado (M, T, N, D). <b>Escala</b>: “auto” sugere pelo cargo; troque se precisar. <b>Folga semanal</b>: só na 6x1 — dia fixo ou variável.'],
-    ['Escolha o mês e o ano', 'No topo da aba Equipe. Logo abaixo aparece o <b>regime da competência</b>: antes da PEC, 1ª fase (5x2, 42h) ou 2ª fase (40h). Se a vigência começar no meio do mês, o app mostra os dois períodos e troca as regras no dia certo.'],
+    ['Escolha o mês e o ano', 'No topo da aba Equipe. Logo abaixo aparece o <b>regime da competência</b>: antes da EC 141, 1ª etapa (2 dias de repouso remunerado, 42h) ou 2ª etapa (40h). Se a vigência começar no meio do mês, o app mostra os dois períodos e troca as regras no dia certo.'],
     ['Confira os feriados', 'Na aba <b>Feriados</b> os nacionais já vêm calculados. Carnaval e Corpus Christi vêm desmarcados (ponto facultativo). <b>Acrescente os feriados municipais e estaduais</b> — o app não tem como saber os da sua cidade.'],
-    ['Revise os parâmetros', 'Na aba <b>Parâmetros</b>: data de promulgação da PEC (confira no DOU), quantas pessoas do mesmo setor podem folgar juntas, conversão automática da 6x1, domingos de folga, feriados e tetos de horas. Cada campo explica a consequência.'],
+    ['Revise os parâmetros', 'Na aba <b>Parâmetros</b>: data de publicação da EC 141 (16/10/2026), se a convenção coletiva prevê regime compensatório (§ 2º), quantas pessoas do mesmo setor podem folgar juntas, conversão automática da 6x1, domingos de folga, feriados e tetos de horas. Cada campo explica a consequência.'],
     ['Gere a escala', 'Clique em <b>Gerar escala</b>. A aba <b>Escala</b> mostra o mês dia a dia, com horas, folgas, domingos de folga e o status de cada pessoa.'],
     ['Leia a auditoria', 'A aba <b>Auditoria</b> lista, por funcionário, cada <b>violação</b> (vermelho — corrija antes da folha) e cada <b>atenção</b> (amarelo — confira), com a base legal. Mostra também as folgas que o app deslocou para respeitar o setor.'],
     ['Exporte e guarde', '<b>Exportar .xlsx</b> gera planilha com três abas (escala, auditoria e parâmetros). <b>Imprimir / PDF</b> para afixar. Em Parâmetros, <b>Salvar backup</b> leva equipe, feriados e histórico para outro computador.'],
@@ -1719,8 +1924,8 @@ function desenharAjuda() {
   var codigos = [
     ['M / T / N / D', 'dia trabalhado no turno indicado', 'pago normal'],
     ['P12', 'plantão de 12h (12x36)', 'pago normal'],
-    ['DSR', 'descanso semanal remunerado', 'remunerado'],
-    ['F', 'folga da escala (2º dia de folga da 5x2, folga da 12x36)', 'sem efeito na folha'],
+    ['DSR', 'descanso semanal remunerado — 1 por semana antes da EC 141, 2 por semana depois', 'remunerado'],
+    ['F', 'folga da escala que não é DSR (sábado da 5x2 antes da EC 141, descanso da 12x36)', 'sem efeito na folha'],
     ['FER', 'feriado não trabalhado', 'remunerado'],
     ['FER_COMP', 'feriado trabalhado e compensado com folga', 'pago simples'],
     ['FOLGA_COMP', 'folga compensatória do feriado trabalhado', 'sem efeito na folha'],
@@ -1739,20 +1944,26 @@ function desenharAjuda() {
   h += '</tbody></table></div>'
      + '<p style="font-size:12.5px;margin:8px 0 0">Colunas de totais: <b>Horas normais</b> e <b>Horas dobro</b> (feriado a pagar em dobro), <b>DSR</b>, <b>Folgas</b>, <b>Máx. dias</b> seguidos de trabalho e <b>Dom. de folga</b> (folgados / mínimo). O <b>Status</b> resume as violações e atenções.</p>';
 
-  h += '<h3 style="margin:22px 0 10px;color:var(--azul-700)">3. PEC 221/2019 — fim da escala 6x1</h3>'
-     + '<div class="rolagem" style="max-height:none"><table><thead><tr><th>Período</th><th>Escala</th><th>Jornada máxima</th><th>Referência mensal</th></tr></thead><tbody>'
-     + '<tr><td>até ' + (dP ? fmtBR(new Date(dP.fase1.getTime() - 864e5)) : '—') + '</td><td>5x2, 6x1 ou 12x36</td><td>44h semanais</td><td>220h</td></tr>'
-     + '<tr><td>' + (dP ? 'de ' + fmtBR(dP.fase1) + ' a ' + fmtBR(new Date(dP.fase2.getTime() - 864e5)) : '—') + '</td><td>5x2 (6x1 vedada)</td><td>42h semanais</td><td>210h</td></tr>'
-     + '<tr><td>' + (dP ? 'a partir de ' + fmtBR(dP.fase2) : '—') + '</td><td>5x2 (6x1 vedada)</td><td>40h semanais</td><td>200h</td></tr>'
+  h += '<h3 style="margin:22px 0 10px;color:var(--azul-700)">3. EC 141/2026 — o que a emenda promulgada mudou</h3>'
+     + '<p style="font-size:13px;margin:0 0 8px">A PEC 221/2019 virou a <b>Emenda Constitucional 141</b>, promulgada e publicada no DOU em '
+     + (dP ? fmtBR(dP.promulgacao) : '—') + '. Ela muda o art. 7º da Constituição em três pontos:</p>'
+     + '<ul style="padding-left:20px;margin:0 0 10px;font-size:13px">'
+     + '<li><b>Inciso XIII — jornada:</b> até 8h por dia e 40h por semana (era 44h), sem redução de salário.</li>'
+     + '<li><b>Inciso XV — repouso:</b> 2 dias de repouso semanal remunerado (era 1), um deles preferencialmente no domingo. Os dois são DSR e não precisam ser seguidos.</li>'
+     + '<li><b>§ 2º — exceção por negociação:</b> convenção ou acordo coletivo pode adotar regime compensatório com média de 2 dias de repouso por semana no mês, com ao menos 1 em cada semana — inclusive para regimes diferenciados.</li></ul>'
+     + '<div class="rolagem" style="max-height:none"><table><thead><tr><th>Período</th><th>Repouso remunerado</th><th>Jornada máxima</th><th>Escalas possíveis</th><th>Referência mensal</th></tr></thead><tbody>'
+     + '<tr><td>até ' + (dP ? fmtBR(new Date(dP.fase1.getTime() - 864e5)) : '—') + '</td><td>1 dia por semana</td><td>44h semanais</td><td>5x2, 6x1 ou 12x36</td><td>220h</td></tr>'
+     + '<tr><td>' + (dP ? 'de ' + fmtBR(dP.fase1) + ' a ' + fmtBR(new Date(dP.fase2.getTime() - 864e5)) : '—') + '</td><td>2 dias por semana</td><td>42h semanais</td><td>5x2 (fixa ou rodízio), 12x36</td><td>210h</td></tr>'
+     + '<tr><td>' + (dP ? 'a partir de ' + fmtBR(dP.fase2) : '—') + '</td><td>2 dias por semana</td><td>40h semanais</td><td>5x2 (fixa ou rodízio); 12x36 em aberto</td><td>200h</td></tr>'
      + '</tbody></table></div>'
-     + '<p style="font-size:12.5px;margin:8px 0 0">Datas calculadas a partir da promulgação informada em Parâmetros ('
-     + (dP ? fmtBR(dP.promulgacao) : '—') + ', previsão). Sem redução de salário. Na vigência, quem está na 6x1 passa '
-     + 'automaticamente para a <b>5x2 com rodízio</b>, e a auditoria confere semana a semana o limite de horas da fase.</p>';
+     + '<p style="font-size:12.5px;margin:8px 0 0"><b>O fim da 6x1 vem do repouso, não só das horas:</b> com 2 dias de repouso por semana, sobram no máximo 5 dias de trabalho. '
+     + 'Por isso, na vigência, quem está na 6x1 passa automaticamente para a <b>5x2 com rodízio</b>. A auditoria confere semana a semana (seg–dom) os 2 DSR e o limite de horas da etapa. '
+     + 'Pontos ainda em discussão: a 12x36 na etapa de 40h e o alcance do § 2º — confira a convenção coletiva da categoria e a redação oficial no site do Planalto.</p>';
 
   h += '<h3 style="margin:22px 0 10px;color:var(--azul-700)">4. Setores — quem não pode folgar junto</h3>'
      + '<p style="font-size:13px;margin:0">Preencha a coluna <b>Setor</b> na aba Equipe com o mesmo nome para quem divide a mesma função (ex.: “Caixa”). '
      + 'Ao gerar, o app: (1) coloca as pessoas do mesmo setor em posições vizinhas do rodízio, que já caem em folgas diferentes; '
-     + '(2) se ainda assim duas folgas coincidirem — feriado compensado, domingo de folga, semana de transição da PEC —, desloca uma delas em até 3 dias, '
+     + '(2) se ainda assim duas folgas coincidirem — feriado compensado, domingo de folga, semana de transição da EC 141 —, desloca uma delas em até 3 dias, '
      + 'para um dia em que o setor tem cobertura, sem quebrar dias seguidos, limite de horas nem domingos de folga; '
      + '(3) o que não tiver solução aparece como atenção na auditoria, para ajuste manual. O limite (padrão 1 pessoa por dia) fica em Parâmetros. '
      + 'Vale para 5x2 rodízio, 6x1 e 12x36. A 5x2 fixa (segunda a sexta) fica de fora porque nela o setor fecha no fim de semana — se o setor abre aos sábados e domingos, use a 5x2 rodízio.</p>';
@@ -1765,7 +1976,7 @@ function desenharAjuda() {
   h += '<h3 style="margin:22px 0 10px;color:var(--azul-700)">6. O que o app não faz</h3><ul style="padding-left:20px;margin:0;font-size:13px">'
      + '<li>Não valida a interjornada de 11h (art. 66 da CLT) fora da 12x36: não há horário de entrada e saída.</li>'
      + '<li>Não conhece a convenção coletiva (CCT/ACT) da categoria — tetos e regras de domingo devem ser conferidos nela.</li>'
-     + '<li>As regras da PEC seguem o texto aprovado pelo Senado em 14/10/2026 conforme noticiado; confira a Emenda publicada no DOU e a futura lei de regulamentação dos setores.</li>'
+     + '<li>As regras seguem a EC 141/2026 (DOU de 16/10/2026) conforme a redação divulgada; confira o texto oficial no Planalto e a convenção coletiva da categoria.</li>'
      + '<li>Não substitui advogado trabalhista, contador ou o RH responsável antes do uso em folha de pagamento.</li></ul>';
   h += '<div class="nota"><b>Como este arquivo funciona.</b> É um arquivo único de HTML. Não faz nenhuma requisição de rede, '
      + 'não usa CDN e não envia dado nenhum para fora — dá para rodar com a máquina desconectada. '
@@ -1947,14 +2158,15 @@ function exportarXlsx() {
   var l3 = [
     ['Competência', MESES[a.mes - 1] + '/' + a.ano],
     ['Regime da competência', a.regime || ''],
-    ['PEC 221/2019 — datas adotadas', (function () {
+    ['EC 141/2026 — datas adotadas', (function () {
       var d = datasPEC(CONFIG);
-      return d ? 'promulgação ' + fmtBR(d.promulgacao) + ' (conferir no DOU); 1ª fase (5x2, 42h) a partir de '
-        + fmtBR(d.fase1) + '; 2ª fase (40h) a partir de ' + fmtBR(d.fase2) : 'data de promulgação não informada';
+      return d ? 'publicação no DOU ' + fmtBR(d.promulgacao) + '; 1ª etapa (2 dias de repouso remunerado, 42h) a partir de '
+        + fmtBR(d.fase1) + '; 2ª etapa (40h) a partir de ' + fmtBR(d.fase2) : 'data de publicação não informada';
     })()],
+    ['Regime compensatório por CCT/ACT (art. 7º, § 2º)', CONFIG.regimeCompensatorioCCT ? 'sim — mínimo de 1 repouso por semana e média de 2' : 'não — 2 dias de repouso remunerado em toda semana'],
     ['Folga por setor', 'no máximo ' + CONFIG.maxFolgaMesmoSetor + ' pessoa(s) do mesmo setor de folga no mesmo dia (regra da empresa); '
       + (a.setor ? a.setor.movidas + ' folga(s) deslocada(s), ' + a.setor.conflitos + ' choque(s) sem solução' : '')],
-    ['6x1 na vigência da PEC', CONFIG.converter6x1 ? 'convertida automaticamente para 5x2 com rodízio' : 'mantida para simulação — apontada como violação'],
+    ['6x1 na vigência da EC 141', CONFIG.converter6x1 ? 'convertida automaticamente para 5x2 com rodízio' : 'mantida para simulação — apontada como violação'],
     ['Dias no mês', a.dias],
     ['Funcionários', a.linhas.length],
     ['Feriados considerados', a.feriados.length
@@ -2113,7 +2325,7 @@ function aplicarBackup(texto) {
   ST.feriadosExtras = d.feriadosExtras || [];
   ST.ferDesmarcados = d.ferDesmarcados || [];
   ST.meses = d.meses || {};
-  if (d.config) { Object.keys(PADRAO).forEach(function (k) { if (k in d.config) CONFIG[k] = d.config[k]; }); completarConfig(); }
+  if (d.config) { Object.keys(PADRAO).forEach(function (k) { if (k in d.config) CONFIG[k] = d.config[k]; }); completarConfig(d.config); }
   salvar();
   desenharEquipe(); desenharFeriados(); desenharRegime(); desenharParams(); desenharMeses();
   aviso('Backup carregado: ' + ST.equipe.length + ' funcionário(s) e '
@@ -2130,7 +2342,15 @@ function salvar() {
   } catch (e) { /* armazenamento indisponível: o app segue sem guardar */ }
 }
 /** Config gravada pela v1.0 não tem a escala 5x2r nos objetos aninhados. */
-function completarConfig() {
+function completarConfig(salvo) {
+  // Config da v1.1 trazia a PREVISÃO de promulgação (20/10/2026) e "60 dias".
+  // A EC 141 saiu em 16/10/2026 com vigência em 2 MESES: volta ao padrão.
+  if (salvo && !('mesesAteFase1' in salvo)) {
+    CONFIG.dataPromulgacaoPEC = PADRAO.dataPromulgacaoPEC;
+    CONFIG.mesesAteFase1 = PADRAO.mesesAteFase1;
+    CONFIG.mesesAteFase2 = PADRAO.mesesAteFase2;
+  }
+  delete CONFIG.diasAteFase1;
   ['jornadaHoras', 'tetoContratualPorEscala'].forEach(function (k) {
     CONFIG[k] = CONFIG[k] || {};
     Object.keys(PADRAO[k]).forEach(function (e) { if (!(e in CONFIG[k])) CONFIG[k][e] = PADRAO[k][e]; });
@@ -2155,7 +2375,7 @@ function carregar() {
     if (d.config) {
       var anterior = !('minDomingosFolga' in d.config);
       Object.keys(PADRAO).forEach(function (k) { if (k in d.config) CONFIG[k] = d.config[k]; });
-      completarConfig();
+      completarConfig(d.config);
       if (anterior) {
         // Config gravada antes do mínimo de domingos por sexo e do teto de
         // 180h da 12x36. Manter os valores velhos aqui reintroduziria as
