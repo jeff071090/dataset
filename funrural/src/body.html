@@ -104,6 +104,27 @@ textarea{width:100%;min-height:150px;font:13px/1.45 var(--font-num);background:v
 .why ul{margin:8px 0 0;padding-left:18px;display:grid;gap:6px}
 .rules{display:grid;gap:8px;font-size:14px;max-width:80ch}
 .rules p{margin:0}
+.proj{margin:-4px 0 0;font-size:13px;color:var(--muted);display:grid;gap:2px}
+.proj b{color:var(--fg);font-family:var(--font-num);font-weight:600}
+.memo{display:grid;gap:22px;margin-top:18px}
+.step{display:grid;grid-template-columns:34px minmax(0,1fr);gap:12px}
+.step .n{width:30px;height:30px;border-radius:7px;background:var(--brand);color:#fff;display:grid;place-items:center;font-weight:700;font-size:14px}
+.step h3{margin:3px 0 8px;font-size:16px}
+.step p{margin:6px 0 0;max-width:80ch}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:600px){.tiles{grid-template-columns:1fr}}
+.tile{border:1px solid var(--line);border-radius:8px;padding:12px;display:grid;gap:3px;min-width:0}
+.tile .v{font-family:var(--font-num);font-size:20px;font-weight:700}
+.tile small{color:var(--muted);font-size:12.5px}
+.scroll{overflow-x:auto}
+table.calc{min-width:520px;font-size:13.5px}
+table.calc th{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600;text-align:right;padding:0 0 6px 10px;border-bottom:1px solid var(--line)}
+table.calc th:first-child{text-align:left;padding-left:0}
+table.calc td{padding:7px 0 7px 10px;font-family:var(--font-num);font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
+table.calc td:first-child{font-family:var(--font-body);text-align:left;white-space:normal;padding-left:0}
+table.calc td:first-child small{display:block;color:var(--muted);font-size:12px}
+table.calc tr.tot td{font-weight:700;border-bottom:0}
+.eq{font-family:var(--font-num);font-size:14px;background:var(--field);border:1px solid var(--field-line);border-radius:8px;padding:10px 12px;overflow-x:auto;white-space:nowrap}
 footer.wrap{padding-block:0 32px;font-size:12px;color:var(--muted)}
 @media (prefers-reduced-motion:no-preference){.meter-dot{transition:left .35s ease}}
 </style>
@@ -137,10 +158,15 @@ footer.wrap{padding-block:0 32px;font-size:12px;color:var(--muted)}
           <label for="ano">Ano da opção<input id="ano" class="blue" inputmode="numeric" value="2027"></label>
           <label for="periodo">Período-base dos números<input id="periodo" value="jan a out/2026"></label>
         </div>
-        <label for="folha">Média anual de salários (folha bruta) <span class="hint">Relatório da Domínio com a média anual de salários</span>
-          <input id="folha" class="money" inputmode="decimal" value="480.000,00"></label>
-        <label for="receita">Receita com venda da produção <span class="hint">Por CFOP que gera faturamento, menos devoluções de venda</span>
-          <input id="receita" class="money" inputmode="decimal" value="12.000.000,00"></label>
+        <div class="row">
+          <label for="folha">Folha bruta de salários no período <span class="hint">Relatório de folha da Domínio</span>
+            <input id="folha" class="money" inputmode="decimal" value="400.000,00"></label>
+          <label for="receita">Receita da venda da produção no período <span class="hint">CFOPs de venda menos devoluções</span>
+            <input id="receita" class="money" inputmode="decimal" value="10.000.000,00"></label>
+        </div>
+        <label for="meses">Quantos meses tem o período? <span class="hint">Use 12 para um ano fechado. Com menos meses, o valor é projetado para 12.</span>
+          <input id="meses" class="blue" type="number" min="1" max="12" step="1" value="10"></label>
+        <p class="proj" id="proj" aria-live="polite"></p>
         <div class="row">
           <label for="rat">RAT (grau de risco)
             <select id="rat"><option value="1">1%</option><option value="2">2%</option><option value="3" selected>3%</option></select></label>
@@ -206,13 +232,26 @@ footer.wrap{padding-block:0 32px;font-size:12px;color:var(--muted)}
     </section>
   </div>
 
+  <section class="panel" aria-labelledby="h-memo">
+    <h2 id="h-memo">Memória de cálculo</h2>
+    <p class="lead" style="margin-top:0">De onde vem cada valor, na mesma ordem em que aparece no relatório enviado ao cliente.</p>
+    <details style="margin-top:10px">
+      <summary>Origem dos números (aparece no relatório)</summary>
+      <div class="row">
+        <label for="fonteR">Fonte do faturamento<input id="fonteR" value="Notas fiscais de venda da produção (CFOPs de venda), menos devoluções"></label>
+        <label for="fonteF">Fonte da folha<input id="fonteF" value="Relatório da folha de pagamento (sistema Domínio), salários brutos"></label>
+      </div>
+    </details>
+    <div id="memoBody" class="memo"></div>
+  </section>
+
   <section class="panel" aria-labelledby="h-exp">
     <h2 id="h-exp">Enviar ao cliente</h2>
     <p class="lead" style="margin-top:0">Tudo é gerado no próprio navegador, sem internet e sem enviar dados a nenhum servidor.</p>
     <div class="exports" style="margin-top:12px">
-      <button class="btn primary" type="button" id="bWpp"><strong>Imagem para WhatsApp</strong><span>PNG 1080 × 1350 (retrato)</span></button>
-      <button class="btn" type="button" id="bMailImg"><strong>Imagem para e-mail</strong><span>PNG 1200 px, com detalhamento</span></button>
-      <button class="btn" type="button" id="bPdf"><strong>PDF para e-mail</strong><span>A4, parecer completo</span></button>
+      <button class="btn primary" type="button" id="bWpp"><strong>Imagem para WhatsApp</strong><span>PNG 1080 px, resumo com a conta</span></button>
+      <button class="btn" type="button" id="bMailImg"><strong>Imagem para e-mail</strong><span>PNG 1200 px, memória de cálculo completa</span></button>
+      <button class="btn" type="button" id="bPdf"><strong>PDF para e-mail</strong><span>A4, memória de cálculo e assinatura</span></button>
       <button class="btn" type="button" id="bText"><strong>Copiar texto</strong><span>Mensagem pronta para colar</span></button>
       <button class="btn" type="button" id="bShare" hidden><strong>Compartilhar</strong><span>Abre o WhatsApp/e-mail do aparelho</span></button>
     </div>
@@ -263,48 +302,78 @@ function money(v){return BRL.format(v||0)}
 function pct(v){return PCT.format(v*100)+"%"}
 function num(s){ s=String(s||"").replace(/[^\d,.-]/g,""); if(s.indexOf(",")>=0){s=s.replace(/\./g,"").replace(",",".")} var n=parseFloat(s); return isFinite(n)?n:0 }
 var state={holding:false,logo:null};
-var LS="prisma-funrural-v2";
+var LS="prisma-funrural-v3";
 
 /* ---------- cálculo (mesma lógica da planilha) ---------- */
 function calc(){
-  var F=num($("folha").value), R=num($("receita").value);
-  var rat=num($("rat").value)/100, pat=num($("aPat").value)/100, out=num($("aOut").value)/100;
+  var Fp=num($("folha").value), Rp=num($("receita").value);
+  var meses=Math.round(num($("meses").value)); if(!(meses>=1&&meses<=12)) meses=12;
+  var k=12/meses, F=Fp*k, R=Rp*k;               /* projeção anual: valor do período ÷ meses × 12 */
+  var ratN=num($("rat").value), rat=ratN/100, pat=num($("aPat").value)/100, out=num($("aOut").value)/100;
   var fun=num($("aFun").value)/100, sen=num($("aSen").value)/100;
-  var folha={
-    pat:F*pat, rat:F*rat, out:F*out, senar:R*sen
-  };
+  var folha={pat:F*pat, rat:F*rat, out:F*out, senar:R*sen};
   folha.total=folha.pat+folha.rat+folha.out+folha.senar;
   folha.mensal=folha.total/13; /* planilha: média mensal = total ÷ 13 (inclui 13º) */
   var fat={fun:R*fun, senar:R*sen}; fat.total=fat.fun+fat.senar; fat.mensal=fat.total/12;
   var diff=Math.abs(folha.total-fat.total);
   var best = folha.total>fat.total ? "fat" : (folha.total<fat.total ? "folha" : "tie");
-  if(F===0&&R===0) best="tie";
+  if(F===0||R===0) best="tie";
   var payroll=pat+rat+out;
-  var be = payroll>0 ? fun/payroll : 0;     /* folha ÷ receita no ponto de equilíbrio */
+  var be = payroll>0 ? fun/payroll : 0;     /* folha ÷ faturamento no ponto de equilíbrio */
   var ratio = R>0 ? F/R : 0;
-  return {F:F,R:R,rates:{pat:pat,rat:rat,out:out,fun:fun,sen:sen,payroll:payroll},folha:folha,fat:fat,diff:diff,best:best,be:be,ratio:ratio,
-    pctSave: best==="folha"&&fat.total>0 ? diff/fat.total : (best==="fat"&&folha.total>0? diff/folha.total:0)};
+  return {Fp:Fp,Rp:Rp,meses:meses,F:F,R:R,ratN:ratN,rates:{pat:pat,rat:rat,out:out,fun:fun,sen:sen,payroll:payroll},folha:folha,fat:fat,diff:diff,best:best,be:be,ratio:ratio,
+    limite:R*be, pctSave: best==="folha"&&fat.total>0 ? diff/fat.total : (best==="fat"&&folha.total>0? diff/folha.total:0)};
 }
 function meta(){
   return {nome:$("nome").value.trim()||"Produtor rural",cpf:$("cpf").value.trim(),ano:$("ano").value.trim()||"—",
     periodo:$("periodo").value.trim(),esc:$("escritorio").value.trim()||"Prisma Contabilidade",resp:$("resp").value.trim(),contato:$("contato").value.trim(),
-    cor:$("cor").value||"#2d3867",slogan:$("slogan_in").value.trim()};
+    cor:$("cor").value||"#2d3867",slogan:$("slogan_in").value.trim(),fonteF:$("fonteF").value.trim(),fonteR:$("fonteR").value.trim()};
 }
 var LABEL={folha:"Contribuição sobre a FOLHA",fat:"Contribuição sobre o FATURAMENTO (Funrural)"};
-function reasons(c){
-  var r=[];
-  if(c.best==="folha"){
-    r.push("A folha anual equivale a "+pct(c.ratio)+" da receita, abaixo do ponto de equilíbrio de "+pct(c.be)+".");
-    r.push("Pela folha, o INSS incide sobre "+money(c.F)+" de salários; pelo faturamento, incidiria sobre "+money(c.R)+" de vendas.");
-    r.push("O SENAR (0,2% da receita) é igual nas duas opções e não altera a escolha.");
-  }else if(c.best==="fat"){
-    r.push("A folha anual equivale a "+pct(c.ratio)+" da receita, acima do ponto de equilíbrio de "+pct(c.be)+".");
-    r.push("Com mão de obra relevante, "+pct(c.rates.payroll)+" sobre a folha pesa mais que "+pct(c.rates.fun)+" sobre as vendas.");
-    r.push("No faturamento, o tributo acompanha a venda: se a safra quebrar, o valor recolhido cai junto.");
-  }else{
-    r.push("As duas opções têm o mesmo custo com os números informados.");
+/* de onde vem o valor anual */
+function origem(c,m,vp){
+  var per=m.periodo?" ("+m.periodo+")":"";
+  return c.meses===12 ? money(vp)+" no período"+per+", 12 meses"
+                      : money(vp)+" em "+c.meses+" meses"+per+" ÷ "+c.meses+" × 12";
+}
+/* linhas do cálculo: [item, base (texto), valor da base, alíquota, resultado] */
+function linhasFolha(c){return [
+  ["INSS patronal","folha",c.F,c.rates.pat,c.folha.pat],
+  ["RAT (grau de risco "+c.ratN+")","folha",c.F,c.rates.rat,c.folha.rat],
+  [state.holding?"Outras entidades (salário-educação + INCRA)":"Outras entidades (INCRA)","folha",c.F,c.rates.out,c.folha.out],
+  ["SENAR","faturamento",c.R,c.rates.sen,c.folha.senar]]}
+function linhasFat(c){return [
+  ["Funrural + RAT","faturamento",c.R,c.rates.fun,c.fat.fun],
+  ["SENAR","faturamento",c.R,c.rates.sen,c.fat.senar]]}
+/* por que chegamos a essa opção */
+function porque(c){
+  if(c.best==="tie") return ["Informe a folha e o faturamento para comparar as duas opções."];
+  var a=[
+    "O SENAR ("+pct(c.rates.sen)+" do faturamento) é igual nas duas opções. A decisão depende do restante: "+pct(c.rates.payroll)+" sobre a folha ("+pct(c.rates.pat)+" + "+pct(c.rates.rat)+" + "+pct(c.rates.out)+") contra "+pct(c.rates.fun)+" sobre o faturamento.",
+    "Os dois custos se igualam quando a folha chega a "+pct(c.be)+" do faturamento ("+pct(c.rates.fun)+" ÷ "+pct(c.rates.payroll)+"). Com faturamento de "+money(c.R)+", esse limite é uma folha de "+money(c.limite)+" por ano."];
+  a.push(c.best==="folha"
+    ? "A folha do produtor é de "+money(c.F)+", ou "+pct(c.ratio)+" do faturamento. Como fica abaixo do limite, pagar sobre a folha custa "+money(c.diff)+" a menos no ano."
+    : "A folha do produtor é de "+money(c.F)+", ou "+pct(c.ratio)+" do faturamento. Como passa do limite, pagar sobre o faturamento custa "+money(c.diff)+" a menos no ano.");
+  return a;
+}
+function esc(t){return String(t).replace(/[&<>"]/g,function(ch){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[ch]})}
+function memoHTML(c,m){
+  function tbl(rows,total,mensal,nota){
+    return '<div class="scroll"><table class="calc"><thead><tr><th>Item</th><th>Base de cálculo</th><th>Alíquota</th><th>Valor anual</th></tr></thead><tbody>'+
+      rows.map(function(r){return '<tr><td>'+esc(r[0])+'<small>sobre o '+(r[1]==="folha"?"total da folha":"faturamento")+'</small></td><td>'+money(r[2])+'</td><td>× '+pct(r[3])+'</td><td>= '+money(r[4])+'</td></tr>'}).join("")+
+      '<tr class="tot"><td>Total anual</td><td></td><td></td><td>'+money(total)+'</td></tr></tbody></table></div><p class="month">≈ '+money(mensal)+' por mês ('+nota+')</p>';
   }
-  return r;
+  var h='';
+  h+='<div class="step"><div class="n">1</div><div><h3>Os números do produtor</h3><div class="tiles">'+
+     '<div class="tile"><small>Faturamento anual</small><span class="v">'+money(c.R)+'</span><small>'+esc(origem(c,m,c.Rp))+'</small><small>Fonte: '+esc(m.fonteR||"—")+'</small></div>'+
+     '<div class="tile"><small>Folha de salários anual</small><span class="v">'+money(c.F)+'</span><small>'+esc(origem(c,m,c.Fp))+'</small><small>Fonte: '+esc(m.fonteF||"—")+'</small></div>'+
+     '</div><p>A folha equivale a <b>'+pct(c.ratio)+'</b> do faturamento ('+money(c.F)+' ÷ '+money(c.R)+').</p></div></div>';
+  h+='<div class="step"><div class="n">2</div><div><h3>Quanto pagaria sobre a folha</h3>'+tbl(linhasFolha(c),c.folha.total,c.folha.mensal,"total ÷ 13, por causa do 13º salário")+'</div></div>';
+  h+='<div class="step"><div class="n">3</div><div><h3>Quanto pagaria sobre o faturamento</h3>'+tbl(linhasFat(c),c.fat.total,c.fat.mensal,"total ÷ 12")+'</div></div>';
+  var maior=Math.max(c.folha.total,c.fat.total), menor=Math.min(c.folha.total,c.fat.total);
+  h+='<div class="step"><div class="n">4</div><div><h3>Comparação</h3><div class="eq">'+money(maior)+' − '+money(menor)+' = <b>'+money(c.diff)+'</b>'+(c.best==="tie"?"":' de economia '+(c.best==="folha"?"pagando sobre a folha":"pagando sobre o faturamento"))+'</div></div></div>';
+  h+='<div class="step"><div class="n">5</div><div><h3>Por que essa é a melhor opção</h3>'+porque(c).map(function(t){return '<p>'+esc(t)+'</p>'}).join("")+'</div></div>';
+  return h;
 }
 
 /* ---------- tela ---------- */
@@ -337,7 +406,10 @@ function render(){
   var max=Math.max(c.be*2,0.0001), bePos=50, dot=Math.min(100,Math.max(0,c.ratio/max*100));
   $("meterBar").style.setProperty("--be",bePos+"%"); $("meterDot").style.left=dot+"%";
   $("beMark").textContent="equilíbrio: folha = "+pct(c.be)+" da receita";
-  $("beText").textContent= c.R>0 ? "A folha deste produtor é "+pct(c.ratio)+" da receita. Abaixo de "+pct(c.be)+", a opção pela folha sai mais barata." : "Informe a receita para calcular.";
+  $("beText").textContent= c.R>0 ? "A folha deste produtor é "+pct(c.ratio)+" do faturamento. Abaixo de "+pct(c.be)+" (folha de até "+money(c.limite)+" por ano), a opção pela folha sai mais barata." : "Informe o faturamento para calcular.";
+  $("memoBody").innerHTML=memoHTML(c,m);
+  $("proj").innerHTML = c.meses===12 ? "Período de 12 meses: os valores já são anuais."
+    : "Projeção anual (÷ "+c.meses+" × 12): faturamento <b>"+money(c.R)+"</b> · folha <b>"+money(c.F)+"</b>";
   $("msg").value=messageText(c,m);
   drawWpp($("pvWpp"),1);
   save();
@@ -348,13 +420,22 @@ function messageText(c,m){
   var L=[];
   L.push("*"+m.esc+"* · Estudo Funrural x Folha "+m.ano);
   L.push("Produtor: "+m.nome+(m.cpf?" (CPF "+m.cpf+")":""));
-  if(m.periodo) L.push("Base: "+m.periodo);
-  L.push("");
-  L.push("Folha de pagamento: "+money(c.folha.total)+"/ano");
-  L.push("Faturamento (Funrural): "+money(c.fat.total)+"/ano");
   L.push("");
   if(c.best!=="tie"){ L.push("✅ *Melhor opção: "+LABEL[c.best]+"*"); L.push("Economia prevista: *"+money(c.diff)+"* no ano"); L.push(""); }
-  reasons(c).forEach(function(r){L.push("• "+r)});
+  L.push("*1. Seus números*");
+  L.push("Faturamento anual: "+money(c.R)+" ("+origem(c,m,c.Rp)+")");
+  L.push("Folha anual: "+money(c.F)+" ("+origem(c,m,c.Fp)+")");
+  L.push("");
+  L.push("*2. Sobre a folha*");
+  linhasFolha(c).forEach(function(r){L.push("• "+r[0]+": "+money(r[2])+" × "+pct(r[3])+" = "+money(r[4]))});
+  L.push("Total: *"+money(c.folha.total)+"*/ano");
+  L.push("");
+  L.push("*3. Sobre o faturamento*");
+  linhasFat(c).forEach(function(r){L.push("• "+r[0]+": "+money(r[2])+" × "+pct(r[3])+" = "+money(r[4]))});
+  L.push("Total: *"+money(c.fat.total)+"*/ano");
+  L.push("");
+  L.push("*4. Por que*");
+  porque(c).forEach(function(r){L.push(r)});
   L.push("");
   L.push("A opção é feita com o pagamento da competência de janeiro e vale para todo o ano de "+m.ano+".");
   if(m.resp) L.push(m.resp);
@@ -393,121 +474,250 @@ function header(ctx,W,h,m,sub){
   ctx.textAlign="left";
 }
 function wrapRight(ctx,t,x,y,maxW,lh){ if(ctx.measureText(t).width<=maxW){ctx.fillText(t,x,y);return} var i=t.lastIndexOf(" · "); if(i>0){ctx.fillText(t.slice(0,i),x,y-lh*0.5);ctx.fillText(t.slice(i+3),x,y+lh*0.5)} else ctx.fillText(t,x,y) }
-function bars(ctx,x,y,w,c,u){
-  var max=Math.max(c.folha.total,c.fat.total,1);
-  [["Sobre a folha",c.folha.total,"folha"],["Sobre o faturamento",c.fat.total,"fat"]].forEach(function(b,i){
-    var yy=y+i*u*2.3, win=c.best===b[2];
-    ctx.fillStyle=C.ink; ctx.font=font("600",u*0.62); ctx.fillText(b[0],x,yy);
-    ctx.textAlign="right"; ctx.font=font("700",u*0.72,FN); ctx.fillText(money(b[1]),x+w,yy); ctx.textAlign="left";
-    ctx.fillStyle=C.soft; rrect(ctx,x,yy+u*0.4,w,u*0.8,u*0.4); ctx.fill();
-    ctx.fillStyle=win?C.accent:(c.best==="tie"?C.muted:C.warn); rrect(ctx,x,yy+u*0.4,Math.max(u*0.8,w*b[1]/max),u*0.8,u*0.4); ctx.fill();
-  });
-  return y+u*4.6;
+var SCR=document.createElement("canvas").getContext("2d");   /* contexto de rascunho para medir blocos */
+function ra(ctx,t,x,y){ctx.textAlign="right";ctx.fillText(t,x,y);ctx.textAlign="left"}
+function hline(ctx,x1,x2,y){ctx.strokeStyle=C.line;ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(x1,y);ctx.lineTo(x2,y);ctx.stroke()}
+function measure(fn,y){return fn(SCR,y)-y}
+/* caixa com fundo: mede o conteúdo, pinta o fundo, desenha por cima */
+function boxed(ctx,x,y,w,u,fill,stroke,inner){
+  var p=u*0.6, h=measure(function(cx,yy){return inner(cx,yy+p+u*0.45)},y)+u*0.15;
+  if(fill){ctx.fillStyle=fill; rrect(ctx,x,y,w,h,u*0.3); ctx.fill();}
+  if(stroke){ctx.strokeStyle=stroke[0]; ctx.lineWidth=stroke[1]; rrect(ctx,x,y,w,h,u*0.3); ctx.stroke();}
+  inner(ctx,y+p+u*0.45); return y+h;
+}
+function stepTitle(ctx,n,t,x,y,u,m){
+  ctx.fillStyle=m.cor; rrect(ctx,x,y-u*0.66,u*0.86,u*0.86,u*0.18); ctx.fill();
+  ctx.fillStyle="#fff"; ctx.font=font("700",u*0.48); ctx.textAlign="center"; ctx.fillText(n,x+u*0.43,y-u*0.06); ctx.textAlign="left";
+  ctx.fillStyle=C.ink; ctx.font=font("700",u*0.6); ctx.fillText(t,x+u*1.2,y);
+  return y+u*1.0;
 }
 function verdictBox(ctx,x,y,w,h,c,m,u){
   ctx.fillStyle=c.best==="tie"?C.muted:m.cor; rrect(ctx,x,y,w,h,u*0.5); ctx.fill(); ctx.fillStyle=GOLD; ctx.fillRect(x+w-u*2.4,y,u*1.6,u*0.16);
   ctx.fillStyle="#fff"; var p=u*0.9;
   ctx.font=font("600",u*0.5); ctx.globalAlpha=.85; ctx.fillText(("Melhor opção para "+m.ano).toUpperCase(),x+p,y+p+u*0.4); ctx.globalAlpha=1;
   ctx.font=font("700",u*0.95);
-  var t=c.best==="tie"?"Preencha folha e receita":(c.best==="folha"?"Contribuição sobre a folha":"Contribuição sobre o faturamento");
+  var t=c.best==="tie"?"Preencha folha e faturamento":(c.best==="folha"?"Contribuição sobre a folha":"Contribuição sobre o faturamento");
   wrap(ctx,t,x+p,y+p+u*1.55,w-2*p,u*1.1,2);
   if(c.best!=="tie"){ ctx.fillStyle=GOLD; ctx.font=font("700",u*1.25,FN); ctx.fillText(money(c.diff),x+p,y+h-p*0.95); ctx.fillStyle="#fff";
     var mw=ctx.measureText(money(c.diff)).width; ctx.font=font("400",u*0.55); ctx.fillText("de economia no ano",x+p+mw+u*0.4,y+h-p*0.95); }
+  return y+h;
 }
+function bars(ctx,x,y,w,c,u){
+  var max=Math.max(c.folha.total,c.fat.total,1);
+  [["Sobre a folha",c.folha.total,"folha"],["Sobre o faturamento",c.fat.total,"fat"]].forEach(function(b,i){
+    var yy=y+i*u*2.2, win=c.best===b[2];
+    ctx.fillStyle=C.ink; ctx.font=font("600",u*0.55); ctx.fillText(b[0]+(win?"  ✓":""),x,yy);
+    ctx.font=font("700",u*0.6,FN); ra(ctx,money(b[1]),x+w,yy);
+    ctx.fillStyle=C.soft; rrect(ctx,x,yy+u*0.35,w,u*0.7,u*0.35); ctx.fill();
+    ctx.fillStyle=win?C.accent:(c.best==="tie"?C.muted:C.warn); rrect(ctx,x,yy+u*0.35,Math.max(u*0.7,w*b[1]/max),u*0.7,u*0.35); ctx.fill();
+  });
+  return y+u*4.0;
+}
+/* medidor do ponto de equilíbrio: escala de 0 a 2× o limite */
+function meter(ctx,x,y,w,c,u){
+  var h=u*0.4, max=Math.max(c.be*2,1e-6), mid=x+w/2, dot=x+w*Math.min(1,Math.max(0,c.ratio/max));
+  ctx.fillStyle=C.accent; rrect(ctx,x,y,w/2,h,h/2); ctx.fill(); ctx.fillRect(mid-h,y,h,h);
+  ctx.fillStyle=C.warn; rrect(ctx,mid,y,w/2,h,h/2); ctx.fill(); ctx.fillRect(mid,y,h,h);
+  ctx.fillStyle=C.ink; ctx.fillRect(mid-1.5,y-u*0.25,3,h+u*0.5);
+  ctx.beginPath(); ctx.arc(dot,y+h/2,u*0.36,0,7); ctx.fillStyle="#fff"; ctx.fill(); ctx.lineWidth=u*0.1; ctx.strokeStyle=C.ink; ctx.stroke();
+  ctx.font=font("400",u*0.36); ctx.fillStyle=C.muted;
+  ctx.fillText("← folha compensa",x,y+h+u*0.75); ra(ctx,"faturamento compensa →",x+w,y+h+u*0.75);
+  ctx.textAlign="center"; ctx.fillStyle=C.ink; ctx.font=font("600",u*0.36); ctx.fillText("limite "+pct(c.be),mid,y-u*0.45);
+  ctx.fillText("produtor "+pct(c.ratio),Math.min(x+w-u*2,Math.max(x+u*2,dot)),y+h+u*1.35); ctx.textAlign="left";
+  return y+h+u*1.6;
+}
+function calcTable(ctx,x,y,w,u,rows,total,mensal,nota){
+  var c1=x+w*0.56, c2=x+w*0.72, c3=x+w;
+  ctx.font=font("600",u*0.32); ctx.fillStyle=C.muted;
+  ctx.fillText("ITEM",x,y); ra(ctx,"BASE DE CÁLCULO",c1,y); ra(ctx,"ALÍQUOTA",c2,y); ra(ctx,"VALOR ANUAL",c3,y);
+  y+=u*0.3; hline(ctx,x,c3,y); y+=u*0.65;
+  rows.forEach(function(r){
+    ctx.fillStyle=C.ink; ctx.font=font("400",u*0.42); wrap(ctx,r[0],x,y,w*0.36,u*0.5,1);
+    ctx.fillStyle=C.muted; ctx.font=font("400",u*0.33); ctx.fillText("sobre o "+(r[1]==="folha"?"total da folha":"faturamento"),x,y+u*0.46);
+    ctx.fillStyle=C.ink; ctx.font=font("400",u*0.42,FN); ra(ctx,money(r[2]),c1,y); ra(ctx,"× "+pct(r[3]),c2,y); ra(ctx,"= "+money(r[4]),c3,y);
+    y+=u*0.72; hline(ctx,x,c3,y); y+=u*0.62;
+  });
+  ctx.fillStyle=C.ink; ctx.font=font("700",u*0.46); ctx.fillText("Total anual",x,y+u*0.05); ctx.font=font("700",u*0.5,FN); ra(ctx,money(total),c3,y+u*0.05);
+  ctx.fillStyle=C.muted; ctx.font=font("400",u*0.34); ra(ctx,"≈ "+money(mensal)+" por mês ("+nota+")",c3,y+u*0.6);
+  return y+u*0.9;
+}
+function tile(ctx,x,y,w,u,label,value,how,fonte){
+  ctx.fillStyle=C.muted; ctx.font=font("600",u*0.34); ctx.fillText(label.toUpperCase(),x,y);
+  ctx.fillStyle=C.ink; ctx.font=font("700",u*0.78,FN); ctx.fillText(value,x,y+u*0.95);
+  ctx.fillStyle=C.muted; ctx.font=font("400",u*0.36); var yy=wrap(ctx,how,x,y+u*1.55,w,u*0.5);
+  if(fonte){ yy=wrap(ctx,"Fonte: "+fonte,x,yy,w,u*0.5); }
+  return yy-u*0.2;
+}
+/* ---------- relatório detalhado (imagem de e-mail e PDF) em blocos ---------- */
+function reportBlocks(W,kind){
+  var c=calc(), m=meta(), u=W/30, x=W*0.06, w=W-2*x, G=u*1.0, B=[];
+  B.push(function(ctx,y){
+    ctx.fillStyle=C.muted; ctx.font=font("600",u*0.4); ctx.fillText(("Produtor rural"+(m.cpf?"  ·  CPF "+m.cpf:"")+(m.periodo?"  ·  Base: "+m.periodo:"")).toUpperCase(),x,y);
+    ctx.fillStyle=C.ink; ctx.font=font("700",u*0.95); y=wrap(ctx,m.nome,x,y+u*1.1,w,u*1.05,1)+u*0.15;
+    ctx.font=font("400",u*0.46); ctx.fillStyle=C.muted;
+    return wrap(ctx,"Comparamos quanto o produtor pagaria de contribuição previdenciária em "+m.ano+" nas duas formas permitidas: sobre a folha de salários ou sobre o faturamento da produção (Funrural). Abaixo está cada valor usado e de onde ele veio.",x,y,w,u*0.66)+G*0.3;
+  });
+  B.push(function(ctx,y){ return verdictBox(ctx,x,y,w,u*4.2,c,m,u*0.8)+G; });
+  B.push(function(ctx,y){
+    y=stepTitle(ctx,"1","Os números do produtor",x,y,u,m);
+    var cw=(w-u*0.6)/2, y0=y;
+    var h=Math.max(measure(function(cx,yy){return tile(cx,x+u*0.5,yy,cw-u,u,"",money(c.R),origem(c,m,c.Rp),m.fonteR)},y0),
+                   measure(function(cx,yy){return tile(cx,x+u*0.5,yy,cw-u,u,"",money(c.F),origem(c,m,c.Fp),m.fonteF)},y0))+u*1.4;
+    [[x,"Faturamento anual",c.R,c.Rp,m.fonteR],[x+cw+u*0.6,"Folha de salários anual",c.F,c.Fp,m.fonteF]].forEach(function(t){
+      ctx.strokeStyle=C.line; ctx.lineWidth=1.5; rrect(ctx,t[0],y0-u*0.3,cw,h,u*0.3); ctx.stroke();
+      tile(ctx,t[0]+u*0.5,y0+u*0.5,cw-u,u,t[1],money(t[2]),origem(c,m,t[3]),t[4]);
+    });
+    y=y0-u*0.3+h+u*0.75;
+    ctx.fillStyle=C.ink; ctx.font=font("400",u*0.44);
+    return wrap(ctx,"A folha equivale a "+pct(c.ratio)+" do faturamento ("+money(c.F)+" ÷ "+money(c.R)+").",x,y,w,u*0.62)+G*0.6;
+  });
+  B.push(function(ctx,y){
+    y=stepTitle(ctx,"2","Quanto pagaria sobre a folha"+(c.best==="folha"?"  ✓ recomendada":""),x,y,u,m);
+    return calcTable(ctx,x,y+u*0.1,w,u,linhasFolha(c),c.folha.total,c.folha.mensal,"÷ 13, inclui o 13º")+G;
+  });
+  B.push(function(ctx,y){
+    y=stepTitle(ctx,"3","Quanto pagaria sobre o faturamento"+(c.best==="fat"?"  ✓ recomendada":""),x,y,u,m);
+    return calcTable(ctx,x,y+u*0.1,w,u,linhasFat(c),c.fat.total,c.fat.mensal,"÷ 12")+G;
+  });
+  B.push(function(ctx,y){
+    y=stepTitle(ctx,"4","Comparação",x,y,u,m);
+    y=bars(ctx,x,y+u*0.3,w,c,u);
+    var maior=Math.max(c.folha.total,c.fat.total), menor=Math.min(c.folha.total,c.fat.total);
+    return boxed(ctx,x,y,w,u,"#eef4ff",null,function(cx,yy){
+      cx.fillStyle=C.ink; cx.font=font("600",u*0.46,FN);
+      return wrap(cx,money(maior)+" − "+money(menor)+" = "+money(c.diff)+(c.best==="tie"?"":(c.best==="folha"?" de economia pagando sobre a folha":" de economia pagando sobre o faturamento")),x+u*0.6,yy,w-u*1.2,u*0.62);
+    })+G;
+  });
+  B.push(function(ctx,y){
+    y=stepTitle(ctx,"5","Por que essa é a melhor opção",x,y,u,m);
+    ctx.font=font("400",u*0.44);
+    porque(c).forEach(function(t){ ctx.fillStyle=C.accent; ctx.fillRect(x,y-u*0.27,u*0.17,u*0.17); ctx.fillStyle=C.ink; ctx.font=font("400",u*0.44); y=wrap(ctx,t,x+u*0.45,y,w-u*0.45,u*0.62)+u*0.15; });
+    if(c.best!=="tie") y=meter(ctx,x+u*1.5,y+u*0.8,w-u*3,c,u);
+    return y+G;
+  });
+  B.push(function(ctx,y){
+    return boxed(ctx,x,y,w,u,C.soft,null,function(cx,yy){
+      cx.fillStyle=C.ink; cx.font=font("700",u*0.46); cx.fillText("Regras da opção",x+u*0.6,yy); yy+=u*0.7;
+      cx.font=font("400",u*0.4); cx.fillStyle=C.muted;
+      ["Opção anual prevista no art. 25, §13, da Lei 8.212/1991 (Lei 13.606/2018). É feita com o pagamento da competência de janeiro e não pode ser trocada durante o ano.",
+       "O SENAR ("+pct(c.rates.sen)+") incide sobre o faturamento nas duas opções. Produtor com holding paga 2,70% de outras entidades (salário-educação 2,50% + INCRA 0,20%) em vez de 0,20%.",
+       "Cálculo individual, por CPF, feito com os dados informados. Revisado todo ano em novembro."
+      ].forEach(function(t){ yy=wrap(cx,"• "+t,x+u*0.6,yy,w-u*1.2,u*0.58)+u*0.06; });
+      return yy;
+    })+G;
+  });
+  if(kind==="pdf") B.push(function(ctx,y){
+    y+=u*1.4; ctx.strokeStyle=C.ink; ctx.lineWidth=1.2; ctx.beginPath(); ctx.moveTo(x,y); ctx.lineTo(x+w*0.45,y); ctx.stroke();
+    ctx.fillStyle=C.ink; ctx.font=font("600",u*0.42); ctx.fillText(m.resp||"Responsável técnico",x,y+u*0.6);
+    ctx.fillStyle=C.muted; ctx.font=font("400",u*0.38); ctx.fillText(m.esc,x,y+u*1.1);
+    ra(ctx,"Emitido em "+new Date().toLocaleDateString("pt-BR"),x+w,y+u*0.6);
+    return y+u*1.4;
+  });
+  return {c:c,m:m,u:u,x:x,w:w,blocks:B};
+}
+function pageChrome(ctx,W,H,R,page,pages){
+  var u=R.u, m=R.m;
+  header(ctx,W,u*3.6,m,"Estudo comparativo · Funrural × Folha "+m.ano);
+  ctx.fillStyle=m.cor; ctx.fillRect(0,H-u*1.2,W,u*1.2);
+  ctx.fillStyle="#fff"; ctx.font=font("400",u*0.4); ctx.fillText([m.esc,m.contato].filter(Boolean).join("  ·  "),R.x,H-u*0.45);
+  ctx.textAlign="right"; ctx.fillStyle=GOLD; ctx.fillText(m.slogan+(pages>1?"    "+page+"/"+pages:""),R.x+R.w,H-u*0.45); ctx.textAlign="left";
+}
+/* imagem única, altura conforme o conteúdo */
+function drawLong(cv,W,scale,kind){
+  var R=reportBlocks(W,kind), u=R.u, top=u*5.2, y=top;
+  R.blocks.forEach(function(b){ y+=measure(b,y); });
+  var H=Math.ceil(y+u*2.2);
+  cv.width=W*scale; cv.height=H*scale; var ctx=cv.getContext("2d"); ctx.setTransform(scale,0,0,scale,0,0);
+  ctx.fillStyle="#fff"; ctx.fillRect(0,0,W,H); pageChrome(ctx,W,H,R,1,1);
+  y=top; R.blocks.forEach(function(b){ y=b(ctx,y); });
+}
+/* páginas A4: cada bloco vai inteiro para a página em que couber */
+function drawPages(W,H,scale){
+  var R=reportBlocks(W,"pdf"), u=R.u, top=u*5.2, bottom=H-u*2.0, pages=[[]], y=top;
+  R.blocks.forEach(function(b){ var h=measure(b,y); if(y+h>bottom && pages[pages.length-1].length){ pages.push([]); y=top; } pages[pages.length-1].push(b); y+=h; });
+  return pages.map(function(list,i){
+    var cv=document.createElement("canvas"); cv.width=W*scale; cv.height=H*scale; var ctx=cv.getContext("2d"); ctx.setTransform(scale,0,0,scale,0,0);
+    ctx.fillStyle="#fff"; ctx.fillRect(0,0,W,H); pageChrome(ctx,W,H,R,i+1,pages.length);
+    var yy=top; list.forEach(function(b){ yy=b(ctx,yy); }); return cv;
+  });
+}
+/* ---------- imagem do WhatsApp (resumo com a conta) ---------- */
 function drawWpp(cv,scale){
-  var W=1080,H=1350; cv.width=W*scale; cv.height=H*scale; var ctx=cv.getContext("2d"); ctx.setTransform(scale,0,0,scale,0,0);
-  var c=calc(), m=meta(), u=40, x=72, w=W-2*x;
+  var c=calc(), m=meta(), W=1080, u=40, x=72, w=W-2*x, B=[];
+  B.push(function(ctx,y){
+    ctx.fillStyle=C.muted; ctx.font=font("600",u*0.5); ctx.fillText("PRODUTOR RURAL"+(m.cpf?"  ·  CPF "+m.cpf:""),x,y);
+    ctx.fillStyle=C.ink; ctx.font=font("700",u*1.1); return wrap(ctx,m.nome,x,y+u*1.2,w,u*1.2,1)+u*0.3;
+  });
+  B.push(function(ctx,y){ return verdictBox(ctx,x,y,w,u*5,c,m,u)+u*1.3; });
+  B.push(function(ctx,y){
+    ctx.fillStyle=C.ink; ctx.font=font("700",u*0.62); ctx.fillText("Seus números",x,y); y+=u*0.6;
+    var cw=(w-u*0.5)/2, h=u*3.3;
+    [[x,"Faturamento anual",c.R,c.Rp],[x+cw+u*0.5,"Folha anual",c.F,c.Fp]].forEach(function(t){
+      ctx.fillStyle=C.soft; rrect(ctx,t[0],y,cw,h,u*0.3); ctx.fill();
+      ctx.fillStyle=C.muted; ctx.font=font("600",u*0.4); ctx.fillText(t[1].toUpperCase(),t[0]+u*0.5,y+u*0.85);
+      ctx.fillStyle=C.ink; ctx.font=font("700",u*0.7,FN); ctx.fillText(money(t[2]),t[0]+u*0.5,y+u*1.85);
+      ctx.fillStyle=C.muted; ctx.font=font("400",u*0.4);
+      wrap(ctx,c.meses===12?(m.periodo||"12 meses"):money(t[3])+" ÷ "+c.meses+" × 12",t[0]+u*0.5,y+u*2.6,cw-u,u*0.5,1);
+    });
+    return y+h+u*1.2;
+  });
+  B.push(function(ctx,y){
+    ctx.fillStyle=C.ink; ctx.font=font("700",u*0.62); ctx.fillText("Como calculamos",x,y); y+=u*0.6;
+    var L=[
+      ["folha","Sobre a folha",money(c.F)+" × "+pct(c.rates.payroll)+" + SENAR "+money(c.R)+" × "+pct(c.rates.sen),c.folha.total],
+      ["fat","Sobre o faturamento",money(c.R)+" × "+pct(c.rates.fun+c.rates.sen)+" (Funrural "+pct(c.rates.fun)+" + SENAR "+pct(c.rates.sen)+")",c.fat.total]];
+    L.forEach(function(l){
+      var win=c.best===l[0];
+      y=boxed(ctx,x,y,w,u,null,[win?C.accent:C.line,win?4:2],function(cx,yy){
+        cx.fillStyle=win?C.accent:C.muted; cx.font=font("700",u*0.42); cx.fillText((l[1]+(win?" · recomendada":"")).toUpperCase(),x+u*0.6,yy);
+        cx.fillStyle=C.ink; cx.font=font("400",u*0.46,FN); yy=wrap(cx,l[2],x+u*0.6,yy+u*0.75,w-u*1.2,u*0.6);
+        cx.font=font("700",u*0.72,FN); ra(cx,"= "+money(l[3])+" /ano",x+w-u*0.6,yy+u*0.35);
+        return yy+u*0.95;
+      })+u*0.4;
+    });
+    return y+u*0.8;
+  });
+  B.push(function(ctx,y){
+    ctx.fillStyle=C.ink; ctx.font=font("700",u*0.62); ctx.fillText("Por que essa opção",x,y); y+=u*0.95;
+    ctx.font=font("400",u*0.52);
+    var t=c.best==="tie"?"Informe folha e faturamento.":
+      "A folha compensa enquanto for menor que "+pct(c.be)+" do faturamento, ou seja, até "+money(c.limite)+" por ano. A folha deste produtor é "+pct(c.ratio)+" ("+money(c.F)+")"+(c.best==="folha"?", abaixo do limite.":", acima do limite.");
+    y=wrap(ctx,t,x,y,w,u*0.72);
+    if(c.best!=="tie") y=meter(ctx,x+u,y+u*0.9,w-u*2,c,u);
+    return y+u*0.6;
+  });
+  var top=290, y=top; B.forEach(function(b){ y+=measure(b,y); });
+  var H=Math.ceil(y+150);
+  cv.width=W*scale; cv.height=H*scale; var ctx=cv.getContext("2d"); ctx.setTransform(scale,0,0,scale,0,0);
   ctx.fillStyle="#fff"; ctx.fillRect(0,0,W,H);
   header(ctx,W,200,m,"Estudo comparativo · Funrural × Folha "+m.ano);
-  var y=290;
-  ctx.fillStyle=C.muted; ctx.font=font("600",u*0.5); ctx.fillText("PRODUTOR RURAL"+(m.cpf?"  ·  CPF "+m.cpf:""),x,y);
-  ctx.fillStyle=C.ink; ctx.font=font("700",u*1.15); y=wrap(ctx,m.nome,x,y+u*1.25,w,u*1.25,1);
-  if(m.periodo){ctx.fillStyle=C.muted; ctx.font=font("400",u*0.55); ctx.fillText("Base de cálculo: "+m.periodo,x,y); }
-  y+=u*0.8;
-  verdictBox(ctx,x,y,w,u*5.2,c,m,u); y+=u*5.2+u*1.6;
-  y=bars(ctx,x,y,w,c,u);
-  ctx.fillStyle=C.ink; ctx.font=font("700",u*0.62); ctx.fillText("Por que essa opção",x,y); y+=u*0.95;
-  ctx.font=font("400",u*0.56);
-  reasons(c).slice(0,3).forEach(function(r){ ctx.fillStyle=C.accent; ctx.fillRect(x,y-u*0.32,u*0.22,u*0.22); ctx.fillStyle=C.ink; y=wrap(ctx,r,x+u*0.55,y,w-u*0.55,u*0.74,2)+u*0.18; });
-  /* rodapé */
+  y=top; B.forEach(function(b){ y=b(ctx,y); });
   ctx.fillStyle=C.soft; ctx.fillRect(0,H-120,W,120);
-  ctx.fillStyle=C.muted; ctx.font=font("400",u*0.48);
+  ctx.fillStyle=C.muted; ctx.font=font("400",u*0.46);
   wrap(ctx,"A opção é feita com o pagamento de janeiro e vale para todo o ano de "+m.ano+". Cálculo por CPF.",x,H-74,w,u*0.6,1);
-  ctx.fillStyle=C.ink; ctx.font=font("600",u*0.48); ctx.fillText([m.resp,m.contato].filter(Boolean).join("  ·  ")||m.esc,x,H-36);
+  ctx.fillStyle=C.ink; ctx.font=font("600",u*0.46); ctx.fillText([m.resp,m.contato].filter(Boolean).join("  ·  ")||m.esc,x,H-34);
   brandLine(ctx,0,H-8,W,8,m.cor);
 }
-function table(ctx,x,y,w,title,rows,total,win,u){
-  ctx.strokeStyle=win?C.accent:C.line; ctx.lineWidth=win?3:1.5; rrect(ctx,x,y,w,u*(2.6+rows.length*0.9+1.6),u*0.35); ctx.stroke();
-  var p=u*0.6, yy=y+p+u*0.45;
-  ctx.fillStyle=win?C.accent:C.muted; ctx.font=font("700",u*0.38); ctx.fillText(win?"RECOMENDADA":"ALTERNATIVA",x+p,yy);
-  yy+=u*0.75; ctx.fillStyle=C.ink; ctx.font=font("700",u*0.55); ctx.fillText(title,x+p,yy); yy+=u*0.95;
-  rows.forEach(function(r){ ctx.fillStyle=C.ink; ctx.font=font("400",u*0.44); ctx.fillText(r[0],x+p,yy);
-    ctx.fillStyle=C.muted; ctx.textAlign="right"; ctx.fillText(r[1],x+w*0.62,yy);
-    ctx.fillStyle=C.ink; ctx.font=font("400",u*0.44,FN); ctx.fillText(r[2],x+w-p,yy); ctx.textAlign="left";
-    ctx.strokeStyle=C.line; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(x+p,yy+u*0.3); ctx.lineTo(x+w-p,yy+u*0.3); ctx.stroke(); yy+=u*0.9; });
-  ctx.font=font("700",u*0.5); ctx.fillText("Total anual",x+p,yy+u*0.2); ctx.textAlign="right"; ctx.font=font("700",u*0.55,FN); ctx.fillText(total[0],x+w-p,yy+u*0.2);
-  ctx.font=font("400",u*0.38); ctx.fillStyle=C.muted; ctx.fillText(total[1],x+w-p,yy+u*0.8); ctx.textAlign="left";
-  return y+u*(2.6+rows.length*0.9+1.6);
-}
-function drawDetailed(cv,W,H,scale,kind){
-  cv.width=W*scale; cv.height=H*scale; var ctx=cv.getContext("2d"); ctx.setTransform(scale,0,0,scale,0,0);
-  var c=calc(), m=meta(), u=W/30, x=W*0.06, w=W-2*x;
-  ctx.fillStyle="#fff"; ctx.fillRect(0,0,W,H);
-  header(ctx,W,u*3.6,m,"Estudo comparativo · Funrural × Folha "+m.ano);
-  var y=u*5.4;
-  ctx.fillStyle=C.muted; ctx.font=font("600",u*0.4); ctx.fillText(("Produtor rural"+(m.cpf?"  ·  CPF "+m.cpf:"")+(m.periodo?"  ·  Base: "+m.periodo:"")).toUpperCase(),x,y);
-  ctx.fillStyle=C.ink; ctx.font=font("700",u*0.95); y=wrap(ctx,m.nome,x,y+u*1.1,w,u*1.05,1)+u*0.2;
-  ctx.font=font("400",u*0.48); ctx.fillStyle=C.muted;
-  y=wrap(ctx,"Comparamos o custo anual da contribuição previdenciária nas duas formas permitidas ao produtor rural pessoa física, com base na folha de "+money(c.F)+" e na receita de "+money(c.R)+".",x,y,w,u*0.7)+u*0.4;
-  verdictBox(ctx,x,y,w,u*4,c,m,u*0.8); y+=u*4+u*0.8;
-  var cw=(w-u*0.8)/2;
-  var y1=table(ctx,x,y,cw,"Sobre a folha",[
-    ["INSS patronal",pct(c.rates.pat),money(c.folha.pat)],["RAT",pct(c.rates.rat),money(c.folha.rat)],
-    ["Outras entidades",pct(c.rates.out),money(c.folha.out)],["SENAR s/ receita",pct(c.rates.sen),money(c.folha.senar)]],
-    [money(c.folha.total),"média mensal "+money(c.folha.mensal)],c.best==="folha",u);
-  table(ctx,x+cw+u*0.8,y,cw,"Sobre o faturamento",[
-    ["Funrural + RAT",pct(c.rates.fun),money(c.fat.fun)],["SENAR",pct(c.rates.sen),money(c.fat.senar)]],
-    [money(c.fat.total),"média mensal "+money(c.fat.mensal)],c.best==="fat",u);
-  y=y1+u*1.1;
-  ctx.fillStyle=C.ink; ctx.font=font("700",u*0.58); ctx.fillText("Por que essa é a melhor opção",x,y); y+=u*0.85;
-  ctx.font=font("400",u*0.47);
-  reasons(c).forEach(function(r){ ctx.fillStyle=C.accent; ctx.fillRect(x,y-u*0.28,u*0.18,u*0.18); ctx.fillStyle=C.ink; y=wrap(ctx,r,x+u*0.45,y,w-u*0.45,u*0.66)+u*0.12; });
-  y+=u*0.5;
-  ctx.fillStyle=C.soft; var bh=u*(kind==="pdf"?5.6:4.6); rrect(ctx,x,y,w,bh,u*0.3); ctx.fill();
-  var yy=y+u*0.8; ctx.fillStyle=C.ink; ctx.font=font("700",u*0.47); ctx.fillText("Regras da opção",x+u*0.6,yy); yy+=u*0.72;
-  ctx.font=font("400",u*0.42); ctx.fillStyle=C.muted;
-  ["Opção anual prevista no art. 25, §13, da Lei 8.212/1991 (Lei 13.606/2018), feita com o pagamento da competência de janeiro e irretratável no ano.",
-   "O SENAR (0,2%) incide sobre a receita nas duas opções. Com holding, outras entidades passam de 0,2% para 2,7% (salário-educação).",
-   kind==="pdf"?"Cálculo por CPF. Média mensal da folha dividida por 13 (inclui 13º salário). Simulação feita com os dados informados pelo produtor.":"Cálculo por CPF, revisado todo ano em novembro."
-  ].forEach(function(t){ yy=wrap(ctx,"• "+t,x+u*0.6,yy,w-u*1.2,u*0.6)+u*0.05; });
-  y+=bh+u*0.9;
-  if(kind==="pdf"){
-    var sy=H-u*3.2; ctx.strokeStyle=C.ink; ctx.lineWidth=1.2; ctx.beginPath(); ctx.moveTo(x,sy); ctx.lineTo(x+w*0.45,sy); ctx.stroke();
-    ctx.fillStyle=C.ink; ctx.font=font("600",u*0.42); ctx.fillText(m.resp||"Responsável técnico",x,sy+u*0.6);
-    ctx.fillStyle=C.muted; ctx.font=font("400",u*0.38); ctx.fillText(m.esc,x,sy+u*1.1);
-    ctx.textAlign="right"; ctx.fillText("Emitido em "+new Date().toLocaleDateString("pt-BR"),x+w,sy+u*0.6); ctx.textAlign="left";
-  }
-  ctx.fillStyle=m.cor; ctx.fillRect(0,H-u*1.2,W,u*1.2);
-  ctx.fillStyle="#fff"; ctx.font=font("400",u*0.4); ctx.fillText([m.esc,m.contato].filter(Boolean).join("  ·  "),x,H-u*0.45);
-  ctx.textAlign="right"; ctx.fillStyle=GOLD; ctx.fillText(m.slogan,x+w,H-u*0.45); ctx.textAlign="left";
-}
 
-/* ---------- PDF mínimo (imagem JPEG em página A4), sem bibliotecas ---------- */
-function pdfFromJpeg(jpeg,pw,ph,iw,ih){
-  var enc=new TextEncoder(), parts=[], len=0, offs=[];
+/* ---------- PDF mínimo (uma imagem JPEG por página A4), sem bibliotecas ---------- */
+function pdfFromJpegs(imgs,pw,ph){
+  var enc=new TextEncoder(), parts=[], len=0, offs=[], n=imgs.length;
   function add(x){var b=typeof x==="string"?enc.encode(x):x; parts.push(b); len+=b.length}
-  function obj(n,body,stream){offs[n]=len; add(n+" 0 obj\n"+body); if(stream){add("\nstream\n");add(stream);add("\nendstream")} add("\nendobj\n")}
+  function obj(i,body,stream){offs[i]=len; add(i+" 0 obj\n"+body); if(stream){add("\nstream\n");add(stream);add("\nendstream")} add("\nendobj\n")}
   add("%PDF-1.4\n%\xE2\xE3\xCF\xD3\n");
-  var content="q "+pw+" 0 0 "+ph+" 0 0 cm /Im0 Do Q";
+  var kids=[]; for(var i=0;i<n;i++) kids.push((3+i*3)+" 0 R");
   obj(1,"<< /Type /Catalog /Pages 2 0 R >>");
-  obj(2,"<< /Type /Pages /Kids [3 0 R] /Count 1 >>");
-  obj(3,"<< /Type /Page /Parent 2 0 R /MediaBox [0 0 "+pw+" "+ph+"] /Resources << /XObject << /Im0 5 0 R >> >> /Contents 4 0 R >>");
-  obj(4,"<< /Length "+content.length+" >>",enc.encode(content));
-  obj(5,"<< /Type /XObject /Subtype /Image /Width "+iw+" /Height "+ih+" /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length "+jpeg.length+" >>",jpeg);
-  var x=len; add("xref\n0 6\n0000000000 65535 f \n");
-  for(var i=1;i<=5;i++) add(String(offs[i]).padStart(10,"0")+" 00000 n \n");
-  add("trailer\n<< /Size 6 /Root 1 0 R >>\nstartxref\n"+x+"\n%%EOF");
-  var out=new Uint8Array(len),p=0; parts.forEach(function(b){out.set(b,p);p+=b.length}); return out;
+  obj(2,"<< /Type /Pages /Kids ["+kids.join(" ")+"] /Count "+n+" >>");
+  imgs.forEach(function(im,i){
+    var p=3+i*3, content="q "+pw+" 0 0 "+ph+" 0 0 cm /Im0 Do Q";
+    obj(p,"<< /Type /Page /Parent 2 0 R /MediaBox [0 0 "+pw+" "+ph+"] /Resources << /XObject << /Im0 "+(p+2)+" 0 R >> >> /Contents "+(p+1)+" 0 R >>");
+    obj(p+1,"<< /Length "+content.length+" >>",enc.encode(content));
+    obj(p+2,"<< /Type /XObject /Subtype /Image /Width "+im.w+" /Height "+im.h+" /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length "+im.data.length+" >>",im.data);
+  });
+  var total=3+n*3, x=len; add("xref\n0 "+total+"\n0000000000 65535 f \n");
+  for(var k=1;k<total;k++) add(String(offs[k]).padStart(10,"0")+" 00000 n \n");
+  add("trailer\n<< /Size "+total+" /Root 1 0 R >>\nstartxref\n"+x+"\n%%EOF");
+  var out=new Uint8Array(len),q=0; parts.forEach(function(b){out.set(b,q);q+=b.length}); return out;
 }
 function dataUrlBytes(u){var b=atob(u.split(",")[1]),a=new Uint8Array(b.length);for(var i=0;i<b.length;i++)a[i]=b.charCodeAt(i);return a}
 function canvasBlob(cv,type,q){return new Promise(function(res){cv.toBlob(function(b){res(b)},type,q)})}
@@ -525,11 +735,10 @@ function saveFile(name,blob){
   setTimeout(function(){URL.revokeObjectURL(url)},4000); status("Arquivo gerado: "+name); return Promise.resolve();
 }
 function makeWpp(){var cv=document.createElement("canvas"); drawWpp(cv,1); return canvasBlob(cv,"image/png")}
-function makeMailImg(){var cv=document.createElement("canvas"); drawDetailed(cv,1200,1380,1,"mail"); return canvasBlob(cv,"image/png")}
+function makeMailImg(){var cv=document.createElement("canvas"); drawLong(cv,1200,1,"mail"); return canvasBlob(cv,"image/png")}
 function makePdf(){
-  var cv=document.createElement("canvas"), W=1240,H=1754,s=1.6; drawDetailed(cv,W,H,s,"pdf");
-  var jpg=dataUrlBytes(cv.toDataURL("image/jpeg",0.92));
-  return Promise.resolve(new Blob([pdfFromJpeg(jpg,595.28,841.89,cv.width,cv.height)],{type:"application/pdf"}));
+  var pages=drawPages(1240,1754,1.6).map(function(cv){return {data:dataUrlBytes(cv.toDataURL("image/jpeg",0.9)),w:cv.width,h:cv.height}});
+  return Promise.resolve(new Blob([pdfFromJpegs(pages,595.28,841.89)],{type:"application/pdf"}));
 }
 $("bWpp").onclick=function(){status("Gerando imagem…"); makeWpp().then(function(b){return saveFile("funrural-"+slug()+"-whatsapp.png",b)})};
 $("bMailImg").onclick=function(){status("Gerando imagem…"); makeMailImg().then(function(b){return saveFile("funrural-"+slug()+"-email.png",b)})};
@@ -552,13 +761,14 @@ function showLogo(){
   var im=new Image(); im.onload=function(){state.logoImg=im; render()}; im.src=src;
 }
 $("logo").onchange=function(e){ var f=e.target.files[0]; if(!f) return; var r=new FileReader(); r.onload=function(){state.logo=r.result; showLogo(); render()}; r.readAsDataURL(f); };
-var FIELDS=["nome","cpf","ano","periodo","folha","receita","rat","aPat","aOut","aFun","aSen","escritorio","resp","contato","cor","slogan_in"];
+var FIELDS=["nome","cpf","ano","periodo","folha","receita","meses","fonteF","fonteR","rat","aPat","aOut","aFun","aSen","escritorio","resp","contato","cor","slogan_in"];
 function save(){ try{ var o={holding:state.holding,logo:state.logo}; FIELDS.forEach(function(k){o[k]=$(k).value}); localStorage.setItem(LS,JSON.stringify(o)); }catch(e){} }
 function load(){ try{ var o=JSON.parse(localStorage.getItem(LS)||"null"); if(!o) return; FIELDS.forEach(function(k){ if(o[k]!=null) $(k).value=o[k] }); state.holding=!!o.holding; state.logo=o.logo||null;
   $("holdS").setAttribute("aria-pressed",state.holding); $("holdN").setAttribute("aria-pressed",!state.holding); $("sampleNote").hidden=true; }catch(e){} }
 function fmtMoneyInput(el){ var n=num(el.value); el.value=n?n.toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2}):""; }
 ["folha","receita"].forEach(function(id){ $(id).addEventListener("blur",function(){fmtMoneyInput($(id)); render()}) });
 $("f").addEventListener("input",function(){ $("sampleNote").hidden=true; render() });
+["fonteF","fonteR"].forEach(function(id){ $(id).addEventListener("input",render) });
 $("f").addEventListener("submit",function(e){e.preventDefault()});
 
 load(); showLogo(); render();
