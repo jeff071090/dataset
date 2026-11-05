@@ -1,0 +1,564 @@
+<title>Simulador Funrural Prisma</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: faixa de marca no topo; abaixo, formulário (esq.) + parecer ao vivo (dir.); depois, explicação e exportações. */
+:root{
+  --brand:#1f2b5e;        /* Azul Prisma (editável na tela) */
+  --brand-ink:#ffffff;
+  --accent:#0f8f7e;       /* economia / opção recomendada */
+  --warn:#b4541a;         /* opção mais cara */
+  --bg:#f4f5f9;
+  --surface:#ffffff;
+  --fg:#171b2e;
+  --muted:#5b6178;
+  --line:#dde0ea;
+  --field:#eef4ff;        /* campos “em azul” da planilha */
+  --field-line:#9db6e8;
+  --font-display:"Avenir Next","Segoe UI Semibold","Helvetica Neue",Arial,sans-serif;
+  --font-body:"Segoe UI",system-ui,-apple-system,Roboto,"Helvetica Neue",Arial,sans-serif;
+  --font-num:ui-monospace,"SF Mono","Cascadia Mono",Consolas,monospace;
+  --spectrum:linear-gradient(90deg,#6a3fb5,#2f6fd6,#16a3b8,#2fae5f,#e7b416,#e8762b,#d63b3b);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0f1220;--surface:#171b2e;--fg:#e9ebf4;--muted:#9aa1bb;--line:#2a3050;--field:#1c2547;--field-line:#3c5596;--accent:#2cc2a9;--warn:#f0915a;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0f1220;--surface:#171b2e;--fg:#e9ebf4;--muted:#9aa1bb;--line:#2a3050;--field:#1c2547;--field-line:#3c5596;--accent:#2cc2a9;--warn:#f0915a;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:15px;line-height:1.5}
+.band{background:var(--brand);color:var(--brand-ink)}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.band .wrap{padding-block:18px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.spectrum{height:4px;background:var(--spectrum)}
+.logo{width:46px;height:46px;flex:none;display:grid;place-items:center}
+.logo img{max-width:46px;max-height:46px;object-fit:contain}
+.brandname{font-family:var(--font-display);font-weight:700;letter-spacing:.14em;text-transform:uppercase;font-size:15px;line-height:1.2}
+.brandname small{display:block;letter-spacing:.06em;text-transform:none;font-weight:400;opacity:.8;font-size:13px}
+.band .tag{margin-left:auto;font-size:12px;letter-spacing:.08em;text-transform:uppercase;opacity:.85}
+main.wrap{padding-block:28px 48px;display:grid;gap:28px}
+h1{font-family:var(--font-display);font-size:clamp(24px,3.4vw,34px);line-height:1.15;margin:0;text-wrap:balance}
+h2{font-family:var(--font-display);font-size:19px;margin:0 0 4px;text-wrap:balance}
+.lead{color:var(--muted);max-width:68ch;margin:6px 0 0}
+.grid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:24px;align-items:start}
+@media (max-width:880px){.grid{grid-template-columns:minmax(0,1fr)}}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:20px}
+.eyebrow{font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:600}
+form{display:grid;gap:14px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:480px){.row{grid-template-columns:1fr}}
+label{display:grid;gap:4px;font-size:13px;color:var(--muted);font-weight:600}
+label .hint{font-weight:400;font-size:12px}
+input,select{font:inherit;color:var(--fg);background:var(--surface);border:1px solid var(--line);border-radius:7px;padding:9px 11px;width:100%;min-width:0}
+input.money,input.blue{background:var(--field);border-color:var(--field-line);font-family:var(--font-num);font-size:15px}
+input:focus-visible,select:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.seg{display:flex;border:1px solid var(--line);border-radius:7px;overflow:hidden}
+.seg button{flex:1;border:0;background:transparent;color:var(--fg);padding:9px 6px;font:inherit;font-size:13px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--brand);color:var(--brand-ink)}
+details{border-top:1px dashed var(--line);padding-top:10px}
+summary{cursor:pointer;font-size:13px;color:var(--muted);font-weight:600}
+details .row{margin-top:10px}
+.sample{font-size:12px;color:var(--warn);font-weight:600}
+/* resultado */
+.verdict{border-radius:10px;padding:20px;background:var(--brand);color:var(--brand-ink);display:grid;gap:6px}
+.verdict .big{font-family:var(--font-display);font-size:clamp(20px,2.6vw,26px);font-weight:700;line-height:1.2;text-wrap:balance}
+.verdict .save{font-family:var(--font-num);font-size:clamp(26px,4vw,38px);font-weight:700;line-height:1.1}
+.verdict .save small{display:block;margin-top:4px;font-family:var(--font-body);font-size:14px;font-weight:400;opacity:.85}
+.verdict.tie{background:var(--muted)}
+.cmp{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px}
+@media (max-width:480px){.cmp{grid-template-columns:1fr}}
+.opt{border:1px solid var(--line);border-radius:10px;padding:14px;display:grid;gap:8px;min-width:0}
+.opt.win{border:2px solid var(--accent)}
+.opt .pill{justify-self:start;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:99px;background:var(--accent);color:#fff;white-space:nowrap}
+.opt .pill.lose{background:transparent;color:var(--warn);border:1px solid var(--warn)}
+.opt h3{margin:0;font-size:14px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+td{padding:4px 0;border-bottom:1px solid var(--line);vertical-align:top}
+td.n{text-align:right;font-family:var(--font-num);font-variant-numeric:tabular-nums;white-space:nowrap;padding-left:8px}
+td.p{color:var(--muted);text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap;padding-left:6px;font-size:12px}
+tr.tot td{border-bottom:0;font-weight:700;padding-top:7px}
+.month{font-size:12px;color:var(--muted)}
+.meter{margin-top:18px;display:grid;gap:8px}
+.meter-bar{position:relative;height:14px;border-radius:99px;background:linear-gradient(90deg,var(--accent) 0 var(--be),var(--warn) var(--be) 100%);opacity:.9}
+.meter-dot{position:absolute;top:50%;width:20px;height:20px;border-radius:50%;background:var(--surface);border:3px solid var(--fg);transform:translate(-50%,-50%)}
+.meter-legend{display:flex;justify-content:space-between;gap:10px;font-size:12px;color:var(--muted);flex-wrap:wrap}
+/* exportar */
+.exports{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.btn{display:grid;gap:2px;text-align:left;border:1px solid var(--line);background:var(--surface);color:var(--fg);border-radius:10px;padding:14px;cursor:pointer;font:inherit}
+.btn strong{font-size:14px}
+.btn span{font-size:12px;color:var(--muted)}
+.btn:hover{border-color:var(--brand)}
+.btn.primary{background:var(--brand);color:var(--brand-ink);border-color:var(--brand)}
+.btn.primary span{color:var(--brand-ink);opacity:.8}
+.status{min-height:1.5em;font-size:13px;color:var(--accent);font-weight:600}
+.preview{display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start;margin-top:14px}
+.preview figure{margin:0;display:grid;gap:6px;min-width:0}
+.preview canvas{display:block;max-width:100%;height:auto;border:1px solid var(--line);border-radius:6px;background:#fff}
+.preview figcaption{font-size:12px;color:var(--muted)}
+textarea{width:100%;min-height:150px;font:13px/1.45 var(--font-num);background:var(--field);color:var(--fg);border:1px solid var(--field-line);border-radius:8px;padding:10px;resize:vertical}
+/* porque */
+.why{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media (max-width:760px){.why{grid-template-columns:1fr}}
+.why ul{margin:8px 0 0;padding-left:18px;display:grid;gap:6px}
+.rules{display:grid;gap:8px;font-size:14px;max-width:80ch}
+.rules p{margin:0}
+footer.wrap{padding-block:0 32px;font-size:12px;color:var(--muted)}
+@media (prefers-reduced-motion:no-preference){.meter-dot{transition:left .35s ease}}
+</style>
+
+<header>
+  <div class="band"><div class="wrap">
+    <div class="logo" id="logoBox" aria-hidden="true"></div>
+    <div class="brandname"><span id="brandTitle">Prisma Contabilidade</span><small>Assessoria contábil ao produtor rural</small></div>
+    <div class="tag">Estudo comparativo · Funrural × Folha</div>
+  </div></div>
+  <div class="spectrum"></div>
+</header>
+
+<main class="wrap">
+  <section>
+    <div class="eyebrow">Opção para o ano-calendário <span id="anoTop">2027</span></div>
+    <h1>Contribuição sobre a folha ou sobre o faturamento?</h1>
+    <p class="lead">Informe a folha anual e a receita da produção do produtor (por CPF). O simulador refaz o cálculo da planilha <em>Modelo Cálculo Funrural</em>, aponta a opção mais barata e gera o material para enviar por WhatsApp ou e-mail.</p>
+  </section>
+
+  <div class="grid">
+    <section class="panel" aria-labelledby="h-dados">
+      <h2 id="h-dados">Dados do produtor</h2>
+      <p class="sample" id="sampleNote">Valores de exemplo. Substitua pelos números do cliente.</p>
+      <form id="f" autocomplete="off">
+        <div class="row">
+          <label for="nome">Produtor rural<input id="nome" value="Produtor Exemplo"></label>
+          <label for="cpf">CPF<input id="cpf" inputmode="numeric" placeholder="000.000.000-00"></label>
+        </div>
+        <div class="row">
+          <label for="ano">Ano da opção<input id="ano" class="blue" inputmode="numeric" value="2027"></label>
+          <label for="periodo">Período-base dos números<input id="periodo" value="jan a out/2026"></label>
+        </div>
+        <label for="folha">Média anual de salários (folha bruta) <span class="hint">Relatório da Domínio com a média anual de salários</span>
+          <input id="folha" class="money" inputmode="decimal" value="480.000,00"></label>
+        <label for="receita">Receita com venda da produção <span class="hint">Por CFOP que gera faturamento, menos devoluções de venda</span>
+          <input id="receita" class="money" inputmode="decimal" value="12.000.000,00"></label>
+        <div class="row">
+          <label for="rat">RAT (grau de risco)
+            <select id="rat"><option value="1">1%</option><option value="2">2%</option><option value="3" selected>3%</option></select></label>
+          <div><label id="lb-hold">Possui holding?</label>
+            <div class="seg" role="group" aria-labelledby="lb-hold">
+              <button type="button" id="holdN" aria-pressed="true">Não · 0,20%</button>
+              <button type="button" id="holdS" aria-pressed="false">Sim · 2,70%</button>
+            </div></div>
+        </div>
+        <details>
+          <summary>Alíquotas (padrão da planilha)</summary>
+          <div class="row">
+            <label for="aPat">INSS patronal %<input id="aPat" class="blue" inputmode="decimal" value="20"></label>
+            <label for="aOut">Outras entidades %<input id="aOut" class="blue" inputmode="decimal" value="0,2"></label>
+          </div>
+          <div class="row">
+            <label for="aFun">Funrural + RAT % (faturamento)<input id="aFun" class="blue" inputmode="decimal" value="1,43"></label>
+            <label for="aSen">SENAR % (sempre sobre receita)<input id="aSen" class="blue" inputmode="decimal" value="0,2"></label>
+          </div>
+        </details>
+        <details>
+          <summary>Marca e assinatura</summary>
+          <div class="row">
+            <label for="escritorio">Escritório<input id="escritorio" value="Prisma Contabilidade"></label>
+            <label for="resp">Responsável técnico<input id="resp" placeholder="Nome · CRC"></label>
+          </div>
+          <div class="row">
+            <label for="contato">Contato (rodapé)<input id="contato" placeholder="(00) 00000-0000 · e-mail"></label>
+            <label for="cor">Cor da marca<input id="cor" type="color" value="#1f2b5e"></label>
+          </div>
+          <label for="logo">Logotipo (PNG/JPG/SVG)<input id="logo" type="file" accept="image/*"></label>
+        </details>
+      </form>
+    </section>
+
+    <section aria-labelledby="h-res" aria-live="polite">
+      <h2 id="h-res" class="eyebrow">Parecer</h2>
+      <div class="verdict" id="verdict">
+        <div class="big" id="vTitle"></div>
+        <div class="save" id="vSave"></div>
+      </div>
+      <div class="cmp">
+        <div class="opt" id="optFolha">
+          <span class="pill" id="pillFolha"></span>
+          <h3>Contribuição sobre a folha</h3>
+          <table><tbody id="tFolha"></tbody></table>
+          <div class="month" id="mFolha"></div>
+        </div>
+        <div class="opt" id="optFat">
+          <span class="pill" id="pillFat"></span>
+          <h3>Contribuição sobre o faturamento</h3>
+          <table><tbody id="tFat"></tbody></table>
+          <div class="month" id="mFat"></div>
+        </div>
+      </div>
+      <div class="meter panel">
+        <div class="eyebrow">Ponto de equilíbrio</div>
+        <div style="font-size:14px" id="beText"></div>
+        <div class="meter-bar" id="meterBar"><div class="meter-dot" id="meterDot"></div></div>
+        <div class="meter-legend"><span>← folha compensa</span><span id="beMark"></span><span>faturamento compensa →</span></div>
+      </div>
+    </section>
+  </div>
+
+  <section class="panel" aria-labelledby="h-exp">
+    <h2 id="h-exp">Enviar ao cliente</h2>
+    <p class="lead" style="margin-top:0">Tudo é gerado no próprio navegador, sem internet e sem enviar dados a nenhum servidor.</p>
+    <div class="exports" style="margin-top:12px">
+      <button class="btn primary" type="button" id="bWpp"><strong>Imagem para WhatsApp</strong><span>PNG 1080 × 1350 (retrato)</span></button>
+      <button class="btn" type="button" id="bMailImg"><strong>Imagem para e-mail</strong><span>PNG 1200 px, com detalhamento</span></button>
+      <button class="btn" type="button" id="bPdf"><strong>PDF para e-mail</strong><span>A4, parecer completo</span></button>
+      <button class="btn" type="button" id="bText"><strong>Copiar texto</strong><span>Mensagem pronta para colar</span></button>
+      <button class="btn" type="button" id="bShare" hidden><strong>Compartilhar</strong><span>Abre o WhatsApp/e-mail do aparelho</span></button>
+    </div>
+    <div class="status" id="status" role="status"></div>
+    <div class="preview">
+      <figure><canvas id="pvWpp" width="1080" height="1350" style="width:270px"></canvas><figcaption>Prévia · WhatsApp</figcaption></figure>
+      <figure style="flex:1 1 300px"><textarea id="msg" aria-label="Texto para WhatsApp ou e-mail" readonly></textarea><figcaption>Texto da mensagem</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="panel" aria-labelledby="h-why">
+    <h2 id="h-why">Por que optar por uma ou outra</h2>
+    <div class="why">
+      <div>
+        <h3 style="margin:8px 0 0;font-size:15px">Folha de pagamento compensa quando…</h3>
+        <ul>
+          <li>a receita é alta e a folha é enxuta (grãos mecanizados, pecuária extensiva);</li>
+          <li>o custo da folha (patronal + RAT + terceiros) fica abaixo do Funrural sobre toda a venda;</li>
+          <li>há previsão de safra cheia e preço bom, que aumentariam o Funrural na mesma proporção.</li>
+        </ul>
+      </div>
+      <div>
+        <h3 style="margin:8px 0 0;font-size:15px">Faturamento compensa quando…</h3>
+        <ul>
+          <li>a atividade usa muita mão de obra (café, hortifrúti, leite, colheita manual);</li>
+          <li>a receita é baixa ou incerta, porque o tributo acompanha a venda e cai em ano de quebra;</li>
+          <li>o produtor tem holding e paga 2,5% de salário-educação a mais sobre a folha.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="rules" style="margin-top:16px">
+      <div class="eyebrow">Regras da opção</div>
+      <p>O produtor rural pessoa física escolhe, uma vez por ano, recolher sobre a receita bruta da comercialização (Funrural) ou sobre a folha de salários (art. 25, §13, da Lei 8.212/1991, incluído pela Lei 13.606/2018).</p>
+      <p>A opção é feita com o pagamento da contribuição de janeiro e vale, sem troca, para todo o ano-calendário. Por isso a simulação é refeita em novembro, para a decisão estar pronta em dezembro.</p>
+      <p>O SENAR (0,2%) continua sobre a receita em qualquer das opções. O cálculo é sempre individual, por CPF.</p>
+    </div>
+  </section>
+</main>
+<footer class="wrap">Simulação baseada nos dados informados e nas alíquotas indicadas. Não substitui a análise do contador responsável.</footer>
+
+<script>
+(function(){
+"use strict";
+var $=function(id){return document.getElementById(id)};
+var BRL=new Intl.NumberFormat("pt-BR",{style:"currency",currency:"BRL"});
+var PCT=new Intl.NumberFormat("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2});
+function money(v){return BRL.format(v||0)}
+function pct(v){return PCT.format(v*100)+"%"}
+function num(s){ s=String(s||"").replace(/[^\d,.-]/g,""); if(s.indexOf(",")>=0){s=s.replace(/\./g,"").replace(",",".")} var n=parseFloat(s); return isFinite(n)?n:0 }
+var state={holding:false,logo:null};
+var LS="prisma-funrural-v1";
+
+/* ---------- cálculo (mesma lógica da planilha) ---------- */
+function calc(){
+  var F=num($("folha").value), R=num($("receita").value);
+  var rat=num($("rat").value)/100, pat=num($("aPat").value)/100, out=num($("aOut").value)/100;
+  var fun=num($("aFun").value)/100, sen=num($("aSen").value)/100;
+  var folha={
+    pat:F*pat, rat:F*rat, out:F*out, senar:R*sen
+  };
+  folha.total=folha.pat+folha.rat+folha.out+folha.senar;
+  folha.mensal=folha.total/13; /* planilha: média mensal = total ÷ 13 (inclui 13º) */
+  var fat={fun:R*fun, senar:R*sen}; fat.total=fat.fun+fat.senar; fat.mensal=fat.total/12;
+  var diff=Math.abs(folha.total-fat.total);
+  var best = folha.total>fat.total ? "fat" : (folha.total<fat.total ? "folha" : "tie");
+  if(F===0&&R===0) best="tie";
+  var payroll=pat+rat+out;
+  var be = payroll>0 ? fun/payroll : 0;     /* folha ÷ receita no ponto de equilíbrio */
+  var ratio = R>0 ? F/R : 0;
+  return {F:F,R:R,rates:{pat:pat,rat:rat,out:out,fun:fun,sen:sen,payroll:payroll},folha:folha,fat:fat,diff:diff,best:best,be:be,ratio:ratio,
+    pctSave: best==="folha"&&fat.total>0 ? diff/fat.total : (best==="fat"&&folha.total>0? diff/folha.total:0)};
+}
+function meta(){
+  return {nome:$("nome").value.trim()||"Produtor rural",cpf:$("cpf").value.trim(),ano:$("ano").value.trim()||"—",
+    periodo:$("periodo").value.trim(),esc:$("escritorio").value.trim()||"Prisma Contabilidade",resp:$("resp").value.trim(),contato:$("contato").value.trim(),
+    cor:$("cor").value||"#1f2b5e"};
+}
+var LABEL={folha:"Contribuição sobre a FOLHA",fat:"Contribuição sobre o FATURAMENTO (Funrural)"};
+function reasons(c){
+  var r=[];
+  if(c.best==="folha"){
+    r.push("A folha anual equivale a "+pct(c.ratio)+" da receita, abaixo do ponto de equilíbrio de "+pct(c.be)+".");
+    r.push("Pela folha, o INSS incide sobre "+money(c.F)+" de salários; pelo faturamento, incidiria sobre "+money(c.R)+" de vendas.");
+    r.push("O SENAR (0,2% da receita) é igual nas duas opções e não altera a escolha.");
+  }else if(c.best==="fat"){
+    r.push("A folha anual equivale a "+pct(c.ratio)+" da receita, acima do ponto de equilíbrio de "+pct(c.be)+".");
+    r.push("Com mão de obra relevante, "+pct(c.rates.payroll)+" sobre a folha pesa mais que "+pct(c.rates.fun)+" sobre as vendas.");
+    r.push("No faturamento, o tributo acompanha a venda: se a safra quebrar, o valor recolhido cai junto.");
+  }else{
+    r.push("As duas opções têm o mesmo custo com os números informados.");
+  }
+  return r;
+}
+
+/* ---------- tela ---------- */
+function rowsHTML(rows){return rows.map(function(r){return '<tr class="'+(r[3]||"")+'"><td>'+r[0]+'</td><td class="p">'+r[1]+'</td><td class="n">'+r[2]+'</td></tr>'}).join("")}
+function render(){
+  var c=calc(), m=meta();
+  document.documentElement.style.setProperty("--brand",m.cor);
+  $("brandTitle").textContent=m.esc; $("anoTop").textContent=m.ano;
+  var v=$("verdict"); v.classList.toggle("tie",c.best==="tie");
+  if(c.best==="tie"){ $("vTitle").textContent="Preencha folha e receita para ver a melhor opção"; $("vSave").textContent=""; }
+  else{ $("vTitle").textContent="Melhor opção para "+m.ano+": "+LABEL[c.best];
+    $("vSave").innerHTML=money(c.diff)+' <small>de economia prevista no ano ('+pct(c.pctSave)+' a menos)</small>'; }
+  $("tFolha").innerHTML=rowsHTML([
+    ["INSS patronal",pct(c.rates.pat),money(c.folha.pat)],
+    ["RAT",pct(c.rates.rat),money(c.folha.rat)],
+    ["Outras entidades"+(state.holding?" (holding)":""),pct(c.rates.out),money(c.folha.out)],
+    ["SENAR s/ receita",pct(c.rates.sen),money(c.folha.senar)],
+    ["Total anual","",money(c.folha.total),"tot"]]);
+  $("tFat").innerHTML=rowsHTML([
+    ["Funrural + RAT",pct(c.rates.fun),money(c.fat.fun)],
+    ["SENAR",pct(c.rates.sen),money(c.fat.senar)],
+    ["Total anual","",money(c.fat.total),"tot"]]);
+  $("mFolha").textContent="Média mensal: "+money(c.folha.mensal)+" (÷ 13)";
+  $("mFat").textContent="Média mensal: "+money(c.fat.mensal)+" (÷ 12)";
+  var pf=$("pillFolha"), pa=$("pillFat");
+  [["folha",pf,$("optFolha")],["fat",pa,$("optFat")]].forEach(function(x){
+    var win=c.best===x[0]; x[2].classList.toggle("win",win);
+    x[1].hidden=c.best==="tie"; x[1].className="pill"+(win?"":" lose"); x[1].textContent=win?"Recomendada":"+ "+money(c.diff)+" no ano"; });
+  /* medidor: escala 0 a 2× o ponto de equilíbrio */
+  var max=Math.max(c.be*2,0.0001), bePos=50, dot=Math.min(100,Math.max(0,c.ratio/max*100));
+  $("meterBar").style.setProperty("--be",bePos+"%"); $("meterDot").style.left=dot+"%";
+  $("beMark").textContent="equilíbrio: folha = "+pct(c.be)+" da receita";
+  $("beText").textContent= c.R>0 ? "A folha deste produtor é "+pct(c.ratio)+" da receita. Abaixo de "+pct(c.be)+", a opção pela folha sai mais barata." : "Informe a receita para calcular.";
+  $("msg").value=messageText(c,m);
+  drawWpp($("pvWpp"),1);
+  save();
+}
+
+/* ---------- texto ---------- */
+function messageText(c,m){
+  var L=[];
+  L.push("*"+m.esc+"* · Estudo Funrural x Folha "+m.ano);
+  L.push("Produtor: "+m.nome+(m.cpf?" (CPF "+m.cpf+")":""));
+  if(m.periodo) L.push("Base: "+m.periodo);
+  L.push("");
+  L.push("Folha de pagamento: "+money(c.folha.total)+"/ano");
+  L.push("Faturamento (Funrural): "+money(c.fat.total)+"/ano");
+  L.push("");
+  if(c.best!=="tie"){ L.push("✅ *Melhor opção: "+LABEL[c.best]+"*"); L.push("Economia prevista: *"+money(c.diff)+"* no ano"); L.push(""); }
+  reasons(c).forEach(function(r){L.push("• "+r)});
+  L.push("");
+  L.push("A opção é feita com o pagamento da competência de janeiro e vale para todo o ano de "+m.ano+".");
+  if(m.resp) L.push(m.resp);
+  if(m.contato) L.push(m.contato);
+  return L.join("\n");
+}
+
+/* ---------- desenho em canvas ---------- */
+var FD='"Avenir Next","Segoe UI","Helvetica Neue",Arial,sans-serif', FN='"SF Mono","Cascadia Mono",Consolas,monospace';
+var SPEC=["#6a3fb5","#2f6fd6","#16a3b8","#2fae5f","#e7b416","#e8762b","#d63b3b"];
+var C={ink:"#171b2e",muted:"#5b6178",line:"#dde0ea",accent:"#0f8f7e",warn:"#b4541a",soft:"#f4f5f9"};
+function font(w,s,f){return w+" "+s+"px "+(f||FD)}
+function wrap(ctx,text,x,y,maxW,lh,maxLines){
+  var words=String(text).split(/\s+/), line="", n=0;
+  for(var i=0;i<words.length;i++){
+    var t=line?line+" "+words[i]:words[i];
+    if(ctx.measureText(t).width>maxW && line){ ctx.fillText(line,x,y); y+=lh; n++; line=words[i]; if(maxLines&&n>=maxLines) return y; }
+    else line=t;
+  }
+  if(line){ctx.fillText(line,x,y); y+=lh;}
+  return y;
+}
+function rrect(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath()}
+function spectrum(ctx,x,y,w,h){var g=ctx.createLinearGradient(x,0,x+w,0);SPEC.forEach(function(c,i){g.addColorStop(i/(SPEC.length-1),c)});ctx.fillStyle=g;ctx.fillRect(x,y,w,h)}
+function prismMark(ctx,x,y,s){
+  /* marca padrão: prisma triangular com feixe espectral */
+  ctx.save(); ctx.strokeStyle="#fff"; ctx.lineWidth=s*0.07; ctx.lineJoin="round";
+  ctx.beginPath(); ctx.moveTo(x+s*0.42,y+s*0.08); ctx.lineTo(x+s*0.78,y+s*0.86); ctx.lineTo(x+s*0.06,y+s*0.86); ctx.closePath(); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(x-s*0.1,y+s*0.55); ctx.lineTo(x+s*0.3,y+s*0.48); ctx.stroke();
+  for(var i=0;i<SPEC.length;i++){ ctx.strokeStyle=SPEC[i]; ctx.lineWidth=s*0.05; ctx.beginPath(); ctx.moveTo(x+s*0.56,y+s*0.5); ctx.lineTo(x+s*1.05,y+s*0.4+i*s*0.06); ctx.stroke(); }
+  ctx.restore();
+}
+function header(ctx,W,h,m,sub){
+  ctx.fillStyle=m.cor; ctx.fillRect(0,0,W,h); spectrum(ctx,0,h,W,Math.round(h*0.05));
+  var pad=W*0.06, s=h*0.5, y0=(h-s)/2;
+  if(state.logoImg){ var im=state.logoImg, k=Math.min(s*1.3/im.width,s/im.height); ctx.drawImage(im,pad,(h-im.height*k)/2,im.width*k,im.height*k); var tx=pad+im.width*k+h*0.18; }
+  else { prismMark(ctx,pad,y0,s); var tx=pad+s*1.25; }
+  ctx.fillStyle="#fff"; ctx.textBaseline="alphabetic";
+  ctx.font=font("700",h*0.2); ctx.fillText(m.esc.toUpperCase(),tx,h*0.48);
+  ctx.globalAlpha=.8; ctx.font=font("400",h*0.13); ctx.fillText(sub,tx,h*0.7); ctx.globalAlpha=1;
+}
+function bars(ctx,x,y,w,c,u){
+  var max=Math.max(c.folha.total,c.fat.total,1);
+  [["Sobre a folha",c.folha.total,"folha"],["Sobre o faturamento",c.fat.total,"fat"]].forEach(function(b,i){
+    var yy=y+i*u*2.3, win=c.best===b[2];
+    ctx.fillStyle=C.ink; ctx.font=font("600",u*0.62); ctx.fillText(b[0],x,yy);
+    ctx.textAlign="right"; ctx.font=font("700",u*0.72,FN); ctx.fillText(money(b[1]),x+w,yy); ctx.textAlign="left";
+    ctx.fillStyle=C.soft; rrect(ctx,x,yy+u*0.4,w,u*0.8,u*0.4); ctx.fill();
+    ctx.fillStyle=win?C.accent:(c.best==="tie"?C.muted:C.warn); rrect(ctx,x,yy+u*0.4,Math.max(u*0.8,w*b[1]/max),u*0.8,u*0.4); ctx.fill();
+  });
+  return y+u*4.6;
+}
+function verdictBox(ctx,x,y,w,h,c,m,u){
+  ctx.fillStyle=c.best==="tie"?C.muted:C.accent; rrect(ctx,x,y,w,h,u*0.5); ctx.fill();
+  ctx.fillStyle="#fff"; var p=u*0.9;
+  ctx.font=font("600",u*0.5); ctx.globalAlpha=.85; ctx.fillText(("Melhor opção para "+m.ano).toUpperCase(),x+p,y+p+u*0.4); ctx.globalAlpha=1;
+  ctx.font=font("700",u*0.95);
+  var t=c.best==="tie"?"Preencha folha e receita":(c.best==="folha"?"Contribuição sobre a folha":"Contribuição sobre o faturamento");
+  wrap(ctx,t,x+p,y+p+u*1.55,w-2*p,u*1.1,2);
+  if(c.best!=="tie"){ ctx.font=font("700",u*1.25,FN); ctx.fillText(money(c.diff),x+p,y+h-p*0.95);
+    var mw=ctx.measureText(money(c.diff)).width; ctx.font=font("400",u*0.55); ctx.fillText("de economia no ano",x+p+mw+u*0.4,y+h-p*0.95); }
+}
+function drawWpp(cv,scale){
+  var W=1080,H=1350; cv.width=W*scale; cv.height=H*scale; var ctx=cv.getContext("2d"); ctx.setTransform(scale,0,0,scale,0,0);
+  var c=calc(), m=meta(), u=40, x=72, w=W-2*x;
+  ctx.fillStyle="#fff"; ctx.fillRect(0,0,W,H);
+  header(ctx,W,190,m,"Estudo comparativo · Funrural × Folha "+m.ano);
+  var y=290;
+  ctx.fillStyle=C.muted; ctx.font=font("600",u*0.5); ctx.fillText("PRODUTOR RURAL"+(m.cpf?"  ·  CPF "+m.cpf:""),x,y);
+  ctx.fillStyle=C.ink; ctx.font=font("700",u*1.15); y=wrap(ctx,m.nome,x,y+u*1.25,w,u*1.25,1);
+  if(m.periodo){ctx.fillStyle=C.muted; ctx.font=font("400",u*0.55); ctx.fillText("Base de cálculo: "+m.periodo,x,y); }
+  y+=u*0.8;
+  verdictBox(ctx,x,y,w,u*5.2,c,m,u); y+=u*5.2+u*1.6;
+  y=bars(ctx,x,y,w,c,u);
+  ctx.fillStyle=C.ink; ctx.font=font("700",u*0.62); ctx.fillText("Por que essa opção",x,y); y+=u*0.95;
+  ctx.font=font("400",u*0.56);
+  reasons(c).slice(0,3).forEach(function(r){ ctx.fillStyle=C.accent; ctx.fillRect(x,y-u*0.32,u*0.22,u*0.22); ctx.fillStyle=C.ink; y=wrap(ctx,r,x+u*0.55,y,w-u*0.55,u*0.74,2)+u*0.18; });
+  /* rodapé */
+  ctx.fillStyle=C.soft; ctx.fillRect(0,H-120,W,120);
+  ctx.fillStyle=C.muted; ctx.font=font("400",u*0.48);
+  wrap(ctx,"A opção é feita com o pagamento de janeiro e vale para todo o ano de "+m.ano+". Cálculo por CPF.",x,H-74,w,u*0.6,1);
+  ctx.fillStyle=C.ink; ctx.font=font("600",u*0.48); ctx.fillText([m.resp,m.contato].filter(Boolean).join("  ·  ")||m.esc,x,H-36);
+}
+function table(ctx,x,y,w,title,rows,total,win,u){
+  ctx.strokeStyle=win?C.accent:C.line; ctx.lineWidth=win?3:1.5; rrect(ctx,x,y,w,u*(2.6+rows.length*0.9+1.6),u*0.35); ctx.stroke();
+  var p=u*0.6, yy=y+p+u*0.45;
+  ctx.fillStyle=win?C.accent:C.muted; ctx.font=font("700",u*0.38); ctx.fillText(win?"RECOMENDADA":"ALTERNATIVA",x+p,yy);
+  yy+=u*0.75; ctx.fillStyle=C.ink; ctx.font=font("700",u*0.55); ctx.fillText(title,x+p,yy); yy+=u*0.95;
+  rows.forEach(function(r){ ctx.fillStyle=C.ink; ctx.font=font("400",u*0.44); ctx.fillText(r[0],x+p,yy);
+    ctx.fillStyle=C.muted; ctx.textAlign="right"; ctx.fillText(r[1],x+w*0.62,yy);
+    ctx.fillStyle=C.ink; ctx.font=font("400",u*0.44,FN); ctx.fillText(r[2],x+w-p,yy); ctx.textAlign="left";
+    ctx.strokeStyle=C.line; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(x+p,yy+u*0.3); ctx.lineTo(x+w-p,yy+u*0.3); ctx.stroke(); yy+=u*0.9; });
+  ctx.font=font("700",u*0.5); ctx.fillText("Total anual",x+p,yy+u*0.2); ctx.textAlign="right"; ctx.font=font("700",u*0.55,FN); ctx.fillText(total[0],x+w-p,yy+u*0.2);
+  ctx.font=font("400",u*0.38); ctx.fillStyle=C.muted; ctx.fillText(total[1],x+w-p,yy+u*0.8); ctx.textAlign="left";
+  return y+u*(2.6+rows.length*0.9+1.6);
+}
+function drawDetailed(cv,W,H,scale,kind){
+  cv.width=W*scale; cv.height=H*scale; var ctx=cv.getContext("2d"); ctx.setTransform(scale,0,0,scale,0,0);
+  var c=calc(), m=meta(), u=W/30, x=W*0.06, w=W-2*x;
+  ctx.fillStyle="#fff"; ctx.fillRect(0,0,W,H);
+  header(ctx,W,u*3.6,m,"Estudo comparativo · Funrural × Folha de pagamento "+m.ano);
+  var y=u*5.4;
+  ctx.fillStyle=C.muted; ctx.font=font("600",u*0.4); ctx.fillText(("Produtor rural"+(m.cpf?"  ·  CPF "+m.cpf:"")+(m.periodo?"  ·  Base: "+m.periodo:"")).toUpperCase(),x,y);
+  ctx.fillStyle=C.ink; ctx.font=font("700",u*0.95); y=wrap(ctx,m.nome,x,y+u*1.1,w,u*1.05,1)+u*0.2;
+  ctx.font=font("400",u*0.48); ctx.fillStyle=C.muted;
+  y=wrap(ctx,"Comparamos o custo anual da contribuição previdenciária nas duas formas permitidas ao produtor rural pessoa física, com base na folha de "+money(c.F)+" e na receita de "+money(c.R)+".",x,y,w,u*0.7)+u*0.4;
+  verdictBox(ctx,x,y,w,u*4,c,m,u*0.8); y+=u*4+u*0.8;
+  var cw=(w-u*0.8)/2;
+  var y1=table(ctx,x,y,cw,"Sobre a folha",[
+    ["INSS patronal",pct(c.rates.pat),money(c.folha.pat)],["RAT",pct(c.rates.rat),money(c.folha.rat)],
+    ["Outras entidades",pct(c.rates.out),money(c.folha.out)],["SENAR s/ receita",pct(c.rates.sen),money(c.folha.senar)]],
+    [money(c.folha.total),"média mensal "+money(c.folha.mensal)],c.best==="folha",u);
+  table(ctx,x+cw+u*0.8,y,cw,"Sobre o faturamento",[
+    ["Funrural + RAT",pct(c.rates.fun),money(c.fat.fun)],["SENAR",pct(c.rates.sen),money(c.fat.senar)]],
+    [money(c.fat.total),"média mensal "+money(c.fat.mensal)],c.best==="fat",u);
+  y=y1+u*1.1;
+  ctx.fillStyle=C.ink; ctx.font=font("700",u*0.58); ctx.fillText("Por que essa é a melhor opção",x,y); y+=u*0.85;
+  ctx.font=font("400",u*0.47);
+  reasons(c).forEach(function(r){ ctx.fillStyle=C.accent; ctx.fillRect(x,y-u*0.28,u*0.18,u*0.18); ctx.fillStyle=C.ink; y=wrap(ctx,r,x+u*0.45,y,w-u*0.45,u*0.66)+u*0.12; });
+  y+=u*0.5;
+  ctx.fillStyle=C.soft; var bh=u*(kind==="pdf"?5.6:4.6); rrect(ctx,x,y,w,bh,u*0.3); ctx.fill();
+  var yy=y+u*0.8; ctx.fillStyle=C.ink; ctx.font=font("700",u*0.47); ctx.fillText("Regras da opção",x+u*0.6,yy); yy+=u*0.72;
+  ctx.font=font("400",u*0.42); ctx.fillStyle=C.muted;
+  ["Opção anual prevista no art. 25, §13, da Lei 8.212/1991 (Lei 13.606/2018), feita com o pagamento da competência de janeiro e irretratável no ano.",
+   "O SENAR (0,2%) incide sobre a receita nas duas opções. Com holding, outras entidades passam de 0,2% para 2,7% (salário-educação).",
+   kind==="pdf"?"Cálculo por CPF. Média mensal da folha dividida por 13 (inclui 13º salário). Simulação feita com os dados informados pelo produtor.":"Cálculo por CPF, revisado todo ano em novembro."
+  ].forEach(function(t){ yy=wrap(ctx,"• "+t,x+u*0.6,yy,w-u*1.2,u*0.6)+u*0.05; });
+  y+=bh+u*0.9;
+  if(kind==="pdf"){
+    var sy=H-u*3.2; ctx.strokeStyle=C.ink; ctx.lineWidth=1.2; ctx.beginPath(); ctx.moveTo(x,sy); ctx.lineTo(x+w*0.45,sy); ctx.stroke();
+    ctx.fillStyle=C.ink; ctx.font=font("600",u*0.42); ctx.fillText(m.resp||"Responsável técnico",x,sy+u*0.6);
+    ctx.fillStyle=C.muted; ctx.font=font("400",u*0.38); ctx.fillText(m.esc,x,sy+u*1.1);
+    ctx.textAlign="right"; ctx.fillText("Emitido em "+new Date().toLocaleDateString("pt-BR"),x+w,sy+u*0.6); ctx.textAlign="left";
+  }
+  ctx.fillStyle=m.cor; ctx.fillRect(0,H-u*1.2,W,u*1.2);
+  ctx.fillStyle="#fff"; ctx.font=font("400",u*0.4); ctx.fillText([m.esc,m.contato].filter(Boolean).join("  ·  "),x,H-u*0.45);
+}
+
+/* ---------- PDF mínimo (imagem JPEG em página A4), sem bibliotecas ---------- */
+function pdfFromJpeg(jpeg,pw,ph,iw,ih){
+  var enc=new TextEncoder(), parts=[], len=0, offs=[];
+  function add(x){var b=typeof x==="string"?enc.encode(x):x; parts.push(b); len+=b.length}
+  function obj(n,body,stream){offs[n]=len; add(n+" 0 obj\n"+body); if(stream){add("\nstream\n");add(stream);add("\nendstream")} add("\nendobj\n")}
+  add("%PDF-1.4\n%\xE2\xE3\xCF\xD3\n");
+  var content="q "+pw+" 0 0 "+ph+" 0 0 cm /Im0 Do Q";
+  obj(1,"<< /Type /Catalog /Pages 2 0 R >>");
+  obj(2,"<< /Type /Pages /Kids [3 0 R] /Count 1 >>");
+  obj(3,"<< /Type /Page /Parent 2 0 R /MediaBox [0 0 "+pw+" "+ph+"] /Resources << /XObject << /Im0 5 0 R >> >> /Contents 4 0 R >>");
+  obj(4,"<< /Length "+content.length+" >>",enc.encode(content));
+  obj(5,"<< /Type /XObject /Subtype /Image /Width "+iw+" /Height "+ih+" /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length "+jpeg.length+" >>",jpeg);
+  var x=len; add("xref\n0 6\n0000000000 65535 f \n");
+  for(var i=1;i<=5;i++) add(String(offs[i]).padStart(10,"0")+" 00000 n \n");
+  add("trailer\n<< /Size 6 /Root 1 0 R >>\nstartxref\n"+x+"\n%%EOF");
+  var out=new Uint8Array(len),p=0; parts.forEach(function(b){out.set(b,p);p+=b.length}); return out;
+}
+function dataUrlBytes(u){var b=atob(u.split(",")[1]),a=new Uint8Array(b.length);for(var i=0;i<b.length;i++)a[i]=b.charCodeAt(i);return a}
+function canvasBlob(cv,type,q){return new Promise(function(res){cv.toBlob(function(b){res(b)},type,q)})}
+
+/* ---------- salvar / compartilhar ---------- */
+var downloads=null;
+function slug(){return (meta().nome||"produtor").normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[^\w]+/g,"-").replace(/^-|-$/g,"").toLowerCase()}
+function status(t){ $("status").textContent=t; }
+function saveFile(name,blob){
+  if(downloads){
+    return downloads.save({filename:name,data:blob}).then(function(){status("Arquivo salvo: "+name)},function(e){
+      status(e&&e.code==="declined"?"Download cancelado.":"Não foi possível salvar aqui ("+(e&&e.code||"erro")+").")});
+  }
+  var a=document.createElement("a"), url=URL.createObjectURL(blob); a.href=url; a.download=name; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(function(){URL.revokeObjectURL(url)},4000); status("Arquivo gerado: "+name); return Promise.resolve();
+}
+function makeWpp(){var cv=document.createElement("canvas"); drawWpp(cv,1); return canvasBlob(cv,"image/png")}
+function makeMailImg(){var cv=document.createElement("canvas"); drawDetailed(cv,1200,1380,1,"mail"); return canvasBlob(cv,"image/png")}
+function makePdf(){
+  var cv=document.createElement("canvas"), W=1240,H=1754,s=1.6; drawDetailed(cv,W,H,s,"pdf");
+  var jpg=dataUrlBytes(cv.toDataURL("image/jpeg",0.92));
+  return Promise.resolve(new Blob([pdfFromJpeg(jpg,595.28,841.89,cv.width,cv.height)],{type:"application/pdf"}));
+}
+$("bWpp").onclick=function(){status("Gerando imagem…"); makeWpp().then(function(b){return saveFile("funrural-"+slug()+"-whatsapp.png",b)})};
+$("bMailImg").onclick=function(){status("Gerando imagem…"); makeMailImg().then(function(b){return saveFile("funrural-"+slug()+"-email.png",b)})};
+$("bPdf").onclick=function(){status("Gerando PDF…"); makePdf().then(function(b){return saveFile("estudo-funrural-"+slug()+".pdf",b)})};
+$("bText").onclick=function(){
+  var t=$("msg").value;
+  try{ navigator.clipboard.writeText(t).then(function(){status("Texto copiado. Cole no WhatsApp ou no e-mail.")},function(){ $("msg").select(); status("Selecionei o texto: use Ctrl+C / Copiar.")}); }
+  catch(e){ $("msg").select(); status("Selecionei o texto: use Ctrl+C / Copiar."); }
+};
+/* Compartilhar (celular, fora do claude.ai): envia a imagem direto para o WhatsApp */
+if(navigator.canShare && !window.claude){ try{ if(navigator.canShare({files:[new File([new Blob(["x"])],"t.png",{type:"image/png"})]})) $("bShare").hidden=false; }catch(e){} }
+$("bShare").onclick=function(){ makeWpp().then(function(b){ return navigator.share({files:[new File([b],"funrural-"+slug()+".png",{type:"image/png"})],text:$("msg").value}); }).catch(function(){status("Compartilhamento cancelado.")}) };
+
+/* ---------- holding / marca / persistência ---------- */
+function setHolding(on){ state.holding=on; $("holdS").setAttribute("aria-pressed",on); $("holdN").setAttribute("aria-pressed",!on); $("aOut").value=on?"2,7":"0,2"; render(); }
+$("holdN").onclick=function(){setHolding(false)}; $("holdS").onclick=function(){setHolding(true)};
+function showLogo(){
+  var box=$("logoBox"); box.innerHTML="";
+  if(state.logo){ var i=new Image(); i.alt=""; i.src=state.logo; box.appendChild(i); var im=new Image(); im.onload=function(){state.logoImg=im; render()}; im.src=state.logo; }
+  else { state.logoImg=null; var cv=document.createElement("canvas"); cv.width=92; cv.height=92; cv.style.width="46px"; var x=cv.getContext("2d"); prismMark(x,14,14,64); box.appendChild(cv); }
+}
+$("logo").onchange=function(e){ var f=e.target.files[0]; if(!f) return; var r=new FileReader(); r.onload=function(){state.logo=r.result; showLogo(); render()}; r.readAsDataURL(f); };
+var FIELDS=["nome","cpf","ano","periodo","folha","receita","rat","aPat","aOut","aFun","aSen","escritorio","resp","contato","cor"];
+function save(){ try{ var o={holding:state.holding,logo:state.logo}; FIELDS.forEach(function(k){o[k]=$(k).value}); localStorage.setItem(LS,JSON.stringify(o)); }catch(e){} }
+function load(){ try{ var o=JSON.parse(localStorage.getItem(LS)||"null"); if(!o) return; FIELDS.forEach(function(k){ if(o[k]!=null) $(k).value=o[k] }); state.holding=!!o.holding; state.logo=o.logo||null;
+  $("holdS").setAttribute("aria-pressed",state.holding); $("holdN").setAttribute("aria-pressed",!state.holding); $("sampleNote").hidden=true; }catch(e){} }
+function fmtMoneyInput(el){ var n=num(el.value); el.value=n?n.toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2}):""; }
+["folha","receita"].forEach(function(id){ $(id).addEventListener("blur",function(){fmtMoneyInput($(id)); render()}) });
+$("f").addEventListener("input",function(){ $("sampleNote").hidden=true; render() });
+$("f").addEventListener("submit",function(e){e.preventDefault()});
+
+load(); showLogo(); render();
+if(window.claude && window.claude.use){ window.claude.use("downloads").then(function(d){downloads=d}).catch(function(){}); }
+/* funcionamento offline quando publicado como site (GitHub Pages, servidor interno) */
+try{ if("serviceWorker" in navigator && /^https?:$/.test(location.protocol) && !window.claude) navigator.serviceWorker.register("sw.js").catch(function(){}); }catch(e){}
+})();
+</script>
