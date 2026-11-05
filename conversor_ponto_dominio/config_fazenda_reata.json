@@ -1,0 +1,39 @@
+{
+  "_comentario": "Ajuste os codigos abaixo conforme as rubricas cadastradas no Dominio de cada cliente.",
+  "codigo_empresa": "0000000000",
+  "tipo_processo": "11",
+  "rubricas": {
+    "HORA EXTRA 50%": "0150",
+    "HORA EXTRA 50% NOTURNA": "0237",
+    "HORA EXTRA 100%": "0200",
+    "HORA EXTRA 100% NOTURNA (noturno)": "0238",
+    "HORA EXTRA 100% NOTURNA": "0238",
+    "Horário Noturno": "0231",
+    "Faltas": "0040",
+    "Falta": "0040",
+    "Horas Falta": "0040",
+    "Faltas (horas)": "0040",
+    "Atrasos": "8069",
+    "Atraso": "8069",
+    "Faltas Parciais": "8069",
+    "Falta Parcial": "8069",
+    "Saída Antecipada": "8069",
+    "Saidas Antecipadas": "8069"
+  },
+  "ignorar": [
+    "Horas Previstas",
+    "Horas Trabalhadas",
+    "SALDO ATUAL",
+    "JUSTICA ELEITORAL",
+    "JUSTICA ELEITORAL (dias)",
+    "Dia de Nossa Senhora Aparecida (dias)",
+    "Folga Gestor",
+    "Folga Gestor (dias)",
+    "Atestado Médico",
+    "Atestado Médico (dias)"
+  ],
+  "empregados": {
+    "_comentario": "matricula do cartao de ponto -> codigo do empregado no Dominio",
+    "51851": "51851"
+  }
+}

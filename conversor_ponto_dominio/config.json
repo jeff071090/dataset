@@ -26,7 +26,11 @@
     "SALDO ATUAL",
     "JUSTICA ELEITORAL",
     "JUSTICA ELEITORAL (dias)",
-    "Dia de Nossa Senhora Aparecida (dias)"
+    "Dia de Nossa Senhora Aparecida (dias)",
+    "Folga Gestor",
+    "Folga Gestor (dias)",
+    "Atestado Médico",
+    "Atestado Médico (dias)"
   ],
   "empregados": {
     "_comentario": "matricula do cartao de ponto -> codigo do empregado no Dominio",

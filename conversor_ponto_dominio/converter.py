@@ -50,7 +50,24 @@ def ler_cartao(texto):
             pendente = None
         else:
             pendente = linha
+    # Faltas de dia inteiro vem em "dias" nos totais; o Dominio recebe em horas.
+    # Converte somando as Horas Previstas dos dias marcados como FALTA.
+    for chave in list(totais):
+        if norm(chave) in ("FALTAS", "FALTA") and ":" not in totais[chave]:
+            totais[chave] = horas_falta(texto) or totais[chave]
     return {"competencia": competencia, "matricula": matricula, "nome": nome, "totais": totais}
+
+
+def horas_falta(texto):
+    corpo = texto.split("Totais de horas", 1)[0]
+    dias = re.split(r"\n(?=\d{2}/\d{2} )", corpo)
+    total = 0
+    for d in dias:
+        if re.search(r"\sFALTA\s*$", d, re.M):
+            m = re.search(r"Horas Previstas:\s*(\d+):(\d{2})", d)
+            if m:
+                total += int(m.group(1)) * 60 + int(m.group(2))
+    return f"{total // 60:02d}:{total % 60:02d}" if total else None
 
 
 def valor_campo(valor):
