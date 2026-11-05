@@ -4,7 +4,7 @@ cd "$(dirname "$0")"
 {
   printf '<!doctype html>\n<html lang="pt-BR"><head><meta charset="utf-8">\n'
   printf '<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">\n'
-  printf '<meta name="theme-color" content="#1f2b5e"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon.svg">\n'
+  printf '<meta name="theme-color" content="#2d3867"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon.svg">\n'
   printf '<style>body{margin:0}img{max-width:100%%}[hidden]{display:none!important}</style>\n</head><body>\n'
   cat src/body.html
   printf '\n</body></html>\n'
