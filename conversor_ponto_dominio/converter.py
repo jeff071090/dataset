@@ -68,6 +68,12 @@ def somar(a, b):
     return str(int(a) + int(b))
 
 
+def norm(t):
+    import unicodedata
+    t = unicodedata.normalize("NFKD", t).encode("ascii", "ignore").decode()
+    return " ".join(t.upper().split())
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("pdfs", nargs="+")
@@ -75,6 +81,8 @@ def main():
     ap.add_argument("-c", "--config", default=str(Path(__file__).with_name("config.json")))
     a = ap.parse_args()
     cfg = json.loads(Path(a.config).read_text(encoding="utf-8"))
+    rubricas = {norm(k): v for k, v in cfg["rubricas"].items()}
+    ignorar = {norm(k) for k in cfg["ignorar"]}
 
     linhas, avisos = [], []
     for pdf in a.pdfs:
@@ -85,9 +93,9 @@ def main():
             avisos.append(f"{c['nome']}: matricula {cod} sem de-para em config.json -> usando a propria matricula")
         por_rubrica = {}
         for evento, valor in c["totais"].items():
-            if evento in cfg["ignorar"]:
+            if norm(evento) in ignorar:
                 continue
-            rub = cfg["rubricas"].get(evento)
+            rub = rubricas.get(norm(evento))
             if not rub:
                 avisos.append(f"{c['nome']}: evento sem rubrica configurada: '{evento}' = {valor}")
                 continue
