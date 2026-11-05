@@ -108,7 +108,7 @@ def main():
                           cfg["tipo_processo"] + valor_campo(valor) + cfg["codigo_empresa"])
             print(f"   rubrica {rub}: {valor}")
 
-    Path(a.saida).write_bytes(("\r\n".join(linhas) + "\r\n").encode("ascii"))
+    Path(a.saida).write_bytes("\r\n".join(linhas).encode("ascii"))
     print(f"\n{len(linhas)} linha(s) gravadas em {a.saida}")
     for av in avisos:
         print("AVISO:", av, file=sys.stderr)
