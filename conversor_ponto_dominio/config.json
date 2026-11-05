@@ -30,7 +30,15 @@
     "Folga Gestor",
     "Folga Gestor (dias)",
     "Atestado Médico",
-    "Atestado Médico (dias)"
+    "Atestado Médico (dias)",
+    "ABONO",
+    "AUSENCIA JUSTIFICADA",
+    "AUSENCIA JUSTIFICADA (dias)",
+    "FOLGA",
+    "FOLGA (dias)",
+    "Feriado Dia de Nossa Senhora Aparecida (dias)",
+    "Férias",
+    "INTEGRACAO"
   ],
   "empregados": {
     "_comentario": "matricula do cartao de ponto -> codigo do empregado no Dominio",
