@@ -148,7 +148,7 @@ footer.wrap{padding-block:0 32px;font-size:12px;color:var(--muted)}
   <section>
     <div class="eyebrow">Opção para o ano-calendário <span id="anoTop">2027</span></div>
     <h1>Contribuição sobre a folha ou sobre o faturamento?</h1>
-    <p class="lead">Informe a folha anual e a receita da produção do produtor (por CPF). O simulador refaz o cálculo da planilha <em>Modelo Cálculo Funrural</em>, aponta a opção mais barata e gera o material para enviar por WhatsApp ou e-mail.</p>
+    <p class="lead">Informe a folha e a receita da produção do período do produtor (por CPF). O simulador refaz o cálculo da planilha <em>Modelo Cálculo Funrural</em>, aponta a opção mais barata e gera o material para enviar por WhatsApp ou e-mail.</p>
   </section>
 
   <div class="grid">
@@ -166,13 +166,11 @@ footer.wrap{padding-block:0 32px;font-size:12px;color:var(--muted)}
         </div>
         <div class="row">
           <label for="folha">Folha bruta de salários no período <span class="hint">Relatório de folha da Domínio</span>
-            <input id="folha" class="money" inputmode="decimal" value="400.000,00"></label>
+            <input id="folha" class="money" inputmode="decimal" value="480.000,00"></label>
           <label for="receita">Receita da venda da produção no período <span class="hint">CFOPs de venda menos devoluções</span>
-            <input id="receita" class="money" inputmode="decimal" value="10.000.000,00"></label>
+            <input id="receita" class="money" inputmode="decimal" value="12.000.000,00"></label>
         </div>
-        <label for="meses">Quantos meses tem o período? <span class="hint">Use 12 para um ano fechado. Com menos meses, o valor é projetado para 12.</span>
-          <input id="meses" class="blue" type="number" min="1" max="12" step="1" value="10"></label>
-        <p class="proj" id="proj" aria-live="polite"></p>
+        <p class="proj">O cálculo usa exatamente os valores preenchidos, sem projetar os meses que faltam.</p>
         <div class="row">
           <label for="rat">RAT (grau de risco)
             <select id="rat"><option value="1">1%</option><option value="2">2%</option><option value="3" selected>3%</option></select></label>
@@ -308,13 +306,12 @@ function money(v){return BRL.format(v||0)}
 function pct(v){return PCT.format(v*100)+"%"}
 function num(s){ s=String(s||"").replace(/[^\d,.-]/g,""); if(s.indexOf(",")>=0){s=s.replace(/\./g,"").replace(",",".")} var n=parseFloat(s); return isFinite(n)?n:0 }
 var state={holding:false,logo:null};
-var LS="prisma-funrural-v3";
+var LS="prisma-funrural-v4";
 
 /* ---------- cálculo (mesma lógica da planilha) ---------- */
 function calc(){
   var Fp=num($("folha").value), Rp=num($("receita").value);
-  var meses=Math.round(num($("meses").value)); if(!(meses>=1&&meses<=12)) meses=12;
-  var k=12/meses, F=Fp*k, R=Rp*k;               /* projeção anual: valor do período ÷ meses × 12 */
+  var F=Fp, R=Rp;                               /* usa exatamente os valores preenchidos, sem projeção */
   var ratN=num($("rat").value), rat=ratN/100, pat=num($("aPat").value)/100, out=num($("aOut").value)/100;
   var fun=num($("aFun").value)/100, sen=num($("aSen").value)/100;
   var folha={pat:F*pat, rat:F*rat, out:F*out, senar:R*sen};
@@ -327,7 +324,7 @@ function calc(){
   var payroll=pat+rat+out;
   var be = payroll>0 ? fun/payroll : 0;     /* folha ÷ faturamento no ponto de equilíbrio */
   var ratio = R>0 ? F/R : 0;
-  return {Fp:Fp,Rp:Rp,meses:meses,F:F,R:R,ratN:ratN,rates:{pat:pat,rat:rat,out:out,fun:fun,sen:sen,payroll:payroll},folha:folha,fat:fat,diff:diff,best:best,be:be,ratio:ratio,
+  return {Fp:Fp,Rp:Rp,F:F,R:R,ratN:ratN,rates:{pat:pat,rat:rat,out:out,fun:fun,sen:sen,payroll:payroll},folha:folha,fat:fat,diff:diff,best:best,be:be,ratio:ratio,
     limite:R*be, pctSave: best==="folha"&&fat.total>0 ? diff/fat.total : (best==="fat"&&folha.total>0? diff/folha.total:0)};
 }
 function meta(){
@@ -336,11 +333,10 @@ function meta(){
     cor:$("cor").value||"#2d3867",slogan:$("slogan_in").value.trim(),fonteF:$("fonteF").value.trim(),fonteR:$("fonteR").value.trim()};
 }
 var LABEL={folha:"Contribuição sobre a FOLHA",fat:"Contribuição sobre o FATURAMENTO (Funrural)"};
-/* de onde vem o valor anual */
+/* de onde vem o valor */
 function origem(c,m,vp){
   var per=m.periodo?" ("+m.periodo+")":"";
-  return c.meses===12 ? money(vp)+" no período"+per+", 12 meses"
-                      : money(vp)+" em "+c.meses+" meses"+per+" ÷ "+c.meses+" × 12";
+  return "Valor informado"+(m.periodo?" · período "+m.periodo:"");
 }
 /* linhas do cálculo: [item, base (texto), valor da base, alíquota, resultado] */
 function linhasFolha(c){return [
@@ -356,23 +352,23 @@ function porque(c){
   if(c.best==="tie") return ["Informe a folha e o faturamento para comparar as duas opções."];
   var a=[
     "O SENAR ("+pct(c.rates.sen)+" do faturamento) é igual nas duas opções. A decisão depende do restante: "+pct(c.rates.payroll)+" sobre a folha ("+pct(c.rates.pat)+" + "+pct(c.rates.rat)+" + "+pct(c.rates.out)+") contra "+pct(c.rates.fun)+" sobre o faturamento.",
-    "Os dois custos se igualam quando a folha chega a "+pct(c.be)+" do faturamento ("+pct(c.rates.fun)+" ÷ "+pct(c.rates.payroll)+"). Com faturamento de "+money(c.R)+", esse limite é uma folha de "+money(c.limite)+" por ano."];
+    "Os dois custos se igualam quando a folha chega a "+pct(c.be)+" do faturamento ("+pct(c.rates.fun)+" ÷ "+pct(c.rates.payroll)+"). Com faturamento de "+money(c.R)+", esse limite é uma folha de "+money(c.limite)+"."];
   a.push(c.best==="folha"
-    ? "A folha do produtor é de "+money(c.F)+", ou "+pct(c.ratio)+" do faturamento. Como fica abaixo do limite, pagar sobre a folha custa "+money(c.diff)+" a menos no ano."
-    : "A folha do produtor é de "+money(c.F)+", ou "+pct(c.ratio)+" do faturamento. Como passa do limite, pagar sobre o faturamento custa "+money(c.diff)+" a menos no ano.");
+    ? "A folha do produtor é de "+money(c.F)+", ou "+pct(c.ratio)+" do faturamento. Como fica abaixo do limite, pagar sobre a folha custa "+money(c.diff)+" a menos."
+    : "A folha do produtor é de "+money(c.F)+", ou "+pct(c.ratio)+" do faturamento. Como passa do limite, pagar sobre o faturamento custa "+money(c.diff)+" a menos.");
   return a;
 }
 function esc(t){return String(t).replace(/[&<>"]/g,function(ch){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[ch]})}
 function memoHTML(c,m){
   function tbl(rows,total,mensal,nota){
-    return '<div class="scroll"><table class="calc"><thead><tr><th>Item</th><th>Base de cálculo</th><th>Alíquota</th><th>Valor anual</th></tr></thead><tbody>'+
+    return '<div class="scroll"><table class="calc"><thead><tr><th>Item</th><th>Base de cálculo</th><th>Alíquota</th><th>Valor</th></tr></thead><tbody>'+
       rows.map(function(r){return '<tr><td>'+esc(r[0])+'<small>sobre o '+(r[1]==="folha"?"total da folha":"faturamento")+'</small></td><td>'+money(r[2])+'</td><td>× '+pct(r[3])+'</td><td>= '+money(r[4])+'</td></tr>'}).join("")+
-      '<tr class="tot"><td>Total anual</td><td></td><td></td><td>'+money(total)+'</td></tr></tbody></table></div><p class="month">≈ '+money(mensal)+' por mês ('+nota+')</p>';
+      '<tr class="tot"><td>Total</td><td></td><td></td><td>'+money(total)+'</td></tr></tbody></table></div><p class="month">≈ '+money(mensal)+' por mês ('+nota+')</p>';
   }
   var h='';
   h+='<div class="step"><div class="n">1</div><div><h3>Os números do produtor</h3><div class="tiles">'+
-     '<div class="tile"><small>Faturamento anual</small><span class="v">'+money(c.R)+'</span><small>'+esc(origem(c,m,c.Rp))+'</small><small>Fonte: '+esc(m.fonteR||"—")+'</small></div>'+
-     '<div class="tile"><small>Folha de salários anual</small><span class="v">'+money(c.F)+'</span><small>'+esc(origem(c,m,c.Fp))+'</small><small>Fonte: '+esc(m.fonteF||"—")+'</small></div>'+
+     '<div class="tile"><small>Faturamento do período</small><span class="v">'+money(c.R)+'</span><small>'+esc(origem(c,m,c.Rp))+'</small><small>Fonte: '+esc(m.fonteR||"—")+'</small></div>'+
+     '<div class="tile"><small>Folha de salários do período</small><span class="v">'+money(c.F)+'</span><small>'+esc(origem(c,m,c.Fp))+'</small><small>Fonte: '+esc(m.fonteF||"—")+'</small></div>'+
      '</div><p>A folha equivale a <b>'+pct(c.ratio)+'</b> do faturamento ('+money(c.F)+' ÷ '+money(c.R)+').</p></div></div>';
   h+='<div class="step"><div class="n">2</div><div><h3>Quanto pagaria sobre a folha</h3>'+tbl(linhasFolha(c),c.folha.total,c.folha.mensal,"total ÷ 13, por causa do 13º salário")+'</div></div>';
   h+='<div class="step"><div class="n">3</div><div><h3>Quanto pagaria sobre o faturamento</h3>'+tbl(linhasFat(c),c.fat.total,c.fat.mensal,"total ÷ 12")+'</div></div>';
@@ -391,31 +387,29 @@ function render(){
   var v=$("verdict"); v.classList.toggle("tie",c.best==="tie");
   if(c.best==="tie"){ $("vTitle").textContent="Preencha folha e receita para ver a melhor opção"; $("vSave").textContent=""; }
   else{ $("vTitle").textContent="Melhor opção para "+m.ano+": "+LABEL[c.best];
-    $("vSave").innerHTML=money(c.diff)+' <small>de economia prevista no ano ('+pct(c.pctSave)+' a menos)</small>'; }
+    $("vSave").innerHTML=money(c.diff)+' <small>de economia prevista ('+pct(c.pctSave)+' a menos)</small>'; }
   $("tFolha").innerHTML=rowsHTML([
     ["INSS patronal",pct(c.rates.pat),money(c.folha.pat)],
     ["RAT",pct(c.rates.rat),money(c.folha.rat)],
     ["Outras entidades"+(state.holding?" (holding)":""),pct(c.rates.out),money(c.folha.out)],
     ["SENAR s/ receita",pct(c.rates.sen),money(c.folha.senar)],
-    ["Total anual","",money(c.folha.total),"tot"]]);
+    ["Total","",money(c.folha.total),"tot"]]);
   $("tFat").innerHTML=rowsHTML([
     ["Funrural + RAT",pct(c.rates.fun),money(c.fat.fun)],
     ["SENAR",pct(c.rates.sen),money(c.fat.senar)],
-    ["Total anual","",money(c.fat.total),"tot"]]);
+    ["Total","",money(c.fat.total),"tot"]]);
   $("mFolha").textContent="Média mensal: "+money(c.folha.mensal)+" (÷ 13)";
   $("mFat").textContent="Média mensal: "+money(c.fat.mensal)+" (÷ 12)";
   var pf=$("pillFolha"), pa=$("pillFat");
   [["folha",pf,$("optFolha")],["fat",pa,$("optFat")]].forEach(function(x){
     var win=c.best===x[0]; x[2].classList.toggle("win",win);
-    x[1].hidden=c.best==="tie"; x[1].className="pill"+(win?"":" lose"); x[1].textContent=win?"Recomendada":"+ "+money(c.diff)+" no ano"; });
+    x[1].hidden=c.best==="tie"; x[1].className="pill"+(win?"":" lose"); x[1].textContent=win?"Recomendada":"+ "+money(c.diff); });
   /* medidor: escala 0 a 2× o ponto de equilíbrio */
   var max=Math.max(c.be*2,0.0001), bePos=50, dot=Math.min(100,Math.max(0,c.ratio/max*100));
   $("meterBar").style.setProperty("--be",bePos+"%"); $("meterDot").style.left=dot+"%";
   $("beMark").textContent="equilíbrio: folha = "+pct(c.be)+" da receita";
-  $("beText").textContent= c.R>0 ? "A folha deste produtor é "+pct(c.ratio)+" do faturamento. Abaixo de "+pct(c.be)+" (folha de até "+money(c.limite)+" por ano), a opção pela folha sai mais barata." : "Informe o faturamento para calcular.";
+  $("beText").textContent= c.R>0 ? "A folha deste produtor é "+pct(c.ratio)+" do faturamento. Abaixo de "+pct(c.be)+" (folha de até "+money(c.limite)+"), a opção pela folha sai mais barata." : "Informe o faturamento para calcular.";
   $("memoBody").innerHTML=memoHTML(c,m);
-  $("proj").innerHTML = c.meses===12 ? "Período de 12 meses: os valores já são anuais."
-    : "Projeção anual (÷ "+c.meses+" × 12): faturamento <b>"+money(c.R)+"</b> · folha <b>"+money(c.F)+"</b>";
   $("msg").value=messageText(c,m);
   drawWpp($("pvWpp"),1);
   save();
@@ -427,18 +421,18 @@ function messageText(c,m){
   L.push("*"+m.esc+"* · Estudo Funrural x Folha "+m.ano);
   L.push("Produtor: "+m.nome+(m.cpf?" (CPF "+m.cpf+")":""));
   L.push("");
-  if(c.best!=="tie"){ L.push("✅ *Melhor opção: "+LABEL[c.best]+"*"); L.push("Economia prevista: *"+money(c.diff)+"* no ano"); L.push(""); }
+  if(c.best!=="tie"){ L.push("✅ *Melhor opção: "+LABEL[c.best]+"*"); L.push("Economia prevista: *"+money(c.diff)+"*"); L.push(""); }
   L.push("*1. Seus números*");
-  L.push("Faturamento anual: "+money(c.R)+" ("+origem(c,m,c.Rp)+")");
-  L.push("Folha anual: "+money(c.F)+" ("+origem(c,m,c.Fp)+")");
+  L.push("Faturamento: "+money(c.R)+" ("+origem(c,m,c.Rp)+")");
+  L.push("Folha: "+money(c.F)+" ("+origem(c,m,c.Fp)+")");
   L.push("");
   L.push("*2. Sobre a folha*");
   linhasFolha(c).forEach(function(r){L.push("• "+r[0]+": "+money(r[2])+" × "+pct(r[3])+" = "+money(r[4]))});
-  L.push("Total: *"+money(c.folha.total)+"*/ano");
+  L.push("Total: *"+money(c.folha.total)+"*");
   L.push("");
   L.push("*3. Sobre o faturamento*");
   linhasFat(c).forEach(function(r){L.push("• "+r[0]+": "+money(r[2])+" × "+pct(r[3])+" = "+money(r[4]))});
-  L.push("Total: *"+money(c.fat.total)+"*/ano");
+  L.push("Total: *"+money(c.fat.total)+"*");
   L.push("");
   L.push("*4. Por que*");
   porque(c).forEach(function(r){L.push(r)});
@@ -505,7 +499,7 @@ function verdictBox(ctx,x,y,w,h,c,m,u){
   var t=c.best==="tie"?"Preencha folha e faturamento":(c.best==="folha"?"Contribuição sobre a folha":"Contribuição sobre o faturamento");
   wrap(ctx,t,x+p,y+p+u*1.55,w-2*p,u*1.1,2);
   if(c.best!=="tie"){ ctx.fillStyle=GOLD; ctx.font=font("700",u*1.25,FN); ctx.fillText(money(c.diff),x+p,y+h-p*0.95); ctx.fillStyle="#fff";
-    var mw=ctx.measureText(money(c.diff)).width; ctx.font=font("400",u*0.55); ctx.fillText("de economia no ano",x+p+mw+u*0.4,y+h-p*0.95); }
+    var mw=ctx.measureText(money(c.diff)).width; ctx.font=font("400",u*0.55); ctx.fillText("de economia prevista",x+p+mw+u*0.4,y+h-p*0.95); }
   return y+h;
 }
 function bars(ctx,x,y,w,c,u){
@@ -535,7 +529,7 @@ function meter(ctx,x,y,w,c,u){
 function calcTable(ctx,x,y,w,u,rows,total,mensal,nota){
   var c1=x+w*0.56, c2=x+w*0.72, c3=x+w;
   ctx.font=font("600",u*0.32); ctx.fillStyle=C.muted;
-  ctx.fillText("ITEM",x,y); ra(ctx,"BASE DE CÁLCULO",c1,y); ra(ctx,"ALÍQUOTA",c2,y); ra(ctx,"VALOR ANUAL",c3,y);
+  ctx.fillText("ITEM",x,y); ra(ctx,"BASE DE CÁLCULO",c1,y); ra(ctx,"ALÍQUOTA",c2,y); ra(ctx,"VALOR",c3,y);
   y+=u*0.3; hline(ctx,x,c3,y); y+=u*0.65;
   rows.forEach(function(r){
     ctx.fillStyle=C.ink; ctx.font=font("400",u*0.42); wrap(ctx,r[0],x,y,w*0.36,u*0.5,1);
@@ -543,7 +537,7 @@ function calcTable(ctx,x,y,w,u,rows,total,mensal,nota){
     ctx.fillStyle=C.ink; ctx.font=font("400",u*0.42,FN); ra(ctx,money(r[2]),c1,y); ra(ctx,"× "+pct(r[3]),c2,y); ra(ctx,"= "+money(r[4]),c3,y);
     y+=u*0.72; hline(ctx,x,c3,y); y+=u*0.62;
   });
-  ctx.fillStyle=C.ink; ctx.font=font("700",u*0.46); ctx.fillText("Total anual",x,y+u*0.05); ctx.font=font("700",u*0.5,FN); ra(ctx,money(total),c3,y+u*0.05);
+  ctx.fillStyle=C.ink; ctx.font=font("700",u*0.46); ctx.fillText("Total",x,y+u*0.05); ctx.font=font("700",u*0.5,FN); ra(ctx,money(total),c3,y+u*0.05);
   ctx.fillStyle=C.muted; ctx.font=font("400",u*0.34); ra(ctx,"≈ "+money(mensal)+" por mês ("+nota+")",c3,y+u*0.6);
   return y+u*0.9;
 }
@@ -569,7 +563,7 @@ function reportBlocks(W,kind){
     var cw=(w-u*0.6)/2, y0=y;
     var h=Math.max(measure(function(cx,yy){return tile(cx,x+u*0.5,yy,cw-u,u,"",money(c.R),origem(c,m,c.Rp),m.fonteR)},y0),
                    measure(function(cx,yy){return tile(cx,x+u*0.5,yy,cw-u,u,"",money(c.F),origem(c,m,c.Fp),m.fonteF)},y0))+u*1.4;
-    [[x,"Faturamento anual",c.R,c.Rp,m.fonteR],[x+cw+u*0.6,"Folha de salários anual",c.F,c.Fp,m.fonteF]].forEach(function(t){
+    [[x,"Faturamento do período",c.R,c.Rp,m.fonteR],[x+cw+u*0.6,"Folha de salários do período",c.F,c.Fp,m.fonteF]].forEach(function(t){
       ctx.strokeStyle=C.line; ctx.lineWidth=1.5; rrect(ctx,t[0],y0-u*0.3,cw,h,u*0.3); ctx.stroke();
       tile(ctx,t[0]+u*0.5,y0+u*0.5,cw-u,u,t[1],money(t[2]),origem(c,m,t[3]),t[4]);
     });
@@ -658,12 +652,12 @@ function drawWpp(cv,scale){
   B.push(function(ctx,y){
     ctx.fillStyle=C.ink; ctx.font=font("700",u*0.62); ctx.fillText("Seus números",x,y); y+=u*0.6;
     var cw=(w-u*0.5)/2, h=u*3.3;
-    [[x,"Faturamento anual",c.R,c.Rp],[x+cw+u*0.5,"Folha anual",c.F,c.Fp]].forEach(function(t){
+    [[x,"Faturamento",c.R,c.Rp],[x+cw+u*0.5,"Folha",c.F,c.Fp]].forEach(function(t){
       ctx.fillStyle=C.soft; rrect(ctx,t[0],y,cw,h,u*0.3); ctx.fill();
       ctx.fillStyle=C.muted; ctx.font=font("600",u*0.4); ctx.fillText(t[1].toUpperCase(),t[0]+u*0.5,y+u*0.85);
       ctx.fillStyle=C.ink; ctx.font=font("700",u*0.7,FN); ctx.fillText(money(t[2]),t[0]+u*0.5,y+u*1.85);
       ctx.fillStyle=C.muted; ctx.font=font("400",u*0.4);
-      wrap(ctx,c.meses===12?(m.periodo||"12 meses"):money(t[3])+" ÷ "+c.meses+" × 12",t[0]+u*0.5,y+u*2.6,cw-u,u*0.5,1);
+      wrap(ctx,m.periodo?"Período: "+m.periodo:"Valor informado",t[0]+u*0.5,y+u*2.6,cw-u,u*0.5,1);
     });
     return y+h+u*1.2;
   });
@@ -677,7 +671,7 @@ function drawWpp(cv,scale){
       y=boxed(ctx,x,y,w,u,null,[win?C.accent:C.line,win?4:2],function(cx,yy){
         cx.fillStyle=win?C.accent:C.muted; cx.font=font("700",u*0.42); cx.fillText((l[1]+(win?" · recomendada":"")).toUpperCase(),x+u*0.6,yy);
         cx.fillStyle=C.ink; cx.font=font("400",u*0.46,FN); yy=wrap(cx,l[2],x+u*0.6,yy+u*0.75,w-u*1.2,u*0.6);
-        cx.font=font("700",u*0.72,FN); ra(cx,"= "+money(l[3])+" /ano",x+w-u*0.6,yy+u*0.35);
+        cx.font=font("700",u*0.72,FN); ra(cx,"= "+money(l[3]),x+w-u*0.6,yy+u*0.35);
         return yy+u*0.95;
       })+u*0.4;
     });
@@ -687,7 +681,7 @@ function drawWpp(cv,scale){
     ctx.fillStyle=C.ink; ctx.font=font("700",u*0.62); ctx.fillText("Por que essa opção",x,y); y+=u*0.95;
     ctx.font=font("400",u*0.52);
     var t=c.best==="tie"?"Informe folha e faturamento.":
-      "A folha compensa enquanto for menor que "+pct(c.be)+" do faturamento, ou seja, até "+money(c.limite)+" por ano. A folha deste produtor é "+pct(c.ratio)+" ("+money(c.F)+")"+(c.best==="folha"?", abaixo do limite.":", acima do limite.");
+      "A folha compensa enquanto for menor que "+pct(c.be)+" do faturamento, ou seja, até "+money(c.limite)+". A folha deste produtor é "+pct(c.ratio)+" ("+money(c.F)+")"+(c.best==="folha"?", abaixo do limite.":", acima do limite.");
     y=wrap(ctx,t,x,y,w,u*0.72);
     if(c.best!=="tie") y=meter(ctx,x+u,y+u*0.9,w-u*2,c,u);
     return y+u*0.6;
@@ -767,7 +761,7 @@ function showLogo(){
   var im=new Image(); im.onload=function(){state.logoImg=im; render()}; im.src=src;
 }
 $("logo").onchange=function(e){ var f=e.target.files[0]; if(!f) return; var r=new FileReader(); r.onload=function(){state.logo=r.result; showLogo(); render()}; r.readAsDataURL(f); };
-var FIELDS=["nome","cpf","ano","periodo","folha","receita","meses","fonteF","fonteR","rat","aPat","aOut","aFun","aSen","escritorio","resp","contato","cor","slogan_in"];
+var FIELDS=["nome","cpf","ano","periodo","folha","receita","fonteF","fonteR","rat","aPat","aOut","aFun","aSen","escritorio","resp","contato","cor","slogan_in"];
 function save(){ try{ var o={holding:state.holding,logo:state.logo}; FIELDS.forEach(function(k){o[k]=$(k).value}); localStorage.setItem(LS,JSON.stringify(o)); }catch(e){} }
 function load(){ try{ var o=JSON.parse(localStorage.getItem(LS)||"null"); if(!o) return; FIELDS.forEach(function(k){ if(o[k]!=null) $(k).value=o[k] }); state.holding=!!o.holding; state.logo=o.logo||null;
   $("holdS").setAttribute("aria-pressed",state.holding); $("holdN").setAttribute("aria-pressed",!state.holding); $("sampleNote").hidden=true; }catch(e){} }

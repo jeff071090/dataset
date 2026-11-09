@@ -9,10 +9,10 @@ Estudo comparativo da opção do produtor rural pessoa física: contribuição s
 ## Cálculo
 | Opção | Base | Alíquotas (editáveis) |
 |---|---|---|
-| Folha | média anual de salários | INSS patronal 20% + RAT 1/2/3% + outras entidades 0,2% (2,7% com holding) + SENAR 0,2% sobre a receita |
-| Faturamento | venda da produção (CFOPs − devoluções) | Funrural + RAT 1,43% + SENAR 0,2% |
+| Folha | folha bruta do período | INSS patronal 20% + RAT 1/2/3% + outras entidades 0,2% (2,7% com holding) + SENAR 0,2% sobre a receita |
+| Faturamento | venda da produção do período (CFOPs − devoluções) | Funrural + RAT 1,43% + SENAR 0,2% |
 
-Os valores podem ser do período parcial (ex.: jan–out): informe os meses e o simulador projeta para 12 (valor ÷ meses × 12). Média mensal da folha = total ÷ 13. O ponto de equilíbrio (Funrural ÷ alíquotas da folha) mostra a partir de qual folha o faturamento passa a compensar.
+O cálculo usa exatamente os valores preenchidos para o período (ex.: jan–out), sem projetar os meses que faltam. Média mensal da folha = total ÷ 13. O ponto de equilíbrio (Funrural ÷ alíquotas da folha) mostra a partir de qual folha o faturamento passa a compensar.
 
 O relatório enviado ao cliente traz a memória de cálculo completa: origem dos números, base × alíquota de cada contribuição, comparação e o motivo da escolha.
 
