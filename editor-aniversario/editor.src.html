@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Editor de Aniversariantes – Prisma</title>
+<style>
+@font-face{font-family:"TituloFraunces";src:url(data:font/woff2;base64,{{FONT_FRAUNCES}}) format("woff2");font-weight:900;font-style:italic}
+@font-face{font-family:"TituloSourceSerif";src:url(data:font/woff2;base64,{{FONT_SOURCESERIF}}) format("woff2");font-weight:900;font-style:italic}
+@font-face{font-family:"TituloMerriweather";src:url(data:font/woff2;base64,{{FONT_MERRIWEATHER}}) format("woff2");font-weight:900;font-style:italic}
+@font-face{font-family:"DataMontserrat";src:url(data:font/woff2;base64,{{FONT_MONTSERRAT}}) format("woff2");font-weight:800;font-style:normal}
+:root{--azul:#011a5f;--azul2:#1f5fd6;--fundo:#eef3fb;--card:#fff;--borda:#d4deef;--texto:#1b2440}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--fundo);color:var(--texto)}
+header{background:var(--azul);color:#fff;padding:14px 20px;font-weight:700;font-size:18px}
+main{display:flex;gap:24px;padding:20px;max-width:1200px;margin:0 auto;align-items:flex-start}
+.painel{flex:0 0 340px;background:var(--card);border:1px solid var(--borda);border-radius:12px;padding:18px;display:flex;flex-direction:column;gap:14px}
+.preview{flex:1;display:flex;justify-content:center}
+canvas{width:100%;max-width:540px;height:auto;border-radius:8px;box-shadow:0 6px 24px rgba(1,26,95,.18);background:#fff;touch-action:none;cursor:grab}
+canvas.arrastando{cursor:grabbing}
+label{font-size:13px;font-weight:600;display:block;margin-bottom:5px}
+input[type=text]{width:100%;padding:10px;border:1px solid var(--borda);border-radius:8px;font-size:16px}
+input[type=range]{width:100%}
+select{width:100%;padding:8px;border:1px solid var(--borda);border-radius:8px;font-size:14px}
+.btn{display:block;width:100%;padding:12px;border:0;border-radius:8px;font-size:15px;font-weight:700;cursor:pointer;background:var(--azul2);color:#fff;text-align:center}
+.btn.sec{background:#e6edf9;color:var(--azul)}
+.linha{display:flex;gap:8px}
+.linha>*{flex:1}
+.dica{font-size:12px;color:#5a6684;margin:4px 0 0}
+details{border-top:1px solid var(--borda);padding-top:10px}
+summary{cursor:pointer;font-weight:600;font-size:13px}
+details>div{display:flex;flex-direction:column;gap:12px;margin-top:12px}
+input[type=file]{display:none}
+@media (max-width:820px){main{flex-direction:column-reverse;padding:12px}.painel{flex:auto;width:100%}}
+</style>
+</head>
+<body>
+<header>🎉 Editor de Aniversariantes</header>
+<main>
+  <section class="painel">
+    <div>
+      <label>1. Foto da pessoa</label>
+      <label class="btn" for="arqFoto">Escolher foto…</label>
+      <input type="file" id="arqFoto" accept="image/*">
+      <p class="dica">Também dá para arrastar a foto para a imagem ou colar (Ctrl+V).</p>
+    </div>
+    <div>
+      <label for="zoom">Zoom da foto</label>
+      <input type="range" id="zoom" min="1" max="4" step="0.01" value="1">
+      <p class="dica">Arraste a foto na prévia para ajustar o enquadramento.</p>
+    </div>
+    <div>
+      <label for="nome">2. Nome</label>
+      <input type="text" id="nome" value="Karolayne" maxlength="40" autocomplete="off">
+    </div>
+    <div>
+      <label for="data">3. Data (dia/mês)</label>
+      <input type="text" id="data" value="12/11" maxlength="5" inputmode="numeric" autocomplete="off">
+    </div>
+    <div class="linha">
+      <button class="btn" id="baixarPng">Baixar PNG</button>
+      <button class="btn sec" id="baixarJpg">Baixar JPG</button>
+    </div>
+    <details>
+      <summary>Ajustes avançados</summary>
+      <div>
+        <div>
+          <label for="fonteTitulo">Fonte de “Parabéns!” e do nome</label>
+          <select id="fonteTitulo">
+            <option value="TituloMerriweather">Merriweather Black Italic (padrão)</option>
+            <option value="TituloSourceSerif">Source Serif Black Italic</option>
+            <option value="TituloFraunces">Fraunces Black Italic</option>
+          </select>
+        </div>
+        <div>
+          <label class="btn sec" for="arqFonte">Usar outra fonte (.ttf / .otf / .woff)…</label>
+          <input type="file" id="arqFonte" accept=".ttf,.otf,.woff,.woff2">
+          <p class="dica" id="fonteInfo">Se tiver o arquivo exato da fonte do modelo (ex.: baixado do Canva), carregue aqui.</p>
+        </div>
+        <div>
+          <label for="tamNome">Tamanho do nome</label>
+          <input type="range" id="tamNome" min="0.6" max="1.2" step="0.01" value="1">
+        </div>
+        <div>
+          <label for="largura">Largura das letras do título</label>
+          <input type="range" id="largura" min="0.8" max="1.2" step="0.01" value="1">
+        </div>
+        <button class="btn sec" id="resetFoto">Recentralizar foto</button>
+      </div>
+    </details>
+  </section>
+  <section class="preview">
+    <canvas id="tela" width="1080" height="1542"></canvas>
+  </section>
+</main>
+<script>
+(() => {
+  // ---- Medidas do modelo (coordenadas da imagem original de 451px de largura) ----
+  const BASE = 451;
+  const FOTO = { cx: 226.8, cy: 163.2, w: 241.5, h: 252.1, ang: -6.82 }; // área da foto dentro da polaroid
+  const DATA = { cx: 230.8, base: 359.5, capH: 24.5 };
+  const PARABENS = { cx: 226.5, base: 422, capH: 50, largura: 287 }; // largura original de "Parabéns!"
+  const NOME = { cx: 226.5, base: 484, capH: 51, maxW: 372 };
+  const COR_TEXTO = "#011a5f";
+  const COR_RISCO = "#42befc";
+
+  const tela = document.getElementById("tela");
+  const ctx = tela.getContext("2d");
+  const S = tela.width / BASE;
+  const el = id => document.getElementById(id);
+
+  const fundo = new Image();
+  fundo.src = "data:image/jpeg;base64,{{BG}}";
+
+  let foto = null, zoom = 1, offX = 0, offY = 0;
+  let fonteTitulo = "TituloMerriweather";
+
+  // tamanho de fonte que gera a altura de letra maiúscula desejada
+  function fonteParaCap(familia, peso, estilo, capH) {
+    ctx.font = `${estilo} ${peso} 100px "${familia}"`;
+    const m = ctx.measureText("H");
+    const cap = m.actualBoundingBoxAscent || 70;
+    return capH * 100 / cap;
+  }
+
+  function desenharTexto(txt, familia, peso, estilo, capH, cx, base, escalaX, maxW) {
+    let tam = fonteParaCap(familia, peso, estilo, capH * S);
+    ctx.font = `${estilo} ${peso} ${tam}px "${familia}"`;
+    let larg = ctx.measureText(txt).width * escalaX;
+    if (maxW && larg > maxW * S) { tam *= (maxW * S) / larg; ctx.font = `${estilo} ${peso} ${tam}px "${familia}"`; larg = maxW * S; }
+    ctx.save();
+    ctx.translate(cx * S, base * S);
+    ctx.scale(escalaX, 1);
+    ctx.textAlign = "center";
+    ctx.textBaseline = "alphabetic";
+    ctx.fillStyle = COR_TEXTO;
+    ctx.fillText(txt, 0, 0);
+    ctx.restore();
+    return larg;
+  }
+
+  function desenharRisco(cx, y, largura) {
+    // pincelada azul clara afinando nas pontas, como no modelo
+    const L = largura, x0 = cx - L / 2, x1 = cx + L / 2, esp = 3.6 * S;
+    ctx.save();
+    ctx.fillStyle = COR_RISCO;
+    ctx.beginPath();
+    ctx.moveTo(x0, y + esp * 0.2);
+    ctx.quadraticCurveTo(cx, y - esp * 1.4, x1, y - esp * 0.1);
+    ctx.quadraticCurveTo(x1 + esp * 0.6, y + esp * 0.2, x1 - esp * 0.4, y + esp * 0.5);
+    ctx.quadraticCurveTo(cx, y - esp * 0.1, x0 + esp * 0.6, y + esp * 0.9);
+    ctx.quadraticCurveTo(x0 - esp * 0.5, y + esp * 0.8, x0, y + esp * 0.2);
+    ctx.fill();
+    ctx.restore();
+  }
+
+  function desenharFoto() {
+    const w = (FOTO.w + 3) * S, h = (FOTO.h + 3) * S;
+    ctx.save();
+    ctx.translate(FOTO.cx * S, FOTO.cy * S);
+    ctx.rotate(FOTO.ang * Math.PI / 180);
+    ctx.beginPath();
+    ctx.rect(-w / 2, -h / 2, w, h);
+    ctx.clip();
+    if (foto) {
+      const esc = Math.max(w / foto.width, h / foto.height) * zoom;
+      const fw = foto.width * esc, fh = foto.height * esc;
+      // limita o deslocamento para a foto sempre cobrir a área
+      const mx = Math.max(0, (fw - w) / 2), my = Math.max(0, (fh - h) / 2);
+      offX = Math.min(mx, Math.max(-mx, offX));
+      offY = Math.min(my, Math.max(-my, offY));
+      ctx.drawImage(foto, -fw / 2 + offX, -fh / 2 + offY, fw, fh);
+    } else {
+      ctx.fillStyle = "#d6deeb";
+      ctx.fillRect(-w / 2, -h / 2, w, h);
+      ctx.fillStyle = "#7f8db0";
+      ctx.font = `600 ${16 * S}px system-ui, sans-serif`;
+      ctx.textAlign = "center";
+      ctx.fillText("Escolha a foto", 0, 6 * S);
+    }
+    ctx.restore();
+  }
+
+  function formatarData(v) {
+    const d = v.replace(/\D/g, "").slice(0, 4);
+    return d.length > 2 ? d.slice(0, 2) + "/" + d.slice(2) : d;
+  }
+
+  function render() {
+    if (!fundo.complete) return;
+    ctx.clearRect(0, 0, tela.width, tela.height);
+    ctx.drawImage(fundo, 0, 0, tela.width, tela.height);
+    desenharFoto();
+    // condensa a fonte para "Parabéns!" ocupar a mesma largura do modelo; o nome usa a mesma proporção
+    const tamP = fonteParaCap(fonteTitulo, 900, "italic", PARABENS.capH * S);
+    ctx.font = `italic 900 ${tamP}px "${fonteTitulo}"`;
+    const escX = (PARABENS.largura * S) / ctx.measureText("Parabéns!").width * parseFloat(el("largura").value);
+    desenharTexto(formatarData(el("data").value), "DataMontserrat", 800, "normal", DATA.capH, DATA.cx, DATA.base, 1);
+    desenharTexto("Parabéns!", fonteTitulo, 900, "italic", PARABENS.capH, PARABENS.cx, PARABENS.base, escX);
+    const nome = el("nome").value.trim();
+    if (nome) {
+      const tamN = parseFloat(el("tamNome").value);
+      const larg = desenharTexto(nome + "!", fonteTitulo, 900, "italic", NOME.capH * tamN, NOME.cx, NOME.base, escX, NOME.maxW);
+      const capY = (NOME.base + 6) * S;
+      desenharRisco((NOME.cx + 12) * S, capY, Math.min(larg * 0.6, 220 * S));
+    }
+  }
+
+  function carregarFoto(arquivo) {
+    if (!arquivo || !arquivo.type.startsWith("image/")) return;
+    const url = URL.createObjectURL(arquivo);
+    const img = new Image();
+    img.onload = () => { foto = img; zoom = 1; offX = offY = 0; el("zoom").value = 1; render(); };
+    img.src = url;
+  }
+
+  // ---- Eventos ----
+  el("arqFoto").addEventListener("change", e => carregarFoto(e.target.files[0]));
+  ["nome", "tamNome", "largura"].forEach(id => el(id).addEventListener("input", render));
+  el("data").addEventListener("input", e => { e.target.value = formatarData(e.target.value); render(); });
+  el("zoom").addEventListener("input", e => { zoom = parseFloat(e.target.value); render(); });
+  el("fonteTitulo").addEventListener("change", e => { fonteTitulo = e.target.value; render(); });
+  el("resetFoto").addEventListener("click", () => { zoom = 1; offX = offY = 0; el("zoom").value = 1; render(); });
+
+  el("arqFonte").addEventListener("change", async e => {
+    const f = e.target.files[0]; if (!f) return;
+    try {
+      const nomeFam = "FontePersonalizada" + Date.now();
+      const face = new FontFace(nomeFam, await f.arrayBuffer());
+      await face.load();
+      document.fonts.add(face);
+      const opt = document.createElement("option");
+      opt.value = nomeFam; opt.textContent = f.name;
+      el("fonteTitulo").appendChild(opt);
+      el("fonteTitulo").value = nomeFam; fonteTitulo = nomeFam;
+      el("fonteInfo").textContent = "Fonte carregada: " + f.name;
+      render();
+    } catch (err) { alert("Não foi possível carregar essa fonte."); }
+  });
+
+  // arrastar a foto
+  let arrasto = null;
+  function ptCanvas(ev) {
+    const r = tela.getBoundingClientRect();
+    return { x: (ev.clientX - r.left) * tela.width / r.width, y: (ev.clientY - r.top) * tela.height / r.height };
+  }
+  tela.addEventListener("pointerdown", ev => {
+    if (!foto) { el("arqFoto").click(); return; }
+    arrasto = { p: ptCanvas(ev), ox: offX, oy: offY };
+    tela.setPointerCapture(ev.pointerId); tela.classList.add("arrastando");
+  });
+  tela.addEventListener("pointermove", ev => {
+    if (!arrasto) return;
+    const p = ptCanvas(ev), dx = p.x - arrasto.p.x, dy = p.y - arrasto.p.y;
+    const a = -FOTO.ang * Math.PI / 180; // converte para o eixo girado da foto
+    offX = arrasto.ox + dx * Math.cos(a) - dy * Math.sin(a);
+    offY = arrasto.oy + dx * Math.sin(a) + dy * Math.cos(a);
+    render();
+  });
+  const fim = () => { arrasto = null; tela.classList.remove("arrastando"); };
+  tela.addEventListener("pointerup", fim);
+  tela.addEventListener("pointercancel", fim);
+  tela.addEventListener("wheel", ev => {
+    if (!foto) return; ev.preventDefault();
+    zoom = Math.min(4, Math.max(1, zoom * (ev.deltaY < 0 ? 1.06 : 1 / 1.06)));
+    el("zoom").value = zoom; render();
+  }, { passive: false });
+
+  // soltar / colar foto
+  document.addEventListener("dragover", e => e.preventDefault());
+  document.addEventListener("drop", e => { e.preventDefault(); carregarFoto(e.dataTransfer.files[0]); });
+  document.addEventListener("paste", e => {
+    const item = [...e.clipboardData.items].find(i => i.type.startsWith("image/"));
+    if (item) carregarFoto(item.getAsFile());
+  });
+
+  // download
+  function baixar(tipo) {
+    const nome = (el("nome").value.trim() || "aniversariante").normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^\w-]+/g, "-");
+    const data = formatarData(el("data").value).replace("/", "-");
+    const ext = tipo === "image/png" ? "png" : "jpg";
+    tela.toBlob(blob => {
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = `aniversario-${nome}-${data}.${ext}`;
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+    }, tipo, 0.95);
+  }
+  el("baixarPng").addEventListener("click", () => baixar("image/png"));
+  el("baixarJpg").addEventListener("click", () => baixar("image/jpeg"));
+
+  fundo.onload = render;
+  document.fonts.ready.then(render);
+  Promise.all([
+    document.fonts.load('900 italic 40px "TituloFraunces"'),
+    document.fonts.load('900 italic 40px "TituloSourceSerif"'),
+    document.fonts.load('900 italic 40px "TituloMerriweather"'),
+    document.fonts.load('800 40px "DataMontserrat"')
+  ]).then(render);
+})();
+</script>
+</body>
+</html>
