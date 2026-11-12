@@ -23,6 +23,8 @@ textarea{font-size:14px;resize:vertical;min-height:170px}
 .linha{display:flex;gap:8px}
 .linha>*{flex:1}
 .dica{font-size:12px;color:#587078;margin:4px 0 0}
+label.check{display:flex;align-items:center;gap:8px;font-weight:500;margin:8px 0 0;cursor:pointer}
+label.check input{width:18px;height:18px;margin:0}
 details{border-top:1px solid var(--borda);padding-top:10px}
 summary{cursor:pointer;font-weight:600;font-size:13px}
 details>div{display:flex;flex-direction:column;gap:12px;margin-top:12px}
@@ -36,6 +38,7 @@ details>div{display:flex;flex-direction:column;gap:12px;margin-top:12px}
     <div>
       <label for="nome">1. Nome</label>
       <input type="text" id="nome" value="Daiane" maxlength="40" autocomplete="off">
+      <label class="check"><input type="checkbox" id="nomeNegrito"> Nome em negrito</label>
     </div>
     <div>
       <label for="genero">2. Tratamento</label>
@@ -47,6 +50,7 @@ details>div{display:flex;flex-direction:column;gap:12px;margin-top:12px}
     <div>
       <label for="data">3. Data de retorno (dia/mês)</label>
       <input type="text" id="data" value="08/01" maxlength="5" inputmode="numeric" autocomplete="off">
+      <label class="check"><input type="checkbox" id="dataNegrito"> Data em negrito</label>
     </div>
     <div class="linha">
       <button class="btn" id="baixarPng">Baixar PNG</button>
@@ -100,33 +104,73 @@ details>div{display:flex;flex-direction:column;gap:12px;margin-top:12px}
     return d.length > 2 ? d.slice(0, 2) + "/" + d.slice(2) : d;
   }
 
+  const fonte = (negrito, escala) => `${negrito ? 700 : 300} ${TAM * escala}px "DMSans"`;
+
+  // divide o parágrafo em palavras; cada palavra tem pedaços normais e/ou em negrito
+  function palavras(paragrafo, nome, data) {
+    const pedacos = [];
+    paragrafo.split(/(\{nome\}|\{data\})/).forEach(t => {
+      if (t === "{nome}") pedacos.push({ t: nome, b: el("nomeNegrito").checked });
+      else if (t === "{data}") pedacos.push({ t: data, b: el("dataNegrito").checked });
+      else if (t) pedacos.push({ t, b: false });
+    });
+    const lista = []; let atual = [];
+    pedacos.forEach(pd => {
+      pd.t.split(/(\s+)/).forEach(parte => {
+        if (!parte) return;
+        if (/^\s+$/.test(parte)) { if (atual.length) { lista.push(atual); atual = []; } }
+        else atual.push({ t: parte, b: pd.b });
+      });
+    });
+    if (atual.length) lista.push(atual);
+    return lista;
+  }
+
+  function larguraPalavra(pal, escala) {
+    return pal.reduce((s, pd) => { ctx.font = fonte(pd.b, escala); return s + ctx.measureText(pd.t).width; }, 0);
+  }
+
   // quebra o texto em linhas que cabem na largura
-  function quebrar(paragrafo, largura) {
-    const palavras = paragrafo.split(/\s+/).filter(Boolean), linhas = [];
-    let atual = "";
-    for (const p of palavras) {
-      const teste = atual ? atual + " " + p : p;
-      if (ctx.measureText(teste).width > largura && atual) { linhas.push(atual); atual = p; }
-      else atual = teste;
+  function quebrar(lista, escala) {
+    ctx.font = fonte(false, escala);
+    const espaco = ctx.measureText(" ").width;
+    const linhas = []; let atual = null;
+    for (const pal of lista) {
+      const w = larguraPalavra(pal, escala);
+      if (atual && atual.w + espaco + w > LARG_MAX) { linhas.push(atual); atual = null; }
+      if (!atual) atual = { pals: [pal], w };
+      else { atual.pals.push(pal); atual.w += espaco + w; }
     }
     if (atual) linhas.push(atual);
+    linhas.forEach(l => l.espaco = espaco);
     return linhas;
   }
 
   function montar(escala) {
     const nome = el("nome").value.trim() || "Nome";
-    const texto = el("texto").value.replaceAll("{nome}", nome).replaceAll("{data}", formatarData(el("data").value));
-    ctx.font = `300 ${TAM * escala}px "DMSans"`;
-    const paragrafos = texto.split(/\n\s*\n/).map(p => p.replace(/\n/g, " ").trim()).filter(Boolean);
+    const data = formatarData(el("data").value);
+    const paragrafos = el("texto").value.split(/\n\s*\n/).map(p => p.replace(/\n/g, " ").trim()).filter(Boolean);
     const itens = []; let y = BASE_1;
     paragrafos.forEach((p, i) => {
       if (i > 0) y += ESP_PARAGRAFO * escala;
-      quebrar(p, LARG_MAX).forEach((l, j) => { if (i > 0 || j > 0) y += PASSO * escala; itens.push({ l, y }); });
+      quebrar(palavras(p, nome, data), escala).forEach((l, j) => { if (i > 0 || j > 0) y += PASSO * escala; itens.push({ l, y }); });
     });
     const yAss = y + ESP_ASSINATURA * escala;
     const logoTopo = yAss + LOGO_ESP;
     const logoAlt = LOGO_LARG * logo.height / logo.width;
     return { itens, yAss, logoTopo, logoAlt, fim: logoTopo + logoAlt };
+  }
+
+  function desenharLinha(linha, y, escala) {
+    let x = CX - linha.w / 2;
+    linha.pals.forEach((pal, i) => {
+      if (i > 0) x += linha.espaco;
+      pal.forEach(pd => {
+        ctx.font = fonte(pd.b, escala);
+        ctx.fillText(pd.t, x, y);
+        x += ctx.measureText(pd.t).width;
+      });
+    });
   }
 
   function render() {
@@ -136,10 +180,11 @@ details>div{display:flex;flex-direction:column;gap:12px;margin-top:12px}
     let escala = 1, lay = montar(escala);
     while (lay.fim > LIMITE_INF && escala > 0.6) { escala -= 0.02; lay = montar(escala); }
 
-    ctx.textAlign = "center"; ctx.textBaseline = "alphabetic";
+    ctx.textBaseline = "alphabetic";
+    ctx.textAlign = "left";
     ctx.fillStyle = COR_TEXTO;
-    ctx.font = `300 ${TAM * escala}px "DMSans"`;
-    lay.itens.forEach(it => ctx.fillText(it.l, CX, it.y));
+    lay.itens.forEach(it => desenharLinha(it.l, it.y, escala));
+    ctx.textAlign = "center";
 
     ctx.fillStyle = COR_AZUL;
     ctx.font = `700 ${TAM_ASS * escala}px "DMSans"`;
@@ -150,6 +195,8 @@ details>div{display:flex;flex-direction:column;gap:12px;margin-top:12px}
 
   // ---- Eventos ----
   el("nome").addEventListener("input", render);
+  el("nomeNegrito").addEventListener("change", render);
+  el("dataNegrito").addEventListener("change", render);
   el("data").addEventListener("input", e => { e.target.value = formatarData(e.target.value); render(); });
   el("genero").addEventListener("change", e => {
     if (!textoEditado) el("texto").value = TEXTOS[e.target.value];
