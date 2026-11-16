@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aniversariantes do Mês – NTW Contabilidade</title>
+<style>
+@font-face{font-family:"Datas";src:url(data:font/woff2;base64,{{FONT_DATAS}}) format("woff2");font-weight:700;font-style:normal}
+@font-face{font-family:"Mao";src:url(data:font/woff2;base64,{{FONT_MAO}}) format("woff2");font-weight:400;font-style:normal}
+:root{--azul:#09509e;--azul2:#196ace;--fundo:#eef4fb;--card:#fff;--borda:#d4deef;--texto:#1b2440}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--fundo);color:var(--texto)}
+header{background:var(--azul);color:#fff;padding:14px 20px;font-weight:700;font-size:18px}
+main{display:flex;gap:24px;padding:20px;max-width:1250px;margin:0 auto;align-items:flex-start}
+.painel{flex:0 0 360px;background:var(--card);border:1px solid var(--borda);border-radius:12px;padding:18px;display:flex;flex-direction:column;gap:14px}
+.preview{flex:1;display:flex;justify-content:center;position:sticky;top:12px}
+canvas{width:100%;max-width:560px;height:auto;border-radius:8px;box-shadow:0 6px 24px rgba(9,80,158,.18);background:#fff}
+label{font-size:13px;font-weight:600;display:block;margin-bottom:5px}
+select,textarea{width:100%;padding:10px;border:1px solid var(--borda);border-radius:8px;font-size:16px;font-family:inherit}
+textarea{min-height:230px;resize:vertical;line-height:1.5}
+.btn{display:block;width:100%;padding:12px;border:0;border-radius:8px;font-size:15px;font-weight:700;cursor:pointer;background:var(--azul2);color:#fff;text-align:center}
+.btn.sec{background:#e6edf9;color:var(--azul)}
+.linha{display:flex;gap:8px}
+.linha>*{flex:1}
+.dica{font-size:12px;color:#5a6684;margin:4px 0 0}
+label.check{display:flex;align-items:center;gap:8px;font-weight:500;margin:8px 0 0;cursor:pointer}
+label.check input{width:18px;height:18px;margin:0}
+.sec-titulo{font-size:14px;font-weight:700;border-top:1px solid var(--borda);padding-top:12px;margin:0}
+.cores{display:grid;grid-template-columns:1fr auto;gap:8px 10px;align-items:center;font-size:14px}
+.cores input[type=color]{width:52px;height:34px;border:1px solid var(--borda);border-radius:6px;padding:2px;background:#fff;cursor:pointer}
+.paletas{display:flex;flex-wrap:wrap;gap:8px}
+.paletas button{border:1px solid var(--borda);background:#fff;border-radius:20px;padding:6px 10px 6px 6px;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:6px}
+.paletas i{display:inline-block;width:18px;height:18px;border-radius:50%}
+@media (max-width:860px){main{flex-direction:column-reverse;padding:12px}.painel{flex:auto;width:100%}.preview{position:static}}
+</style>
+</head>
+<body>
+<header>🎈 Aniversariantes do Mês</header>
+<main>
+  <section class="painel">
+    <div>
+      <label for="mes">1. Mês</label>
+      <select id="mes"></select>
+    </div>
+    <div>
+      <label for="lista">2. Aniversariantes (um por linha: dia e nome)</label>
+      <textarea id="lista" spellcheck="false"></textarea>
+      <p class="dica">Exemplos: <b>11 Daiane</b>, <b>11/12 Daiane</b> ou <b>11 - Daiane</b>. Se digitar só o dia, o mês escolhido acima é usado. Dá para colar direto de uma planilha.</p>
+      <label class="check"><input type="checkbox" id="ordenar" checked> Ordenar por data</label>
+    </div>
+    <div class="linha">
+      <button class="btn" id="baixarPng">Baixar PNG</button>
+      <button class="btn sec" id="baixarJpg">Baixar JPG</button>
+    </div>
+
+    <p class="sec-titulo">3. Cores (opcional)</p>
+    <div>
+      <label>Paletas prontas</label>
+      <div class="paletas" id="paletas"></div>
+    </div>
+    <div class="cores">
+      <span>Balões</span><input type="color" id="corBaloes">
+      <span>Caixa de presente</span><input type="color" id="corPresente">
+      <span>Fundo</span><input type="color" id="corFundo">
+      <span>Textos e enfeites</span><input type="color" id="corTexto">
+      <span>Faixas dos nomes</span><input type="color" id="corFaixa">
+    </div>
+    <button class="btn sec" id="coresPadrao">Voltar às cores originais (NTW)</button>
+  </section>
+  <section class="preview">
+    <canvas id="tela" width="1024" height="1535"></canvas>
+  </section>
+</main>
+<script>
+(() => {
+  const MESES = ["janeiro","fevereiro","março","abril","maio","junho","julho","agosto","setembro","outubro","novembro","dezembro"];
+
+  // ---- Medidas do modelo (pixels da arte 1024x1535) ----
+  const ARCO = { cx: 520, cy: 1316.5, r: 1078.5, larguraRef: 724 };   // subtítulo em arco
+  const LISTA = { topo: 360, base: 1000, passo: 81.5, altFaixa: 72, x0: 215, x1: 820,
+                  xData: 393, xBarra: 497, xNome: 540, capH: 42 };
+  const FAIXA_PADRAO = "#d5edfe";
+
+  const tela = document.getElementById("tela");
+  const ctx = tela.getContext("2d");
+  const el = id => document.getElementById(id);
+  const W = tela.width, H = tela.height;
+
+  const carregar = src => new Promise(ok => { const i = new Image(); i.onload = () => ok(i); i.src = src; });
+
+  // ---- cores: conversões ----
+  const hex2rgb = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
+  const rgb2hex = c => "#" + c.map(v => Math.round(v).toString(16).padStart(2, "0")).join("");
+  function rgb2hsl(r, g, b) {
+    r /= 255; g /= 255; b /= 255;
+    const mx = Math.max(r, g, b), mn = Math.min(r, g, b), l = (mx + mn) / 2;
+    if (mx === mn) return [0, 0, l];
+    const d = mx - mn, s = l > .5 ? d / (2 - mx - mn) : d / (mx + mn);
+    let h = mx === r ? (g - b) / d + (g < b ? 6 : 0) : mx === g ? (b - r) / d + 2 : (r - g) / d + 4;
+    return [h / 6, s, l];
+  }
+  function hue2(p, q, t) { if (t < 0) t += 1; if (t > 1) t -= 1; if (t < 1/6) return p + (q - p) * 6 * t; if (t < 1/2) return q; if (t < 2/3) return p + (q - p) * (2/3 - t) * 6; return p; }
+  function hsl2rgb(h, s, l) {
+    if (s === 0) return [l * 255, l * 255, l * 255];
+    const q = l < .5 ? l * (1 + s) : l + s - l * s, p = 2 * l - q;
+    return [hue2(p, q, h + 1/3) * 255, hue2(p, q, h) * 255, hue2(p, q, h - 1/3) * 255];
+  }
+
+  let base = null, camadas = null, logo = null;     // ImageData da arte e das camadas
+  let fundoPronto = null;                            // canvas com a arte já recolorida
+  const REF = {};                                    // cor original de cada camada (HSL)
+
+  // cor de referência de cada camada (média dos pixels "puros" da camada)
+  function calcularReferencias() {
+    const d = base.data, c = camadas.data, soma = { b: [0,0,0,0], p: [0,0,0,0], t: [0,0,0,0], f: [0,0,0,0] };
+    for (let i = 0; i < d.length; i += 4 * 3) {
+      const wb = c[i] / 255, wp = c[i + 1] / 255, wt = c[i + 2] / 255;
+      let k = null;
+      if (wb > .95) k = "b"; else if (wp > .95) k = "p"; else if (wt > .95) k = "t";
+      else if (wb + wp + wt < .02 && d[i] < 235) k = "f";
+      if (!k) continue;
+      const [h, s, l] = rgb2hsl(d[i], d[i + 1], d[i + 2]);
+      if (s < .15) continue;
+      soma[k][0] += Math.cos(h * 2 * Math.PI); soma[k][1] += Math.sin(h * 2 * Math.PI); soma[k][2] += s; soma[k][3] += l;
+      (soma[k].n = (soma[k].n || 0) + 1);
+    }
+    for (const k in soma) {
+      const s = soma[k], n = s.n || 1;
+      let h = Math.atan2(s[1], s[0]) / (2 * Math.PI); if (h < 0) h += 1;
+      REF[k] = [h, s[2] / n, s[3] / n];
+    }
+  }
+
+  // aplica a cor escolhida: muda o tom, ajusta a saturação e leva o tom médio da camada até o escolhido
+  function mapear(hsl, ref, alvo) {
+    let h = hsl[0] + (alvo[0] - ref[0]); h -= Math.floor(h);
+    const s = Math.min(1, hsl[1] * (ref[1] > 0.01 ? alvo[1] / ref[1] : 1));
+    const l = hsl[2] <= ref[2] ? hsl[2] * alvo[2] / ref[2] : alvo[2] + (hsl[2] - ref[2]) * (1 - alvo[2]) / (1 - ref[2]);
+    return hsl2rgb(h, s, Math.min(1, Math.max(0, l)));
+  }
+
+  function recolorir() {
+    const alvo = {
+      b: rgb2hsl(...hex2rgb(el("corBaloes").value)), p: rgb2hsl(...hex2rgb(el("corPresente").value)),
+      t: rgb2hsl(...hex2rgb(el("corTexto").value)), f: rgb2hsl(...hex2rgb(el("corFundo").value))
+    };
+    const igual = k => rgb2hex(hsl2rgb(...REF[k])) === rgb2hex(hsl2rgb(...alvo[k]));
+    const out = new ImageData(new Uint8ClampedArray(base.data), W, H);
+    const d = base.data, c = camadas.data, o = out.data;
+    const mudar = { b: !igual("b"), p: !igual("p"), t: !igual("t"), f: !igual("f") };
+    if (mudar.b || mudar.p || mudar.t || mudar.f) {
+      for (let i = 0; i < d.length; i += 4) {
+        const wb = c[i] / 255, wp = c[i + 1] / 255, wt = c[i + 2] / 255, wf = Math.max(0, 1 - wb - wp - wt);
+        const hsl = rgb2hsl(d[i], d[i + 1], d[i + 2]);
+        let r = 0, g = 0, b = 0;
+        const somar = (w, k) => {
+          if (w <= 0) return;
+          const rgb = mudar[k] ? mapear(hsl, REF[k], alvo[k]) : [d[i], d[i + 1], d[i + 2]];
+          r += rgb[0] * w; g += rgb[1] * w; b += rgb[2] * w;
+        };
+        somar(wb, "b"); somar(wp, "p"); somar(wt, "t"); somar(wf, "f");
+        const tot = wb + wp + wt + wf || 1;
+        o[i] = r / tot; o[i + 1] = g / tot; o[i + 2] = b / tot;
+      }
+    }
+    fundoPronto.getContext("2d").putImageData(out, 0, 0);
+  }
+
+  // ---- lista ----
+  function lerLista() {
+    const mes = el("mes").selectedIndex + 1;
+    const itens = el("lista").value.split(/\n/).map(l => l.trim()).filter(Boolean).map(l => {
+      const m = l.match(/^(\d{1,2})(?:\s*[\/.\-]\s*(\d{1,2}))?\s*[-–|:;,\t]?\s*(.*)$/);
+      if (!m) return { dia: 99, mes, data: "", nome: l };
+      const dia = parseInt(m[1], 10), mm = m[2] ? parseInt(m[2], 10) : mes;
+      return { dia, mes: mm, data: String(dia).padStart(2, "0") + "/" + String(mm).padStart(2, "0"), nome: m[3].trim() };
+    });
+    if (el("ordenar").checked) itens.sort((a, b) => a.mes - b.mes || a.dia - b.dia);
+    return itens;
+  }
+
+  function tamanhoPorCap(cap, familia = "Mao") {
+    ctx.font = `${familia === "Datas" ? "700 " : ""}100px "${familia}"`;
+    return cap * 100 / (ctx.measureText("H").actualBoundingBoxAscent || 70);
+  }
+
+  // texto "encorpado" como no modelo (a fonte com um contorno da mesma cor)
+  function textoForte(txt, x, y, tam, cor, alinhar) {
+    ctx.font = `${tam}px "Mao"`;
+    ctx.textAlign = alinhar; ctx.textBaseline = "alphabetic";
+    ctx.lineJoin = "round"; ctx.lineWidth = tam * 0.032;
+    ctx.strokeStyle = cor; ctx.fillStyle = cor;
+    ctx.strokeText(txt, x, y); ctx.fillText(txt, x, y);
+  }
+
+  function faixa(x0, y0, x1, y1, cor) {
+    const r = (y1 - y0) / 2;
+    ctx.beginPath();
+    ctx.moveTo(x0 + r, y0); ctx.lineTo(x1 - r, y0);
+    ctx.arc(x1 - r, y0 + r, r, -Math.PI / 2, Math.PI / 2);
+    ctx.lineTo(x0 + r, y1);
+    ctx.arc(x0 + r, y0 + r, r, Math.PI / 2, Math.PI * 1.5);
+    ctx.fillStyle = cor; ctx.fill();
+  }
+
+  function desenharLista(cor) {
+    const itens = lerLista(); if (!itens.length) return;
+    const area = LISTA.base - LISTA.topo;
+    const passo = Math.min(LISTA.passo, area / itens.length);
+    const esc = passo / LISTA.passo;
+    const alt = LISTA.altFaixa * esc;
+    const totalAlt = passo * (itens.length - 1) + alt;
+    let y = LISTA.topo + (area - totalAlt) / 2;
+    const tam = tamanhoPorCap(LISTA.capH * esc);
+    const tamData = tamanhoPorCap(LISTA.capH * esc, "Datas");
+    itens.forEach(it => {
+      faixa(LISTA.x0, y, LISTA.x1, y + alt, el("corFaixa").value);
+      const base = y + alt / 2 + LISTA.capH * esc / 2;
+      // data: fonte com números "normais", levemente condensada para ficar como no modelo
+      ctx.font = `700 ${tamData}px "Datas"`; ctx.textAlign = "center"; ctx.fillStyle = cor;
+      const sx = Math.min(1, 128 * esc / ctx.measureText(it.data).width);
+      ctx.save(); ctx.translate(LISTA.xData, base); ctx.scale(sx, 1); ctx.fillText(it.data, 0, 0); ctx.restore();
+      // barra vertical
+      ctx.beginPath(); ctx.lineCap = "round"; ctx.lineWidth = 5 * Math.max(esc, .6);
+      ctx.moveTo(LISTA.xBarra, y + alt * .17); ctx.lineTo(LISTA.xBarra, y + alt * .83);
+      ctx.strokeStyle = cor; ctx.stroke();
+      // nome (diminui se não couber)
+      let t = tam; ctx.font = `${t}px "Mao"`;
+      const max = LISTA.x1 - 24 - LISTA.xNome, w = ctx.measureText(it.nome).width;
+      if (w > max) t *= max / w;
+      textoForte(it.nome, LISTA.xNome, base, t, cor, "left");
+      y += passo;
+    });
+  }
+
+  // "aniversariantes de <mês>" em arco
+  function desenharArco(cor) {
+    const txt = "aniversariantes de " + el("mes").value;
+    ctx.font = `100px "Mao"`;
+    const tam = 100 * ARCO.larguraRef / ctx.measureText("aniversariantes de dezembro").width;
+    ctx.font = `${tam}px "Mao"`;
+    const larg = ctx.measureText(txt).width;
+    let ang = -Math.PI / 2 - (larg / 2) / ARCO.r;
+    for (const ch of txt) {
+      const w = ctx.measureText(ch).width, a = ang + (w / 2) / ARCO.r;
+      ctx.save();
+      ctx.translate(ARCO.cx + ARCO.r * Math.cos(a), ARCO.cy + ARCO.r * Math.sin(a));
+      ctx.rotate(a + Math.PI / 2);
+      textoForte(ch, 0, 0, tam, cor, "center");
+      ctx.restore();
+      ang += w / ARCO.r;
+    }
+  }
+
+  let pendente = false, precisaRecolorir = false;
+  function render(recolor) {
+    if (!base) return;
+    if (recolor) recolorir();
+    ctx.drawImage(fundoPronto, 0, 0);
+    const cor = el("corTexto").value;
+    desenharArco(cor);
+    desenharLista(cor);
+    const lw = 340, lh = lw * logo.height / logo.width;
+    ctx.drawImage(logo, 512 - lw / 2, 1408 - lh / 2, lw, lh);
+  }
+  function agendar(recolor) {
+    precisaRecolorir = precisaRecolorir || recolor;
+    if (pendente) return;
+    pendente = true;
+    requestAnimationFrame(() => { const r = precisaRecolorir; pendente = false; precisaRecolorir = false; render(r); });
+  }
+
+  // ---- paletas ----
+  let PADRAO = null;
+  const PALETAS = [
+    { nome: "Azul NTW", cores: null },
+    { nome: "Rosa", cores: { b: "#f48fb1", p: "#ec6fa0", f: "#fbd9e6", t: "#a3175a", faixa: "#fde1ec" } },
+    { nome: "Verde", cores: { b: "#7fd19b", p: "#4cb877", f: "#d6f2df", t: "#16673a", faixa: "#dcf5e4" } },
+    { nome: "Lilás", cores: { b: "#b79ae8", p: "#9a72df", f: "#e7dcf8", t: "#4b2591", faixa: "#ece3fb" } },
+    { nome: "Dourado", cores: { b: "#f2c55c", p: "#e8ad2e", f: "#fbecc4", t: "#7a4d00", faixa: "#fdf0cf" } },
+    { nome: "Vermelho", cores: { b: "#ef7b7b", p: "#e04848", f: "#fbdada", t: "#9b1111", faixa: "#fde0e0" } },
+    { nome: "Laranja", cores: { b: "#ffab66", p: "#ff8a3d", f: "#ffe3cc", t: "#a8460a", faixa: "#ffe8d6" } }
+  ];
+  function aplicarPaleta(c) {
+    el("corBaloes").value = c.b; el("corPresente").value = c.p; el("corFundo").value = c.f;
+    el("corTexto").value = c.t; el("corFaixa").value = c.faixa;
+    agendar(true);
+  }
+
+  // ---- eventos ----
+  MESES.forEach((m, i) => { const o = document.createElement("option"); o.value = m; o.textContent = m[0].toUpperCase() + m.slice(1); el("mes").appendChild(o); });
+  el("mes").selectedIndex = 11;
+  el("lista").value = "11 Daiane\n14 Paula\n14 Taissa\n18 Graziela\n18 Heloisa\n25 Beatriz\n29 Mariana\n29 Tayla";
+  el("mes").addEventListener("change", () => agendar(false));
+  el("lista").addEventListener("input", () => agendar(false));
+  el("ordenar").addEventListener("change", () => agendar(false));
+  ["corBaloes", "corPresente", "corFundo", "corTexto"].forEach(id => el(id).addEventListener("input", () => agendar(true)));
+  el("corFaixa").addEventListener("input", () => agendar(false));
+  el("coresPadrao").addEventListener("click", () => aplicarPaleta(PADRAO));
+
+  function baixar(tipo) {
+    const ext = tipo === "image/png" ? "png" : "jpg";
+    tela.toBlob(blob => {
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = `aniversariantes-${el("mes").value.normalize("NFD").replace(/[̀-ͯ]/g, "")}.${ext}`;
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+    }, tipo, 0.95);
+  }
+  el("baixarPng").addEventListener("click", () => baixar("image/png"));
+  el("baixarJpg").addEventListener("click", () => baixar("image/jpeg"));
+
+  // ---- início ----
+  Promise.all([
+    carregar("data:image/jpeg;base64,{{BG}}"),
+    carregar("data:image/png;base64,{{CAMADAS}}"),
+    carregar("data:image/png;base64,{{LOGO}}"),
+    document.fonts.load('40px "Mao"'), document.fonts.load('700 40px "Datas"')
+  ]).then(([imgFundo, imgCamadas, imgLogo]) => {
+    const tmp = document.createElement("canvas"); tmp.width = W; tmp.height = H;
+    const t = tmp.getContext("2d", { willReadFrequently: true });
+    t.drawImage(imgFundo, 0, 0); base = t.getImageData(0, 0, W, H);
+    t.clearRect(0, 0, W, H); t.drawImage(imgCamadas, 0, 0); camadas = t.getImageData(0, 0, W, H);
+    logo = imgLogo;
+    fundoPronto = document.createElement("canvas"); fundoPronto.width = W; fundoPronto.height = H;
+    calcularReferencias();
+    PADRAO = { b: rgb2hex(hsl2rgb(...REF.b)), p: rgb2hex(hsl2rgb(...REF.p)), f: rgb2hex(hsl2rgb(...REF.f)), t: rgb2hex(hsl2rgb(...REF.t)), faixa: FAIXA_PADRAO };
+    PALETAS[0].cores = PADRAO;
+    PALETAS.forEach(p => {
+      const b = document.createElement("button");
+      b.innerHTML = `<i style="background:${p.cores.b}"></i>${p.nome}`;
+      b.addEventListener("click", () => aplicarPaleta(p.cores));
+      el("paletas").appendChild(b);
+    });
+    aplicarPaleta(PADRAO);
+    render(true);
+  });
+})();
+</script>
+</body>
+</html>
