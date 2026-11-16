@@ -3,13 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Editor de Aniversariantes – Prisma</title>
+<title>Editor de Aniversariantes – NTW Contabilidade</title>
 <style>
 @font-face{font-family:"TituloFraunces";src:url(data:font/woff2;base64,{{FONT_FRAUNCES}}) format("woff2");font-weight:900;font-style:italic}
 @font-face{font-family:"TituloSourceSerif";src:url(data:font/woff2;base64,{{FONT_SOURCESERIF}}) format("woff2");font-weight:900;font-style:italic}
 @font-face{font-family:"TituloMerriweather";src:url(data:font/woff2;base64,{{FONT_MERRIWEATHER}}) format("woff2");font-weight:900;font-style:italic}
+@font-face{font-family:"TituloMontserrat";src:url(data:font/woff2;base64,{{FONT_MONTSERRAT_TITULO}}) format("woff2");font-weight:900;font-style:italic}
 @font-face{font-family:"DataMontserrat";src:url(data:font/woff2;base64,{{FONT_MONTSERRAT}}) format("woff2");font-weight:800;font-style:normal}
-:root{--azul:#011a5f;--azul2:#1f5fd6;--fundo:#eef3fb;--card:#fff;--borda:#d4deef;--texto:#1b2440}
+:root{--azul:#09509e;--azul2:#196ace;--fundo:#eef3fb;--card:#fff;--borda:#d4deef;--texto:#1b2440}
 *{box-sizing:border-box}
 body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--fundo);color:var(--texto)}
 header{background:var(--azul);color:#fff;padding:14px 20px;font-weight:700;font-size:18px}
@@ -70,6 +71,7 @@ input[type=file]{display:none}
             <option value="TituloMerriweather">Merriweather Black Italic (padrão)</option>
             <option value="TituloSourceSerif">Source Serif Black Italic</option>
             <option value="TituloFraunces">Fraunces Black Italic</option>
+            <option value="TituloMontserrat">Montserrat Black Italic (fonte do site da NTW)</option>
           </select>
         </div>
         <div>
@@ -101,8 +103,10 @@ input[type=file]{display:none}
   const DATA = { cx: 230.8, base: 359.5, capH: 24.5 };
   const PARABENS = { cx: 226.5, base: 422, capH: 50, largura: 287 }; // largura original de "Parabéns!"
   const NOME = { cx: 226.5, base: 484, capH: 51, maxW: 372 };
-  const COR_TEXTO = "#011a5f";
-  const COR_RISCO = "#42befc";
+  const LOGO = { cx: 225.5, topo: 568, larg: 186 };  // logo da NTW no rodapé
+  // cores da identidade visual da NTW (ntwcontabilidade.com.br)
+  const COR_TEXTO = "#09509e";
+  const COR_RISCO = "#05c1f3";
 
   const tela = document.getElementById("tela");
   const ctx = tela.getContext("2d");
@@ -111,6 +115,8 @@ input[type=file]{display:none}
 
   const fundo = new Image();
   fundo.src = "data:image/jpeg;base64,{{BG}}";
+  const logo = new Image();
+  logo.src = "data:image/png;base64,{{LOGO}}";
 
   let foto = null, zoom = 1, offX = 0, offY = 0;
   let fonteTitulo = "TituloMerriweather";
@@ -187,10 +193,11 @@ input[type=file]{display:none}
   }
 
   function render() {
-    if (!fundo.complete) return;
+    if (!fundo.complete || !logo.complete) return;
     ctx.clearRect(0, 0, tela.width, tela.height);
     ctx.drawImage(fundo, 0, 0, tela.width, tela.height);
     desenharFoto();
+    ctx.drawImage(logo, (LOGO.cx - LOGO.larg / 2) * S, LOGO.topo * S, LOGO.larg * S, LOGO.larg * S * logo.height / logo.width);
     // condensa a fonte para "Parabéns!" ocupar a mesma largura do modelo; o nome usa a mesma proporção
     const tamP = fonteParaCap(fonteTitulo, 900, "italic", PARABENS.capH * S);
     ctx.font = `italic 900 ${tamP}px "${fonteTitulo}"`;
@@ -290,12 +297,13 @@ input[type=file]{display:none}
   el("baixarPng").addEventListener("click", () => baixar("image/png"));
   el("baixarJpg").addEventListener("click", () => baixar("image/jpeg"));
 
-  fundo.onload = render;
+  fundo.onload = render; logo.onload = render;
   document.fonts.ready.then(render);
   Promise.all([
     document.fonts.load('900 italic 40px "TituloFraunces"'),
     document.fonts.load('900 italic 40px "TituloSourceSerif"'),
     document.fonts.load('900 italic 40px "TituloMerriweather"'),
+    document.fonts.load('900 italic 40px "TituloMontserrat"'),
     document.fonts.load('800 40px "DataMontserrat"')
   ]).then(render);
 })();

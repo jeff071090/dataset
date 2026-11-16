@@ -19,6 +19,8 @@ subs = {
     "{{FONT_FRAUNCES}}": b64("fontes/fraunces-latin-900-italic.woff2"),
     "{{FONT_SOURCESERIF}}": b64("fontes/source-serif-4-latin-900-italic.woff2"),
     "{{FONT_MERRIWEATHER}}": b64("fontes/merriweather-latin-900-italic.woff2"),
+    "{{LOGO}}": b64("logo-ntw.png"),
+    "{{FONT_MONTSERRAT_TITULO}}": b64("fontes/montserrat-latin-900-italic.woff2"),
     "{{FONT_MONTSERRAT}}": b64("fontes/montserrat-latin-800-normal.woff2"),
 }
 for k, v in subs.items():

@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Editor Boas Férias – Prisma</title>
+<title>Editor Boas Férias – NTW Contabilidade</title>
 <style>
-@font-face{font-family:"DMSans";src:url(data:font/woff2;base64,{{FONT_LIGHT}}) format("woff2");font-weight:300;font-style:normal}
-@font-face{font-family:"DMSans";src:url(data:font/woff2;base64,{{FONT_BOLD}}) format("woff2");font-weight:700;font-style:normal}
-:root{--azul:#2a6fb0;--escuro:#0f3b5c;--fundo:#e9f6f5;--card:#fff;--borda:#cfe3e2;--texto:#1d2b33}
+@font-face{font-family:"Montserrat";src:url(data:font/woff2;base64,{{FONT_LIGHT}}) format("woff2");font-weight:300;font-style:normal}
+@font-face{font-family:"Montserrat";src:url(data:font/woff2;base64,{{FONT_BOLD}}) format("woff2");font-weight:700;font-style:normal}
+:root{--azul:#196ace;--escuro:#09509e;--fundo:#e9f6f5;--card:#fff;--borda:#cfe3e2;--texto:#1d2b33}
 *{box-sizing:border-box}
 body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--fundo);color:var(--texto)}
 header{background:var(--escuro);color:#fff;padding:14px 20px;font-weight:700;font-size:18px}
@@ -77,12 +77,13 @@ details>div{display:flex;flex-direction:column;gap:12px;margin-top:12px}
   const CX = 1216;              // centro do cartão
   const LARG_MAX = 515;         // largura máxima de cada linha
   const BASE_1 = 662;           // linha de base da 1ª linha do texto
-  const TAM = 26, TAM_ASS = 27; // tamanho da fonte do texto e da assinatura no modelo (px)
+  const TAM = 24, TAM_ASS = 25; // tamanho da fonte do texto e da assinatura no modelo (px)
   const PASSO = 37;             // espaço entre linhas
   const ESP_PARAGRAFO = 38;     // espaço extra entre parágrafos
   const ESP_ASSINATURA = 72;    // da última linha até "Atenciosamente,"
-  const LOGO_LARG = 390, LOGO_ESP = 14, LIMITE_INF = 1098;
-  const COR_TEXTO = "#403e3a", COR_AZUL = "#6ea8dc";
+  const LOGO_LARG = 240, LOGO_ESP = 12, LIMITE_INF = 1100;
+  // cores da identidade visual da NTW (ntwcontabilidade.com.br)
+  const COR_TEXTO = "#343434", COR_AZUL = "#09509e";
 
   const TEXTOS = {
     f: "Querida {nome}, desejamos que as suas férias sejam incríveis e repletas de momentos agradáveis e relaxantes.\n\nLembramos que seu retorno está previsto para o dia {data}, aguardamos ansiosamente para tê-la de volta em nossa equipe.",
@@ -104,7 +105,7 @@ details>div{display:flex;flex-direction:column;gap:12px;margin-top:12px}
     return d.length > 2 ? d.slice(0, 2) + "/" + d.slice(2) : d;
   }
 
-  const fonte = (negrito, escala) => `${negrito ? 700 : 300} ${TAM * escala}px "DMSans"`;
+  const fonte = (negrito, escala) => `${negrito ? 700 : 300} ${TAM * escala}px "Montserrat"`;
 
   // divide o parágrafo em palavras; cada palavra tem pedaços normais e/ou em negrito
   function palavras(paragrafo, nome, data) {
@@ -187,7 +188,7 @@ details>div{display:flex;flex-direction:column;gap:12px;margin-top:12px}
     ctx.textAlign = "center";
 
     ctx.fillStyle = COR_AZUL;
-    ctx.font = `700 ${TAM_ASS * escala}px "DMSans"`;
+    ctx.font = `700 ${TAM_ASS * escala}px "Montserrat"`;
     ctx.fillText("Atenciosamente,", CX, lay.yAss);
 
     ctx.drawImage(logo, CX - LOGO_LARG / 2, lay.logoTopo, LOGO_LARG, lay.logoAlt);
@@ -220,7 +221,7 @@ details>div{display:flex;flex-direction:column;gap:12px;margin-top:12px}
   el("baixarJpg").addEventListener("click", () => baixar("image/jpeg"));
 
   fundo.onload = render; logo.onload = render;
-  Promise.all([document.fonts.load('300 30px "DMSans"'), document.fonts.load('700 30px "DMSans"')]).then(render);
+  Promise.all([document.fonts.load('300 30px "Montserrat"'), document.fonts.load('700 30px "Montserrat"')]).then(render);
 })();
 </script>
 </body>

@@ -8,6 +8,11 @@ a imagem de fundo e as fontes estão embutidas no próprio arquivo.
 3. Digite a **data** (dia/mês).
 4. **Baixar PNG** ou **Baixar JPG** (1080 × 1542 px).
 
+## Identidade visual (NTW Contabilidade)
+- Logo da NTW no rodapé (`logo-ntw.png`, do site ntwcontabilidade.com.br); a logo antiga é apagada da arte pelo `gerar_fundo.py`.
+- Cores: azul NTW #09509E nos textos e ciano #05C1F3 no risco abaixo do nome.
+- Em *Ajustes avançados* também há a opção Montserrat Black Italic (fonte do site da NTW) para o título.
+
 ## Fontes
 - Data: Montserrat ExtraBold (igual ao modelo).
 - "Parabéns!" e nome: Merriweather Black Italic, condensada automaticamente para ocupar a mesma largura do modelo.

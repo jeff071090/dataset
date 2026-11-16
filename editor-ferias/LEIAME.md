@@ -10,11 +10,12 @@ arte, logo e fontes estão embutidas no arquivo.
 
 Em *Editar o texto da mensagem* dá para mudar o texto inteiro; `{nome}` e `{data}` são trocados automaticamente.
 O texto quebra as linhas sozinho e diminui a fonte se ficar grande demais para o cartão.
-Abaixo de "Atenciosamente," entra a logo da Prisma.
+Abaixo de "Atenciosamente," entra a logo da NTW Contabilidade.
 
-Fonte: DM Sans Light (texto) e DM Sans Bold (assinatura), licença SIL Open Font License.
+Identidade visual da NTW (ntwcontabilidade.com.br): fonte Montserrat (Light no texto, Bold na assinatura/negrito), azul #09509E, texto #343434. Licença da fonte: SIL Open Font License.
 
 ## Arquivos
-- `modelo-original.webp`, `logo-prisma-original.png`: artes originais.
-- `gerar_fundo.py`: apaga o texto do cartão → `fundo-modelo.jpg` e deixa a logo transparente → `logo-prisma.png`.
+- `modelo-original.webp`: arte original.
+- `logo-ntw.png`: logo da NTW (do site ntwcontabilidade.com.br).
+- `gerar_fundo.py`: apaga o texto do cartão → `fundo-modelo.jpg`.
 - `editor.src.html` + `build.py`: código do editor; `python3 build.py` gera o `editor-ferias.html`.

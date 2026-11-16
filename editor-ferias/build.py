@@ -16,9 +16,9 @@ def b64(nome):
 html = (AQUI / "editor.src.html").read_text(encoding="utf-8")
 subs = {
     "{{BG}}": b64("fundo-modelo.jpg"),
-    "{{LOGO}}": b64("logo-prisma.png"),
-    "{{FONT_LIGHT}}": b64("fontes/dm-sans-latin-300-normal.woff2"),
-    "{{FONT_BOLD}}": b64("fontes/dm-sans-latin-700-normal.woff2"),
+    "{{LOGO}}": b64("logo-ntw.png"),
+    "{{FONT_LIGHT}}": b64("fontes/montserrat-latin-300-normal.woff2"),
+    "{{FONT_BOLD}}": b64("fontes/montserrat-latin-700-normal.woff2"),
 }
 for k, v in subs.items():
     html = html.replace(k, v)

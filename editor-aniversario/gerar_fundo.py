@@ -1,3 +1,6 @@
+"""Gera fundo-modelo.jpg: arte sem foto, nome, data e logo antiga.
+Uso: python3 gerar_fundo.py modelo-original.png fundo-modelo.jpg
+"""
 from PIL import Image, ImageDraw, ImageFilter
 import numpy as np, cv2, sys
 im=Image.open(sys.argv[1]).convert('RGB')
@@ -14,6 +17,11 @@ sw=np.zeros_like(navy); sw[484:500,135:345]=True
 mask=((navy&reg)|(lb&sw)).astype(np.uint8)*255
 mask=cv2.dilate(mask,np.ones((5,5),np.uint8),iterations=1)
 mask[:370,:142]=0
+# apaga a logo antiga (Prisma) e o slogan no rodapé
+lg=np.zeros_like(navy); lg[562:642,108:338]=True
+fundo_claro=(r>225)&(g>232)&(b>240)
+mask[lg & ~fundo_claro]=255
+mask=np.maximum(mask, cv2.dilate(((lg&~fundo_claro).astype(np.uint8)*255),np.ones((5,5),np.uint8)))
 bgr=cv2.cvtColor(np.array(im),cv2.COLOR_RGB2BGR)
 out=cv2.inpaint(bgr,mask,7,cv2.INPAINT_TELEA)
 res=Image.fromarray(cv2.cvtColor(out,cv2.COLOR_BGR2RGB))
