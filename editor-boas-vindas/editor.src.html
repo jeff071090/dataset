@@ -1,0 +1,452 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Boas-vindas ao Colaborador – NTW Contabilidade</title>
+<style>
+@font-face{font-family:"Montserrat";src:url(data:font/woff2;base64,{{FONT_400}}) format("woff2");font-weight:400}
+@font-face{font-family:"Montserrat";src:url(data:font/woff2;base64,{{FONT_500}}) format("woff2");font-weight:500}
+@font-face{font-family:"Montserrat";src:url(data:font/woff2;base64,{{FONT_700}}) format("woff2");font-weight:700}
+@font-face{font-family:"Montserrat";src:url(data:font/woff2;base64,{{FONT_800}}) format("woff2");font-weight:800}
+:root{--azul:#09509e;--azul2:#196ace;--ciano:#05c1f3;--fundo:#eef4fb;--card:#fff;--borda:#d4deef;--texto:#1b2440}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--fundo);color:var(--texto)}
+header{background:var(--azul);color:#fff;padding:14px 20px;font-weight:700;font-size:18px;border-bottom:4px solid var(--ciano)}
+main{display:flex;gap:24px;padding:20px;max-width:1250px;margin:0 auto;align-items:flex-start}
+.painel{flex:0 0 360px;background:var(--card);border:1px solid var(--borda);border-radius:12px;padding:18px;display:flex;flex-direction:column;gap:14px}
+.preview{flex:1;display:flex;justify-content:center;position:sticky;top:12px}
+canvas{width:100%;max-width:560px;max-height:calc(100vh - 110px);object-fit:contain;border-radius:8px;box-shadow:0 6px 24px rgba(9,80,158,.18);background:#fff;touch-action:none}
+canvas.com-foto{cursor:grab}
+label{font-size:13px;font-weight:600;display:block;margin-bottom:5px}
+input[type=text],select,textarea{width:100%;padding:10px;border:1px solid var(--borda);border-radius:8px;font-size:16px;font-family:inherit}
+textarea{min-height:70px;resize:vertical;font-size:14px}
+input[type=range]{width:100%}
+.btn{display:block;width:100%;padding:12px;border:0;border-radius:8px;font-size:15px;font-weight:700;cursor:pointer;background:var(--azul2);color:#fff;text-align:center}
+.btn.sec{background:#e6edf9;color:var(--azul)}
+.linha{display:flex;gap:8px}
+.linha>*{flex:1}
+.dica{font-size:12px;color:#5a6684;margin:4px 0 0}
+.sec-titulo{font-size:14px;font-weight:700;border-top:1px solid var(--borda);padding-top:12px;margin:0}
+.cores{display:grid;grid-template-columns:1fr auto;gap:8px 10px;align-items:center;font-size:14px}
+.cores input[type=color]{width:52px;height:34px;border:1px solid var(--borda);border-radius:6px;padding:2px;background:#fff;cursor:pointer}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips button{border:1px solid var(--borda);background:#fff;border-radius:20px;padding:6px 12px 6px 6px;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:6px}
+.chips button.ativo{border-color:var(--azul2);box-shadow:0 0 0 2px rgba(25,106,206,.25)}
+.chips i{display:inline-block;width:18px;height:18px;border-radius:50%}
+input[type=file]{display:none}
+@media (max-width:860px){main{flex-direction:column-reverse;padding:12px}.painel{flex:auto;width:100%}.preview{position:static}}
+</style>
+</head>
+<body>
+<header>👋 Boas-vindas ao Colaborador</header>
+<main>
+  <section class="painel">
+    <div>
+      <label for="nome">1. Nome</label>
+      <input type="text" id="nome" value="Leidiane" maxlength="40" autocomplete="off">
+    </div>
+    <div>
+      <label for="genero">2. Saudação</label>
+      <select id="genero">
+        <option value="f">Seja bem-vinda, (feminino)</option>
+        <option value="m">Seja bem-vindo, (masculino)</option>
+        <option value="n">Boas-vindas, (neutro)</option>
+      </select>
+    </div>
+    <div>
+      <label for="cargo">3. Cargo / setor (opcional)</label>
+      <input type="text" id="cargo" value="" placeholder="Ex.: Analista Fiscal" maxlength="60" autocomplete="off">
+    </div>
+    <div>
+      <label>4. Foto (opcional)</label>
+      <div class="linha">
+        <label class="btn" for="arqFoto" style="margin:0">Escolher foto…</label>
+        <button class="btn sec" id="tirarFoto">Sem foto</button>
+      </div>
+      <input type="file" id="arqFoto" accept="image/*">
+      <p class="dica">Também dá para arrastar ou colar (Ctrl+V). Arraste a foto na prévia para enquadrar.</p>
+      <label for="zoom" style="margin-top:8px">Zoom da foto</label>
+      <input type="range" id="zoom" min="1" max="4" step="0.01" value="1">
+    </div>
+    <div>
+      <label for="mensagem">5. Mensagem</label>
+      <textarea id="mensagem">Estamos muito felizes em ter você na equipe NTW!</textarea>
+    </div>
+    <div>
+      <label for="formato">Formato</label>
+      <select id="formato">
+        <option value="1080x1350">Feed Instagram (1080 × 1350)</option>
+        <option value="1080x1080">Quadrado (1080 × 1080)</option>
+        <option value="1080x1920">Story / Status (1080 × 1920)</option>
+      </select>
+    </div>
+    <div class="linha">
+      <button class="btn" id="baixarPng">Baixar PNG</button>
+      <button class="btn sec" id="baixarJpg">Baixar JPG</button>
+    </div>
+
+    <p class="sec-titulo">Visual</p>
+    <div>
+      <label>Estilo dos enfeites</label>
+      <div class="chips" id="estilos"></div>
+    </div>
+    <div>
+      <label>Paleta de cores</label>
+      <div class="chips" id="paletas"></div>
+    </div>
+    <div class="cores">
+      <span>Fundo</span><input type="color" id="corFundo">
+      <span>Textos</span><input type="color" id="corTexto">
+      <span>Nome</span><input type="color" id="corNome">
+      <span>Enfeites 1</span><input type="color" id="corDeco1">
+      <span>Enfeites 2</span><input type="color" id="corDeco2">
+    </div>
+    <button class="btn sec" id="sortear">Mudar posição dos enfeites</button>
+  </section>
+  <section class="preview">
+    <canvas id="tela" width="1080" height="1350"></canvas>
+  </section>
+</main>
+<script>
+(() => {
+  const tela = document.getElementById("tela");
+  const ctx = tela.getContext("2d");
+  const el = id => document.getElementById(id);
+  let W = 1080, H = 1350;
+
+  const logo = new Image();
+  logo.src = "data:image/png;base64,{{LOGO}}";
+
+  // ---- paletas (NTW: azul #09509E, ciano #05C1F3) ----
+  const PALETAS = {
+    ntw:    { nome: "Azul NTW",   fundo: "#eaf4fc", texto: "#09509e", nome_: "#09509e", deco1: "#05c1f3", deco2: "#196ace", escuro: false },
+    escuro: { nome: "NTW escuro", fundo: "#09509e", texto: "#ffffff", nome_: "#ffffff", deco1: "#05c1f3", deco2: "#3d8fe8", escuro: true },
+    rosa:   { nome: "Rosa",       fundo: "#fbe4ea", texto: "#a8466b", nome_: "#c2386f", deco1: "#f29bb8", deco2: "#e0668f", escuro: false },
+    verde:  { nome: "Verde",      fundo: "#e5f4ea", texto: "#1f6b45", nome_: "#1f7d4d", deco1: "#86d3a2", deco2: "#3aa66a", escuro: false },
+    lilas:  { nome: "Lilás",      fundo: "#efe7fa", texto: "#5b3a9b", nome_: "#6a3fbf", deco1: "#bba0ea", deco2: "#8c64d8", escuro: false },
+    areia:  { nome: "Areia",      fundo: "#f6efe6", texto: "#6b4a2b", nome_: "#09509e", deco1: "#e6c79c", deco2: "#05c1f3", escuro: false }
+  };
+  const ESTILOS = { geometrico: "Geométrico NTW", floral: "Floral", confete: "Confete", folhas: "Folhas", nenhum: "Sem enfeites" };
+  let paleta = "ntw", estilo = "geometrico", semente = 7;
+
+  // ---- utilidades ----
+  const hex2rgb = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
+  const rgba = (h, a) => { const [r, g, b] = hex2rgb(h); return `rgba(${r},${g},${b},${a})`; };
+  const mistura = (h1, h2, t) => { const a = hex2rgb(h1), b = hex2rgb(h2); return "#" + a.map((v, i) => Math.round(v + (b[i] - v) * t).toString(16).padStart(2, "0")).join(""); };
+  const luz = (h, t) => mistura(h, "#ffffff", t);
+  const sombra = (h, t) => mistura(h, "#000000", t);
+  let rnd = () => 0;
+  function iniciarAleatorio(s) { let x = s * 9301 + 49297; rnd = () => (x = (x * 9301 + 49297) % 233280) / 233280; }
+
+  // ---- foto ----
+  let foto = null, zoom = 1, offX = 0, offY = 0, circulo = null;
+  function carregarFoto(arq) {
+    if (!arq || !arq.type.startsWith("image/")) return;
+    const img = new Image();
+    img.onload = () => { foto = img; zoom = 1; offX = offY = 0; el("zoom").value = 1; tela.classList.add("com-foto"); render(); };
+    img.src = URL.createObjectURL(arq);
+  }
+
+  // ================= ENFEITES (desenhados em vetor) =================
+  function burst(cx, y, s, cor) {               // risquinhos acima da saudação
+    ctx.save(); ctx.strokeStyle = cor; ctx.lineCap = "round"; ctx.lineWidth = 5 * s;
+    [-60, -30, 0, 30, 60].forEach((a, i) => {
+      const r = (a * Math.PI) / 180, l = (i === 2 ? 46 : 30) * s, d = 10 * s;
+      ctx.beginPath();
+      ctx.moveTo(cx + Math.sin(r) * d * 2.2, y - Math.cos(r) * d);
+      ctx.lineTo(cx + Math.sin(r) * (d * 2.2 + l), y - Math.cos(r) * (d + l));
+      ctx.stroke();
+    });
+    ctx.restore();
+  }
+
+  // setas em faixas, inspiradas no símbolo da NTW
+  function setas(x, y, tam, ang, c1, c2, alfa) {
+    ctx.save(); ctx.translate(x, y); ctx.rotate(ang); ctx.globalAlpha = alfa;
+    const faixa = tam * 0.16;
+    [[c1, 0], [c2, faixa * 1.6], [luz(c2, .35), faixa * 3.2]].forEach(([c, d]) => {
+      ctx.beginPath();
+      ctx.moveTo(-tam / 2 + d, tam / 2); ctx.lineTo(d, -tam / 2 + d * .2); ctx.lineTo(tam / 2 + d, tam / 2);
+      ctx.lineTo(tam / 2 + d - faixa, tam / 2); ctx.lineTo(d, -tam / 2 + d * .2 + faixa * 1.25); ctx.lineTo(-tam / 2 + d + faixa, tam / 2);
+      ctx.closePath(); ctx.fillStyle = c; ctx.fill();
+    });
+    ctx.restore();
+  }
+
+  function geometrico(p, s) {
+    ctx.save();
+    // círculos grandes translúcidos
+    ctx.fillStyle = rgba(p.deco1, p.escuro ? .18 : .16);
+    ctx.beginPath(); ctx.arc(W * 1.02, H * .08, 300 * s, 0, 7); ctx.fill();
+    ctx.fillStyle = rgba(p.deco2, p.escuro ? .22 : .12);
+    ctx.beginPath(); ctx.arc(-W * .06, H * .96, 360 * s, 0, 7); ctx.fill();
+    ctx.strokeStyle = rgba(p.deco1, .55); ctx.lineWidth = 6 * s;
+    ctx.beginPath(); ctx.arc(W * .9, H * .9, 150 * s, 0, 7); ctx.stroke();
+    ctx.beginPath(); ctx.arc(W * .08, H * .12, 90 * s, 0, 7); ctx.stroke();
+    ctx.restore();
+    setas(W * .87, H * .87, 230 * s, .55, p.deco2, p.deco1, .9);
+    setas(W * .06, H * .055, 120 * s, -.5, p.deco2, p.deco1, .45);
+    // pontinhos
+    for (let i = 0; i < 26; i++) {
+      const borda = rnd() < .5, x = borda ? rnd() * W : (rnd() < .5 ? rnd() * W * .14 : W - rnd() * W * .14);
+      const y = borda ? (rnd() < .5 ? rnd() * H * .1 : H - rnd() * H * .1) : rnd() * H;
+      ctx.fillStyle = rgba(rnd() < .5 ? p.deco1 : p.deco2, .35 + rnd() * .4);
+      ctx.beginPath(); ctx.arc(x, y, (4 + rnd() * 9) * s, 0, 7); ctx.fill();
+    }
+  }
+
+  function folha(x, y, comp, ang, cor) {
+    ctx.save(); ctx.translate(x, y); ctx.rotate(ang);
+    const g = ctx.createLinearGradient(0, 0, comp, 0); g.addColorStop(0, sombra(cor, .15)); g.addColorStop(1, luz(cor, .2));
+    ctx.fillStyle = g;
+    ctx.beginPath(); ctx.moveTo(0, 0);
+    ctx.quadraticCurveTo(comp * .45, -comp * .32, comp, 0); ctx.quadraticCurveTo(comp * .45, comp * .32, 0, 0); ctx.fill();
+    ctx.strokeStyle = rgba("#ffffff", .45); ctx.lineWidth = Math.max(1, comp * .025);
+    ctx.beginPath(); ctx.moveTo(comp * .08, 0); ctx.lineTo(comp * .9, 0); ctx.stroke();
+    ctx.restore();
+  }
+
+  function flor(x, y, r, cor, petalas, giro) {
+    ctx.save(); ctx.translate(x, y); ctx.rotate(giro);
+    for (let camada = 0; camada < 2; camada++) {
+      const rr = r * (camada ? .62 : 1), c = camada ? luz(cor, .25) : cor;
+      for (let i = 0; i < petalas; i++) {
+        ctx.save(); ctx.rotate((i / petalas) * Math.PI * 2 + camada * .4);
+        const g = ctx.createRadialGradient(0, -rr * .2, rr * .1, 0, -rr * .55, rr * .75);
+        g.addColorStop(0, sombra(c, .12)); g.addColorStop(1, luz(c, .35));
+        ctx.fillStyle = g;
+        ctx.beginPath(); ctx.ellipse(0, -rr * .52, rr * .34, rr * .55, 0, 0, 7); ctx.fill();
+        ctx.restore();
+      }
+    }
+    ctx.fillStyle = sombra(cor, .55); ctx.beginPath(); ctx.arc(0, 0, r * .16, 0, 7); ctx.fill();
+    ctx.fillStyle = rgba("#ffffff", .5);
+    for (let i = 0; i < 8; i++) { const a = i * .785; ctx.beginPath(); ctx.arc(Math.cos(a) * r * .24, Math.sin(a) * r * .24, r * .035, 0, 7); ctx.fill(); }
+    ctx.restore();
+  }
+
+  function buque(x, y, s, p, espelho) {
+    const verde = p.escuro ? "#5cc78f" : "#4f9d69";
+    const dir = espelho ? -1 : 1;
+    // hastes
+    ctx.save(); ctx.strokeStyle = verde; ctx.lineWidth = 6 * s; ctx.lineCap = "round";
+    const pontos = [[-40, -330], [70, -250], [-120, -200], [150, -120], [10, -150]];
+    pontos.forEach(([dx, dy]) => { ctx.beginPath(); ctx.moveTo(x, y + 40 * s); ctx.quadraticCurveTo(x + dir * dx * .3 * s, y + dy * .5 * s, x + dir * dx * s, y + dy * s); ctx.stroke(); });
+    ctx.restore();
+    [[-30, -170, -2.2], [60, -110, -.6], [-90, -90, -2.6], [110, -60, -.3], [0, -60, -1.6]].forEach(([dx, dy, a]) =>
+      folha(x + dir * dx * s, y + dy * s, 120 * s, espelho ? Math.PI - a : a, verde));
+    flor(x + dir * -40 * s, y - 330 * s, 95 * s, p.deco2, 6, .3);
+    flor(x + dir * 70 * s, y - 250 * s, 70 * s, p.deco1, 5, 1.1);
+    flor(x + dir * -120 * s, y - 200 * s, 62 * s, luz(p.deco2, .2), 7, .6);
+    flor(x + dir * 150 * s, y - 120 * s, 48 * s, p.deco2, 5, .2);
+    flor(x + dir * 10 * s, y - 150 * s, 40 * s, luz(p.deco1, .1), 5, 2);
+  }
+
+  function floral(p, s) {
+    buque(W * .09, H + 40 * s, s * .78, p, false);
+    buque(W * .93, H + 50 * s, s * .68, p, true);
+    flor(W * .9, H * .07, 55 * s, rgba(p.deco1, 1).startsWith("rgba") ? p.deco1 : p.deco1, 6, .5);
+    flor(W * .08, H * .16, 38 * s, p.deco2, 5, 1);
+    folha(W * .94, H * .12, 90 * s, 2.3, p.escuro ? "#5cc78f" : "#4f9d69");
+    folha(W * .03, H * .19, 70 * s, .4, p.escuro ? "#5cc78f" : "#4f9d69");
+  }
+
+  function folhas(p, s) {
+    const verdes = p.escuro ? ["#5cc78f", "#3fa673", "#8ad9ad"] : ["#4f9d69", "#2f7d50", "#86c49a"];
+    const ramo = (x, y, comp, ang, n) => {
+      ctx.save(); ctx.translate(x, y); ctx.rotate(ang);
+      ctx.strokeStyle = verdes[1]; ctx.lineWidth = 5 * s; ctx.lineCap = "round";
+      ctx.beginPath(); ctx.moveTo(0, 0); ctx.quadraticCurveTo(comp * .5, -comp * .08, comp, 0); ctx.stroke();
+      for (let i = 1; i <= n; i++) {
+        const t = i / (n + 1), px = comp * t, py = -comp * .08 * 4 * t * (1 - t) * .5;
+        folha(px, py, (110 - 40 * t) * s, -.7, verdes[i % 3]); folha(px, py, (110 - 40 * t) * s, .7, verdes[(i + 1) % 3]);
+      }
+      folha(comp, 0, 80 * s, 0, verdes[0]);
+      ctx.restore();
+    };
+    ramo(-20 * s, H * .98, 460 * s, -1.0, 6);
+    ramo(W + 20 * s, H * .95, 420 * s, -2.2, 6);
+    ramo(W + 10 * s, -10 * s, 300 * s, 2.4, 4);
+    ramo(-10 * s, 40 * s, 240 * s, .5, 3);
+    for (let i = 0; i < 10; i++) {
+      ctx.fillStyle = rgba(rnd() < .5 ? p.deco1 : p.deco2, .5);
+      ctx.beginPath(); ctx.arc(rnd() * W, rnd() < .5 ? rnd() * H * .12 : H - rnd() * H * .12, (5 + rnd() * 8) * s, 0, 7); ctx.fill();
+    }
+  }
+
+  function confete(p, s) {
+    const cores = [p.deco1, p.deco2, luz(p.deco2, .4), p.escuro ? "#ffffff" : p.texto];
+    for (let i = 0; i < 70; i++) {
+      let x = rnd() * W, y = rnd() * H;
+      const cx = Math.abs(x - W / 2) / (W / 2), cy = Math.abs(y - H / 2) / (H / 2);
+      if (Math.max(cx, cy) < .86) { if (rnd() < .5) x = rnd() < .5 ? rnd() * W * .13 : W - rnd() * W * .13; else y = rnd() < .5 ? rnd() * H * .12 : H - rnd() * H * .12; }
+      ctx.save(); ctx.translate(x, y); ctx.rotate(rnd() * 6.28); ctx.fillStyle = cores[i % cores.length]; ctx.strokeStyle = cores[i % cores.length];
+      const t = rnd();
+      if (t < .4) ctx.fillRect(-10 * s, -5 * s, 20 * s, 10 * s);
+      else if (t < .7) { ctx.beginPath(); ctx.arc(0, 0, 7 * s, 0, 7); ctx.fill(); }
+      else { ctx.lineWidth = 5 * s; ctx.lineCap = "round"; ctx.beginPath(); ctx.moveTo(-18 * s, 0); ctx.bezierCurveTo(-8 * s, -14 * s, 8 * s, 14 * s, 18 * s, 0); ctx.stroke(); }
+      ctx.restore();
+    }
+    // serpentinas nos cantos
+    [[0, 0, .6], [W, H, 3.7], [W, 0, 2.5], [0, H, -.6]].forEach(([x, y, a], k) => {
+      ctx.save(); ctx.translate(x, y); ctx.rotate(a); ctx.strokeStyle = cores[k % 2]; ctx.lineWidth = 9 * s; ctx.lineCap = "round";
+      ctx.beginPath(); ctx.moveTo(20 * s, 0);
+      for (let i = 1; i < 6; i++) ctx.quadraticCurveTo(i * 45 * s - 20 * s, (i % 2 ? 40 : -40) * s, i * 45 * s, 0);
+      ctx.stroke(); ctx.restore();
+    });
+  }
+
+  // ================= LAYOUT =================
+  function quebrar(txt, max) {
+    const pal = txt.split(/\s+/).filter(Boolean), linhas = []; let at = "";
+    for (const p of pal) { const t = at ? at + " " + p : p; if (ctx.measureText(t).width > max && at) { linhas.push(at); at = p; } else at = t; }
+    if (at) linhas.push(at); return linhas;
+  }
+  // quebra equilibrada: evita uma palavra sozinha na última linha
+  function quebrarEquilibrado(txt, max) {
+    let melhor = quebrar(txt, max);
+    for (let w = max; w > max * .5; w -= 10) { const l = quebrar(txt, w); if (l.length > melhor.length) break; melhor = l; }
+    return melhor;
+  }
+
+  function render() {
+    if (!logo.complete) return;
+    const p = { ...PALETAS[paleta], fundo: el("corFundo").value, texto: el("corTexto").value, nome_: el("corNome").value, deco1: el("corDeco1").value, deco2: el("corDeco2").value };
+    const s = W / 1080;                       // escala base
+    iniciarAleatorio(semente);
+    ctx.textBaseline = "alphabetic";
+    ctx.letterSpacing = "0px";
+
+    // fundo
+    const g = ctx.createLinearGradient(0, 0, 0, H);
+    g.addColorStop(0, luz(p.fundo, p.escuro ? 0 : .35)); g.addColorStop(1, p.escuro ? sombra(p.fundo, .35) : p.fundo);
+    ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+
+    ({ geometrico, floral, confete, folhas, nenhum: () => {} })[estilo](p, s);
+
+    // --- bloco central (empilhado e centralizado na altura disponível) ---
+    const saud = { f: "SEJA BEM-VINDA,", m: "SEJA BEM-VINDO,", n: "BOAS-VINDAS," }[el("genero").value];
+    const nome = el("nome").value.trim();
+    const cargo = el("cargo").value.trim();
+    const msg = el("mensagem").value.trim();
+    const maxW = W * .8;
+
+    ctx.font = `800 ${130 * s}px "Montserrat"`;
+    let tamNome = 130 * s; const wNome = ctx.measureText(nome + "!").width;
+    if (wNome > maxW) tamNome *= maxW / wNome;
+    ctx.font = `500 ${34 * s}px "Montserrat"`;
+    const linhasMsg = msg ? quebrarEquilibrado(msg, W * .74) : [];
+    const temFoto = !!foto;
+    const r = Math.min(W * (H > W * 1.2 ? .24 : .19), H * .17);
+
+    const blocos = [
+      { h: 70 * s, d: y => burst(W / 2, y + 62 * s, s, p.deco1) },
+      { h: 70 * s, d: y => { ctx.font = `500 ${44 * s}px "Montserrat"`; ctx.letterSpacing = `${4 * s}px`; ctx.fillStyle = p.texto; ctx.textAlign = "center"; ctx.fillText(saud, W / 2, y + 50 * s); ctx.letterSpacing = "0px"; } },
+      { h: tamNome * 1.15, d: y => { ctx.font = `800 ${tamNome}px "Montserrat"`; ctx.fillStyle = p.nome_; ctx.textAlign = "center"; ctx.fillText(nome + "!", W / 2, y + tamNome * .9); } }
+    ];
+    if (cargo) blocos.push({ h: 60 * s, d: y => {
+      ctx.font = `700 ${32 * s}px "Montserrat"`; ctx.letterSpacing = `${1.5 * s}px`; ctx.textAlign = "center";
+      const t = cargo.toUpperCase(), w = ctx.measureText(t).width + 50 * s, hh = 50 * s;
+      ctx.fillStyle = p.escuro ? rgba("#ffffff", .16) : rgba(p.deco1, .25);
+      ctx.beginPath(); ctx.roundRect(W / 2 - w / 2, y + 4 * s, w, hh, hh / 2); ctx.fill();
+      ctx.fillStyle = p.texto; ctx.fillText(t, W / 2, y + 41 * s); ctx.letterSpacing = "0px";
+    } });
+    if (temFoto) blocos.push({ h: r * 2 + 70 * s, d: y => desenharFoto(W / 2, y + 35 * s + r, r, p, s) });
+    else blocos.push({ h: 30 * s, d: () => {} });
+    if (linhasMsg.length) blocos.push({ h: linhasMsg.length * 46 * s + 20 * s, d: y => {
+      ctx.font = `500 ${34 * s}px "Montserrat"`; ctx.fillStyle = p.texto; ctx.textAlign = "center";
+      linhasMsg.forEach((l, i) => ctx.fillText(l, W / 2, y + 40 * s + i * 46 * s));
+    } });
+
+    // logo no rodapé
+    const lh = 92 * s, lw = lh * logo.width / logo.height;
+    const topoLogo = H - lh - 60 * s;
+    const total = blocos.reduce((a, b) => a + b.h, 0);
+    const areaTopo = H * .05, areaBase = topoLogo - 30 * s;
+    let y = areaTopo + Math.max(0, (areaBase - areaTopo - total) / 2);
+    blocos.forEach(b => { b.d(y); y += b.h; });
+
+    if (p.escuro) {   // selo branco atrás da logo em fundo escuro
+      ctx.fillStyle = "#ffffff"; ctx.beginPath(); ctx.roundRect(W / 2 - lw / 2 - 28 * s, topoLogo - 18 * s, lw + 56 * s, lh + 36 * s, 24 * s); ctx.fill();
+    }
+    ctx.drawImage(logo, W / 2 - lw / 2, topoLogo, lw, lh);
+  }
+
+  function desenharFoto(cx, cy, r, p, s) {
+    circulo = { cx, cy, r };
+    ctx.save();
+    // detalhes da moldura
+    ctx.fillStyle = rgba(p.deco1, .35); ctx.beginPath(); ctx.arc(cx + r * .2, cy + r * .12, r * 1.08, 0, 7); ctx.fill();
+    ctx.fillStyle = p.escuro ? "#ffffff" : "#ffffff"; ctx.beginPath(); ctx.arc(cx, cy, r + 14 * s, 0, 7); ctx.fill();
+    ctx.lineWidth = 8 * s; ctx.strokeStyle = p.deco2; ctx.beginPath(); ctx.arc(cx, cy, r + 14 * s, -2.6, -.4); ctx.stroke();
+    ctx.strokeStyle = p.deco1; ctx.beginPath(); ctx.arc(cx, cy, r + 14 * s, .5, 2.4); ctx.stroke();
+    // foto
+    ctx.beginPath(); ctx.arc(cx, cy, r, 0, 7); ctx.clip();
+    const esc = Math.max((2 * r) / foto.width, (2 * r) / foto.height) * zoom;
+    const fw = foto.width * esc, fh = foto.height * esc;
+    const mx = Math.max(0, fw / 2 - r), my = Math.max(0, fh / 2 - r);
+    offX = Math.min(mx, Math.max(-mx, offX)); offY = Math.min(my, Math.max(-my, offY));
+    ctx.drawImage(foto, cx - fw / 2 + offX, cy - fh / 2 + offY, fw, fh);
+    ctx.restore();
+  }
+
+  // ---- interface ----
+  function marcar(id, chave) { [...el(id).children].forEach(b => b.classList.toggle("ativo", b.dataset.k === chave)); }
+  function aplicarPaleta(k) {
+    paleta = k; const p = PALETAS[k];
+    el("corFundo").value = p.fundo; el("corTexto").value = p.texto; el("corNome").value = p.nome_;
+    el("corDeco1").value = p.deco1; el("corDeco2").value = p.deco2;
+    marcar("paletas", k); render();
+  }
+  Object.entries(PALETAS).forEach(([k, p]) => {
+    const b = document.createElement("button"); b.dataset.k = k;
+    b.innerHTML = `<i style="background:linear-gradient(135deg,${p.fundo} 50%,${p.nome_} 50%)"></i>${p.nome}`;
+    b.onclick = () => aplicarPaleta(k); el("paletas").appendChild(b);
+  });
+  Object.entries(ESTILOS).forEach(([k, n]) => {
+    const b = document.createElement("button"); b.dataset.k = k; b.textContent = n; b.style.paddingLeft = "12px";
+    b.onclick = () => { estilo = k; marcar("estilos", k); render(); }; el("estilos").appendChild(b);
+  });
+  el("genero").addEventListener("change", e => {   // sugestão: troca o estilo floral/geométrico conforme a saudação
+    render();
+  });
+  ["nome", "cargo", "mensagem"].forEach(id => el(id).addEventListener("input", render));
+  ["corFundo", "corTexto", "corNome", "corDeco1", "corDeco2"].forEach(id => el(id).addEventListener("input", render));
+  el("formato").addEventListener("change", e => { [W, H] = e.target.value.split("x").map(Number); tela.width = W; tela.height = H; render(); });
+  el("sortear").addEventListener("click", () => { semente = Math.floor(Math.random() * 10000); render(); });
+  el("arqFoto").addEventListener("change", e => carregarFoto(e.target.files[0]));
+  el("tirarFoto").addEventListener("click", () => { foto = null; tela.classList.remove("com-foto"); el("arqFoto").value = ""; render(); });
+  el("zoom").addEventListener("input", e => { zoom = parseFloat(e.target.value); render(); });
+
+  let arrasto = null;
+  const pt = ev => { const r = tela.getBoundingClientRect(); return { x: (ev.clientX - r.left) * W / r.width, y: (ev.clientY - r.top) * H / r.height }; };
+  tela.addEventListener("pointerdown", ev => {
+    if (!foto) { el("arqFoto").click(); return; }
+    arrasto = { p: pt(ev), ox: offX, oy: offY }; tela.setPointerCapture(ev.pointerId);
+  });
+  tela.addEventListener("pointermove", ev => { if (!arrasto) return; const q = pt(ev); offX = arrasto.ox + q.x - arrasto.p.x; offY = arrasto.oy + q.y - arrasto.p.y; render(); });
+  ["pointerup", "pointercancel"].forEach(t => tela.addEventListener(t, () => arrasto = null));
+  tela.addEventListener("wheel", ev => { if (!foto) return; ev.preventDefault(); zoom = Math.min(4, Math.max(1, zoom * (ev.deltaY < 0 ? 1.06 : 1 / 1.06))); el("zoom").value = zoom; render(); }, { passive: false });
+  document.addEventListener("dragover", e => e.preventDefault());
+  document.addEventListener("drop", e => { e.preventDefault(); carregarFoto(e.dataTransfer.files[0]); });
+  document.addEventListener("paste", e => { const it = [...e.clipboardData.items].find(i => i.type.startsWith("image/")); if (it) carregarFoto(it.getAsFile()); });
+
+  function baixar(tipo) {
+    const nome = (el("nome").value.trim() || "colaborador").normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^\w-]+/g, "-");
+    tela.toBlob(blob => {
+      const a = document.createElement("a"); a.href = URL.createObjectURL(blob);
+      a.download = `boas-vindas-${nome}.${tipo === "image/png" ? "png" : "jpg"}`;
+      document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+    }, tipo, 0.95);
+  }
+  el("baixarPng").addEventListener("click", () => baixar("image/png"));
+  el("baixarJpg").addEventListener("click", () => baixar("image/jpeg"));
+
+  marcar("estilos", estilo);
+  logo.onload = () => aplicarPaleta("ntw");
+  Promise.all([500, 700, 800].map(w => document.fonts.load(`${w} 40px "Montserrat"`))).then(render);
+})();
+</script>
+</body>
+</html>
