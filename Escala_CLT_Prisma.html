@@ -185,6 +185,15 @@ td input:hover,td select:hover{border-color:var(--linha);background:#fff}
 .ficha-num{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 12px}
 body.modal-aberto{overflow:hidden}
 @media (max-width:640px){.cab-versao{display:none}}
+/* ---------------------------------------------------------------- dias de funcionamento */
+.dias-op{display:flex;flex-wrap:wrap;gap:4px}
+.dia-chip{display:inline-flex;align-items:center;justify-content:center;min-width:40px;padding:4px 6px;border:1px solid var(--linha);border-radius:14px;font-size:11.5px;font-weight:600;cursor:pointer;background:#fff;color:var(--tinta-fraca);user-select:none;text-decoration:line-through}
+.dia-chip.on{background:var(--azul-800);border-color:var(--azul-800);color:#fff;text-decoration:none}
+.dia-chip input{position:absolute;opacity:0;width:1px;height:1px}
+.dia-chip:focus-within{outline:2px solid var(--ambar);outline-offset:1px}
+.hora-func{display:flex;gap:4px;align-items:center;flex-wrap:nowrap}
+.hora-func input{width:104px;padding:4px 5px;font-size:12px}
+.hora-func input.int{width:56px}
 /* ---------------------------------------------------------------- cobertura dos setores */
 .cob{border:1px solid var(--linha);border-left:5px solid var(--ok-tx);border-radius:0 10px 10px 0;padding:12px 14px;margin:0 0 10px;background:#fff}
 .cob.falta{border-left-color:var(--erro-tx);background:#fffafa}
@@ -238,7 +247,7 @@ body.modal-aberto{overflow:hidden}
     <h1>Escala de Trabalho com Compliance CLT</h1>
     <p>Digital para você ter mais tempo.</p>
   </div>
-  <div class="cab-versao naoimprime">v1.4 &middot; EC 141/2026 &middot; 100% offline</div>
+  <div class="cab-versao naoimprime">v1.5 &middot; EC 141/2026 &middot; 100% offline</div>
 </header>
 
 <div id="avisoArmazenamento" class="naoimprime" hidden>
@@ -288,6 +297,7 @@ body.modal-aberto{overflow:hidden}
           <th style="width:130px" title="Pessoas do mesmo setor não folgam no mesmo dia (limite na aba Parâmetros)">Setor</th>
           <th style="width:112px" title="Mínimo de domingos de folga por mês: 2 para mulher (art. 386 da CLT), 1 para homem">Sexo</th>
           <th style="width:118px">Turno</th>
+          <th title="Em branco = horário do turno (aba Parâmetros)">Horário <span style="font-weight:400">(entrada · saída · almoço · intervalo min)</span></th>
           <th style="width:112px">Escala</th>
           <th style="width:136px" title="Só vale na 6x1">Folga semanal</th>
           <th style="width:58px"></th>
@@ -300,10 +310,11 @@ body.modal-aberto{overflow:hidden}
       <button class="bt linha2" id="btAddFunc">+ Adicionar funcionário</button>
       <button class="bt linha2" id="btColar">Colar lista&hellip;</button>
       <button class="bt linha2" id="btExemplo">Carregar exemplo</button>
+      <button class="bt linha2" id="btExemploFazenda">Exemplo de fazenda</button>
       <button class="mini" id="btLimparEquipe" style="margin-left:auto">Limpar equipe</button>
     </div>
     <div id="areaColar" hidden style="margin-top:14px">
-      <p class="sub" style="margin:0 0 6px">Uma pessoa por linha, separando com ponto e vírgula ou tabulação: <code>Nome; Cargo; Turno; Sexo; Setor</code>. Turno, sexo e setor são opcionais (padrão: M, masculino e sem setor).</p>
+      <p class="sub" style="margin:0 0 6px">Uma pessoa por linha, separando com ponto e vírgula ou tabulação: <code>Nome; Cargo; Turno; Sexo; Setor; Entrada; Saída</code>. Do turno em diante é tudo opcional (padrão: M, masculino, sem setor e horário do turno).</p>
       <textarea id="txColar" placeholder="Ana Paula Silva; Analista Contábil; M; F; Administrativo&#10;Roberto Carlos; Atendente de Vendas; T; M; Loja&#10;Fernanda Rocha; Vendedora; D; F; Loja"></textarea>
       <div class="linha" style="margin-top:8px">
         <button class="bt" id="btImportar">Importar</button>
@@ -318,8 +329,8 @@ body.modal-aberto{overflow:hidden}
     <div class="rolagem" style="max-height:none">
       <table id="tbSetores">
         <thead><tr>
-          <th>Setor</th><th style="width:70px">Pessoas</th><th>Atividade</th><th>Funciona</th>
-          <th style="width:150px">Mínimo trabalhando por dia</th><th>Escala usada (auto)</th>
+          <th>Setor</th><th style="width:70px">Pessoas</th><th>Atividade</th><th>Dias que funciona <span style="font-weight:400">(desmarcado = folga fixa)</span></th>
+          <th style="width:150px">Mínimo trabalhando por dia</th><th style="width:150px">Almoço</th><th>Escala usada (auto)</th>
         </tr></thead>
         <tbody></tbody>
       </table>
@@ -432,7 +443,7 @@ body.modal-aberto{overflow:hidden}
 </main>
 
 <div class="rodape">
-  <b>Prisma Contabilidade</b> &middot; Escala CLT v1.4 &middot; roda 100% no seu computador, sem internet e sem enviar dado nenhum para fora.
+  <b>Prisma Contabilidade</b> &middot; Escala CLT v1.5 &middot; roda 100% no seu computador, sem internet e sem enviar dado nenhum para fora.
 </div>
 
 <div id="modalFunc" class="modal-fundo" hidden>
@@ -452,7 +463,7 @@ body.modal-aberto{overflow:hidden}
    é portado 1:1 do gerador_escala_clt.gs da skill escala-clt-sheets.
    ========================================================================== */
 
-var VERSAO = '1.4';
+var VERSAO = '1.5';
 
 /* ----------------------------------------------------- configuração padrão */
 var PADRAO = {
@@ -767,9 +778,8 @@ function montarEscalaDoFuncionario(ano, mes, func, escala, feriados, estado, cfg
   var domingosFolga = (escala === '6x1' || escala === '5x2r')
     ? escolherDomingosDeFolga(ano, mes, minDom, estado.ordem)
     : [];
-  var par = estado.domingoFixo
-    ? [0, 1 + ((estado.parFolga != null ? estado.parFolga : (estado.ordem || 0)) % 6)]
-    : PARES_5X2R[(estado.parFolga != null ? estado.parFolga : (estado.ordem || 0)) % PARES_5X2R.length];
+  var par = PARES_5X2R[(estado.parFolga != null ? estado.parFolga : (estado.ordem || 0)) % PARES_5X2R.length];
+  var fechados = estado.diasFechados || [];
   var escalaDia = [], fases = [], conversaoDia = 0;
   var trabNaSemana = 0, dsrSemana = 0;   // semana seg–dom: dias trabalhados e DSR já dados
   var folgasTransicao = null;                    // dias de folga da semana em que a 6x1 vira 5x2r
@@ -823,14 +833,21 @@ function montarEscalaDoFuncionario(ano, mes, func, escala, feriados, estado, cfg
       // variam por funcionário. Na semana do domingo de folga, o domingo
       // é o DSR e substitui o segundo dia do par.
       var domFolgaSemana = domingoDaSemanaEhFolga(ano, mes, dia, domingosFolga);
-      if (estado.domingoFixo && !folgasTransicao) {
-        // Setor que funciona de segunda a sábado: domingo é sempre repouso e
-        // o 2º dia de folga é um dia útil que varia entre os colegas.
-        if (ehDomingo) cod = COD.DSR;
-        else if (ehFeriado && estado.fechaNoFeriado) cod = COD.FER;   // setor fechado no feriado
-        else if (w === par[1]) cod = repouso;
+      if (fechados.length && !folgasTransicao) {
+        // Setor com dias em que não funciona: esses dias são folga fixa de
+        // todos. Se fecha só um dia, a 2ª folga da semana gira entre os
+        // colegas (estado.folgaRot); o domingo de folga do rodízio, quando o
+        // setor abre no domingo, toma o lugar dela naquela semana.
+        var domAberto = fechados.indexOf(0) === -1;
+        // Antes da EC 141 só 1 DSR por semana: se o domingo vai ser repouso,
+        // o outro dia livre é folga da escala.
+        var repSemana = (faseSem === 0 && (!domAberto || domFolgaSemana) && !ehDomingo) ? COD.FOLGA_ESCALA : repouso;
+        if (fechados.indexOf(w) !== -1) cod = ehDomingo ? COD.DSR : repSemana;
+        else if (ehDomingo && domingosFolga.indexOf(dia) !== -1) cod = COD.DSR;
+        else if (estado.folgaRot != null && w === estado.folgaRot && !(domAberto && domFolgaSemana)) cod = repSemana;
         else if (diasSeguidos >= cfg.limiteDiasConsecutivos) cod = COD.DSR;
         else if (trabNaSemana >= 5) cod = repouso;
+        else if (ehFeriado && estado.fechaNoFeriado) cod = COD.FER;   // setor fechado no feriado
         else if (ehFeriado) { cod = COD.PENDENTE; pendentes.push(dia - 1); }
         else cod = turno;
       }
@@ -1088,13 +1105,26 @@ var MODELOS_SETOR = [
   { k: 'saude', g: 'Cidade', nome: 'Saúde (plantão)', dias: 'todos', escala: '12x36' },
   { k: 'outro', g: 'Outro', nome: 'Outro (definir dias à mão)', dias: 'todos' }
 ];
-var DIAS_OPERACAO = { todos: 'Todos os dias', segsab: 'Segunda a sábado', segsex: 'Segunda a sexta' };
-function modeloSetor(k) { return MODELOS_SETOR.filter(function (m) { return m.k === k; })[0] || null; }
-function operaNoDia(dias, w) {
-  if (dias === 'segsab') return w !== 0;
-  if (dias === 'segsex') return w >= 1 && w <= 5;
-  return true;
+var ORDEM_SEMANA = [1, 2, 3, 4, 5, 6, 0];
+function abertosDe(dias) {
+  if (dias === 'segsab') return [1, 2, 3, 4, 5, 6];
+  if (dias === 'segsex') return [1, 2, 3, 4, 5];
+  return [1, 2, 3, 4, 5, 6, 0];
 }
+/** Dias da semana em que o setor funciona (0 = domingo). */
+function diasDoSetor(c) { return c.abertos && c.abertos.length ? c.abertos : abertosDe(c.dias); }
+function listaDias(ws) {
+  var n = ws.map(function (w) { return DIAS_SEMANA[w]; });
+  return n.length > 1 ? n.slice(0, -1).join(', ') + ' e ' + n[n.length - 1] : n.join('');
+}
+/** "Todos os dias" / "Segunda a sábado (folga fixa no domingo)" etc. */
+function descreverDias(c) {
+  var ab = diasDoSetor(c), fe = ORDEM_SEMANA.filter(function (w) { return ab.indexOf(w) === -1; });
+  if (!fe.length) return 'todos os dias';
+  return listaDias(ORDEM_SEMANA.filter(function (w) { return ab.indexOf(w) !== -1; })) + ' (folga fixa: ' + listaDias(fe) + ')';
+}
+function modeloSetor(k) { return MODELOS_SETOR.filter(function (m) { return m.k === k; })[0] || null; }
+function operaNoDia(c, w) { return diasDoSetor(c).indexOf(w) !== -1; }
 function configDoSetor(nome) {
   var k = chaveSetor(nome);
   return k && ST.setores[k] ? ST.setores[k] : null;
@@ -1105,12 +1135,21 @@ function escalaSugeridaDoSetor(nome) {
   if (!c) return '';
   var m = modeloSetor(c.modelo);
   if (m && m.escala === '12x36') return '12x36';
-  return c.dias === 'segsex' ? '5x2' : '5x2r';
+  var ab = diasDoSetor(c);
+  // Fecha exatamente sábado e domingo: é a 5x2 fixa de segunda a sexta.
+  if (ab.length === 5 && ab.indexOf(6) === -1 && ab.indexOf(0) === -1) return '5x2';
+  return '5x2r';
 }
 function rotuloEscalaSetor(nome) {
   var c = configDoSetor(nome), e = escalaSugeridaDoSetor(nome);
   if (!e) return '';
-  if (e === '5x2r' && c.dias === 'segsab') return '5x2 com domingo fixo';
+  if (e === '5x2r') {
+    var fe = ORDEM_SEMANA.filter(function (w) { return diasDoSetor(c).indexOf(w) === -1; });
+    if (fe.length === 1) return '5x2 — folga fixa: ' + DIAS_SEMANA[fe[0]] + ' + 1 folga que gira';
+    if (fe.length >= 2) return '5x2 — folgas fixas: ' + listaDias(fe);
+    return '5x2 com rodízio (as 2 folgas giram)';
+  }
+  if (e === '5x2') return '5x2 fixa (folga: sábado e domingo)';
   return ROTULO_ESCALA[e];
 }
 
@@ -1383,6 +1422,8 @@ function calcularCompetencia(ano, mes, equipe) {
   var itens = equipe.map(function (f, i) {
     return { f: f, i: i, escala: f.escala || escalaSugeridaDoSetor(f.setor) || definirEscalaPorCargo(f.cargo, ano, mes), setor: chaveSetor(f.setor) };
   });
+  var horarios = horariosDaEquipe(equipe);
+  itens.forEach(function (it) { it.horario = horarios[it.i]; });
   var ordinais = {};
   itens.slice().sort(function (a, b) {
     if (a.escala !== b.escala) return a.escala < b.escala ? -1 : 1;
@@ -1413,12 +1454,18 @@ function calcularCompetencia(ano, mes, equipe) {
     }
     estado.ordem = ordem;
     estado.parFolga = (it.parFolga != null) ? it.parFolga : null;
-    var cfgSetor = configDoSetor(f.setor);
-    estado.domingoFixo = !!(cfgSetor && cfgSetor.dias === 'segsab' && escala === '5x2r');
-    estado.fechaNoFeriado = !!(cfgSetor && cfgSetor.dias !== 'todos');
+    var cfgSetor = configDoSetor(f.setor), abertos = cfgSetor ? diasDoSetor(cfgSetor) : null;
+    estado.diasFechados = (cfgSetor && escala === '5x2r')
+      ? [1, 2, 3, 4, 5, 6, 0].filter(function (w) { return abertos.indexOf(w) === -1; }) : [];
+    estado.folgaRot = null;
+    if (estado.diasFechados.length === 1) {
+      var rot = [1, 2, 3, 4, 5, 6].filter(function (w) { return abertos.indexOf(w) !== -1; });
+      estado.folgaRot = rot[(it.parFolga != null ? it.parFolga : ordem) % rot.length];
+    }
+    estado.fechaNoFeriado = !!(cfgSetor && abertos.length < 7);
     it.opera = [];
     for (var od = 1; od <= dias; od++) {
-      it.opera.push(!cfgSetor || (operaNoDia(cfgSetor.dias, diaSemana(ano, mes, od))
+      it.opera.push(!cfgSetor || (operaNoDia(cfgSetor, diaSemana(ano, mes, od))
         && !(estado.fechaNoFeriado && feriados.indexOf(fmtData(ano, mes, od)) !== -1)));
     }
     it.minSetor = cfgSetor ? (parseInt(cfgSetor.min, 10) || 0) : 0;
@@ -1523,15 +1570,28 @@ function calcularCompetencia(ano, mes, equipe) {
              ' para não passar do teto de ' + CONFIG.tetoContratualPorEscala['12x36'] + 'h da 12x36. Confira a cobertura desse(s) dia(s).',
         lei: 'teto contratual da 12x36 — 15 plantões de 12h' });
     }
-    var tn = (escalaFinal !== '12x36') && CONFIG.turnos && CONFIG.turnos[codTrab];
-    if (tn) {
-      var liq = horasLiquidasTurno(tn), maxJ = 0;
+    var hr = it.horario;
+    if (hr && escalaFinal !== '12x36') {
+      var maxJ = 0, origem = hr.proprio ? 'O horário de ' + f.nome : 'O horário do turno ' + TURNOS[codTrab];
       r.codigos.forEach(function (c, i) { if (c === codTrab) maxJ = Math.max(maxJ, jornadaDoDia(r.escalaDia[i], CONFIG, r.fases[i])); });
-      if (maxJ && liq > maxJ + 0.01) {
+      if (maxJ && hr.liq > maxJ + 0.01) {
         problemas.push({ grau: 'al',
-          txt: 'O horário do turno ' + TURNOS[codTrab] + ' (' + tn.ini + ' às ' + tn.fim + ', intervalo de ' + tn.intervalo + ' min) dá '
-               + fmtHoras(liq) + ' de trabalho por dia, acima da jornada de ' + fmtHoras(maxJ) + ' da escala — a diferença vira hora extra todo dia. Ajuste o horário em Parâmetros.',
+          txt: origem + ' (' + hr.ini + ' às ' + hr.fim + ', intervalo de ' + hr.intervalo + ' min) dá '
+               + fmtHoras(hr.liq) + ' de trabalho por dia, acima da jornada de ' + fmtHoras(maxJ) + ' da escala — a diferença vira hora extra todo dia.',
           lei: 'art. 7º, XIII, da CF (EC 141/2026) e art. 59 da CLT' });
+      }
+      if (24 - hr.span < 11) {
+        problemas.push({ grau: 'vi',
+          txt: 'Entre a saída (' + hr.fim + ') e a entrada do dia seguinte (' + hr.ini + ') sobram ' + fmtHoras(24 - hr.span) + ' de descanso; o mínimo é 11h.',
+          lei: 'art. 66 da CLT — 11h consecutivas de descanso entre duas jornadas' });
+      }
+      if (hr.liq > 6 && hr.intervalo < 60) {
+        problemas.push({ grau: hr.intervalo >= 30 ? 'al' : 'vi',
+          txt: 'Intervalo de almoço de ' + hr.intervalo + ' min para jornada acima de 6h. O mínimo é 1h'
+               + (hr.intervalo >= 30 ? '; reduzir para ' + hr.intervalo + ' min só vale com convenção ou acordo coletivo.' : '.'),
+          lei: 'art. 71 da CLT e art. 611-A, III, da CLT (redução por norma coletiva, mínimo de 30 min)' });
+      } else if (hr.liq > 4 && hr.liq <= 6 && hr.intervalo < 15) {
+        problemas.push({ grau: 'vi', txt: 'Jornada entre 4h e 6h exige intervalo de 15 min.', lei: 'art. 71, § 1º, da CLT' });
       }
     }
     if (conflitosSetor.length) {
@@ -1575,8 +1635,9 @@ function calcularCompetencia(ano, mes, equipe) {
       maxDias: r.maxDiasSeguidos, maxDomingos: r.maxDomingosSeguidos,
       domingosDeFolga: r.domingosDeFolga, minDomingos: r.minDomingosExigido,
       plantoesSuprimidos: r.plantoesSuprimidos, ciclosFolga: r.ciclosFolga,
-      parFolga: it.estado.domingoFixo ? [0, 1 + ((it.parFolga != null ? it.parFolga : it.ordem) % 6)]
-                                      : PARES_5X2R[(it.parFolga != null ? it.parFolga : it.ordem) % PARES_5X2R.length],
+      parFolga: it.estado.diasFechados.length ? null : PARES_5X2R[(it.parFolga != null ? it.parFolga : it.ordem) % PARES_5X2R.length],
+      folgasFixas: it.estado.diasFechados, folgaRot: it.estado.folgaRot,
+      horario: it.horario,
       escalaDia: r.escalaDia, fases: r.fases, codTrab: codTrab,
       emDobro: r.feriadosEmDobro, compensados: r.compensados,
       teto: teto, minFolgas: minFolgas, problemas: problemas
@@ -1595,9 +1656,9 @@ function faltasDoSetor(linhas, chave, cfgSetor, ano, mes, feriados) {
   var dias = diasNoMes(ano, mes);
   for (var d = 1; d <= dias; d++) {
     var w = diaSemana(ano, mes, d);
-    if (!operaNoDia(cfgSetor.dias, w)) continue;
+    if (!operaNoDia(cfgSetor, w)) continue;
     // Setor que não funciona todos os dias fecha no feriado.
-    if (cfgSetor.dias !== 'todos' && feriados.indexOf(fmtData(ano, mes, d)) !== -1) continue;
+    if (diasDoSetor(cfgSetor).length < 7 && feriados.indexOf(fmtData(ano, mes, d)) !== -1) continue;
     var sem = semanaDoDia({ ano: ano, mes: mes }, d).iniDia;
     semanasOp[sem] = true;
     var tem = membros.filter(function (l) { return !ehDescanso(l.codigos[d - 1]); }).length;
@@ -1621,7 +1682,7 @@ function analisarCobertura(res, ano, mes) {
     vistos[k] = true;
     var r = faltasDoSetor(res.linhas, k, c, ano, mes, res.feriados);
     var m = modeloSetor(c.modelo);
-    var item = { setor: f.setor, chave: k, atividade: m ? m.nome : '', dias: c.dias, min: parseInt(c.min, 10),
+    var item = { setor: f.setor, chave: k, atividade: m ? m.nome : '', diasTxt: descreverDias(c), min: parseInt(c.min, 10),
                  pessoas: r.membros, falta: r.falta, semanasFalta: r.semanasFalta, semanasOp: r.semanasOp,
                  maxDiasSemana: r.maxDiasSemana, fechaCom: r.falta.length ? null : r.membros };
     if (r.falta.length) {
@@ -1642,7 +1703,59 @@ function analisarCobertura(res, ano, mes) {
   return out;
 }
 
+/**
+ * Setores que não fecham no almoço: em cada dia, quem trabalha está no
+ * almoço em horários diferentes? Se todos param ao mesmo tempo (ou só há
+ * uma pessoa), o setor fica vazio nessa janela.
+ */
+function analisarAlmoco(res, ano, mes) {
+  var out = [], vistos = {};
+  ST.equipe.forEach(function (f) {
+    var k = chaveSetor(f.setor), c = configDoSetor(f.setor);
+    if (!k || vistos[k] || !c || !c.intercalarAlmoco) return;
+    vistos[k] = true;
+    var membros = res.linhas.filter(function (l) { return chaveSetor(l.setor) === k && l.horario; });
+    var vazios = {};
+    for (var d = 1; d <= res.dias; d++) {
+      var w = diaSemana(ano, mes, d);
+      if (!operaNoDia(c, w)) continue;
+      var trab = membros.filter(function (l) { return !ehDescanso(l.codigos[d - 1]) && l.escalaDia[d - 1] !== '12x36' && l.horario.intervalo > 0; });
+      if (!trab.length) continue;
+      var ini = Math.max.apply(null, trab.map(function (l) { return l.horario.almocoIni; }));
+      var fim = Math.min.apply(null, trab.map(function (l) { return l.horario.almocoFim; }));
+      if (ini < fim) {
+        var chave = hhmm(ini) + '–' + hhmm(fim) + (trab.length === 1 ? '|1' : '|n');
+        (vazios[chave] = vazios[chave] || []).push(d);
+      }
+    }
+    out.push({ setor: f.setor, membros: membros.map(function (l) { return { nome: l.nome, almoco: l.horario.almoco, auto: l.horario.almocoAuto }; }),
+               vazios: Object.keys(vazios).map(function (x) { var p = x.split('|'); return { janela: p[0], sozinho: p[1] === '1', dias: vazios[x] }; }) });
+  });
+  return out;
+}
+
+function htmlAlmoco(a) {
+  return (a.almoco || []).map(function (s) {
+    var h = '<div class="cob' + (s.vazios.length ? ' falta' : '') + '"><h3>Setor ' + esc(s.setor) + ' — almoço intercalado</h3>'
+      + '<div class="meta">O setor não fecha no almoço. ' + s.membros.map(function (m) {
+          return esc(m.nome) + ': ' + (m.almoco || 'sem intervalo') + (m.auto ? ' (definido pelo app)' : '');
+        }).join(' &middot; ') + '</div>';
+    if (!s.vazios.length) h += '<div class="titulo-ok">Sempre há alguém no setor durante o almoço.</div>';
+    else {
+      h += '<div class="titulo-falta">O setor fica sem ninguém no almoço</div>' + s.vazios.map(function (v) {
+        return '<p>Das <b>' + v.janela.replace('–', ' às ') + '</b> nos dias ' + v.dias.join(', ')
+          + (v.sozinho ? ' — só uma pessoa trabalhando nesses dias.' : ' — todos param no mesmo horário; mude o almoço de alguém na aba Equipe.') + '</p>';
+      }).join('');
+    }
+    return h + '</div>';
+  }).join('');
+}
+
 function htmlCobertura(a) {
+  var alm = htmlAlmoco(a);
+  return htmlCoberturaDias(a) + alm;
+}
+function htmlCoberturaDias(a) {
   var cob = a.cobertura || [];
   if (!cob.length) {
     var temSetor = a.linhas.some(function (l) { return l.setor; });
@@ -1650,7 +1763,7 @@ function htmlCobertura(a) {
   }
   return cob.map(function (c) {
     var h = '<div class="cob' + (c.falta.length ? ' falta' : '') + '"><h3>Setor ' + esc(c.setor) + (c.atividade ? ' &mdash; ' + esc(c.atividade) : '') + '</h3>'
-      + '<div class="meta">Funciona: ' + DIAS_OPERACAO[c.dias] + ' &middot; mínimo de ' + c.min + ' pessoa(s) trabalhando por dia &middot; '
+      + '<div class="meta">Funciona: ' + esc(c.diasTxt) + ' &middot; mínimo de ' + c.min + ' pessoa(s) trabalhando por dia &middot; '
       + c.pessoas + ' pessoa(s) no setor</div>';
     if (!c.falta.length) {
       h += '<div class="titulo-ok">A escala fecha com as ' + c.pessoas + ' pessoa(s) atuais.</div>'
@@ -1681,9 +1794,10 @@ function gerar() {
   var res = calcularCompetencia(ano, mes, ST.equipe);
   var feriados = res.feriados, dias = res.dias, linhas = res.linhas, setorRes = res.setorRes;
   var cobertura = analisarCobertura(res, ano, mes);
+  var almoco = analisarAlmoco(res, ano, mes);
 
   ST.atual = { ano: ano, mes: mes, dias: dias, feriados: feriados, linhas: linhas, geradoEm: new Date(),
-               regime: resumoRegime(ano, mes), cobertura: cobertura,
+               regime: resumoRegime(ano, mes), cobertura: cobertura, almoco: almoco,
                setor: { movidas: setorRes.movidos.length, conflitos: setorRes.conflitos.length } };
 
   var chave = ano + '-' + (mes < 10 ? '0' + mes : mes);
@@ -1722,6 +1836,9 @@ function classeCod(c) {
 }
 function rotuloEscalaLinha(l) {
   var r = ROTULO_ESCALA[l.escala] || l.escala;
+  if (l.escala === '5x2r' && l.folgasFixas && l.folgasFixas.length) {
+    r = '5x2 · folga fixa ' + l.folgasFixas.map(function (w) { return DS_CURTO[w]; }).join('/');
+  }
   if (l.conversaoDia > 1) r = '6x1 → ' + r + ' (dia ' + l.conversaoDia + ')';
   else if (l.conversaoDia === 1) r += ' (era 6x1)';
   return r;
@@ -1812,6 +1929,7 @@ function desenharGrade() {
   var hc = htmlCobertura(a);
   el('#coberturaEscala').innerHTML = hc ? '<div class="cartao" style="margin:16px 0 0;box-shadow:none;border:1px solid var(--linha)">'
     + '<h2 style="margin-top:0">Cobertura dos setores — precisa contratar?</h2>' + hc + '</div>' : '';
+  // o cartão só aparece se houver o que mostrar
   el('#coberturaEscala').hidden = !hc;
 }
 
@@ -1845,9 +1963,9 @@ function motivoDoDia(l, i, a) {
   if (c === COD.FER_DOBRO) return dataTxt + 'feriado (' + fer + ') trabalhado sem dia livre para compensar no mês — pagar em dobro (art. 9º da Lei 605/1949).';
   if (c === COD.FER_59A) return dataTxt + 'feriado (' + fer + ') em plantão 12x36 — já coberto pelo salário mensal (art. 59-A, p. único, da CLT).';
   if (!ehDescanso(c)) {
-    var tn = CONFIG.turnos && CONFIG.turnos[c];
+    var tn = l.horario;
     return dataTxt + 'dia trabalhado — ' + fmtHoras(jornadaDoDia(esc2, CONFIG, fase)) + ' (' + (ROTULO_ESCALA[esc2] || esc2) + ')'
-      + (tn ? ', turno ' + TURNOS[c] + ' das ' + tn.ini + ' às ' + tn.fim : '') + '.';
+      + (tn && esc2 !== '12x36' ? ', das ' + tn.ini + ' às ' + tn.fim + (tn.almoco ? ', almoço ' + tn.almoco : '') : '') + '.';
   }
   var por = '';
   if (esc2 === '12x36') por = 'descanso de 36h depois do plantão de 12h.';
@@ -1859,6 +1977,10 @@ function motivoDoDia(l, i, a) {
   } else if (w === 0) {
     por = 'domingo de folga do rodízio — cada pessoa folga ao menos ' + l.minDomingos + ' domingo(s) no mês ('
         + (l.sexo === 'F' ? 'mulher: art. 386 da CLT' : 'homem: parâmetro do escritório') + ').';
+  } else if (esc2 === '5x2r' && l.folgasFixas && l.folgasFixas.indexOf(w) !== -1) {
+    por = 'folga fixa do setor — o setor ' + l.setor + ' não funciona às ' + DIAS_SEMANA[w] + 's.';
+  } else if (esc2 === '5x2r' && l.folgaRot === w) {
+    por = 'folga desta pessoa no rodízio (' + DIAS_SEMANA[w] + '), além da folga fixa do setor; colegas folgam em outros dias.';
   } else if (esc2 === '5x2r' && l.parFolga && l.parFolga.indexOf(w) !== -1) {
     por = 'dia de folga desta pessoa no rodízio (' + DIAS_SEMANA[l.parFolga[0]] + ' e ' + DIAS_SEMANA[l.parFolga[1]]
         + '); colegas folgam em outros dias para a operação não parar.';
@@ -1949,6 +2071,7 @@ function desenharExplicacao(a) {
        + '<summary style="cursor:pointer"><b>' + esc(l.nome) + '</b> <span style="color:var(--tinta-fraca);font-size:12px">— '
        + esc(rotuloEscalaLinha(l)) + (l.setor ? ' · setor ' + esc(l.setor) : '')
        + (l.escala === '5x2r' && l.parFolga ? ' · folgas do rodízio: ' + DIAS_SEMANA[l.parFolga[0]] + ' e ' + DIAS_SEMANA[l.parFolga[1]] : '')
+       + (l.escala === '5x2r' && l.folgasFixas && l.folgasFixas.length ? ' · folga fixa: ' + listaDias(l.folgasFixas) + (l.folgaRot != null ? ' · folga que gira: ' + DIAS_SEMANA[l.folgaRot] : '') : '')
        + (falhas ? ' · <b style="color:var(--erro-tx)">' + falhas + ' semana(s) abaixo do mínimo</b>' : '') + '</span></summary>'
        + '<div class="rolagem" style="max-height:none;margin-top:8px"><table><thead><tr><th>Semana (seg–dom)</th><th>Dias trab.</th><th>Horas</th>'
        + '<th>Dias de folga no mês</th><th>Repouso da semana</th></tr></thead><tbody>' + linhasTab + '</tbody></table></div></details>';
@@ -1979,6 +2102,51 @@ function horasLiquidasTurno(t) {
   if (fim <= ini) fim += 1440;
   return Math.max(0, fim - ini - (+t.intervalo || 0)) / 60;
 }
+function hhmm(min) { min = ((min % 1440) + 1440) % 1440; var h = Math.floor(min / 60), m = min % 60; return (h < 10 ? '0' : '') + h + ':' + (m < 10 ? '0' : '') + m; }
+
+/** Horário do funcionário: o dele, se preenchido; senão o do turno. */
+function horarioBase(f) {
+  var t = CONFIG.turnos[f.turno || 'M'] || CONFIG.turnos.M;
+  var intv = (f.intervalo !== '' && f.intervalo != null && !isNaN(+f.intervalo)) ? +f.intervalo : (+t.intervalo || 0);
+  return { ini: f.hIni || t.ini, fim: f.hFim || t.fim, intervalo: intv, proprio: !!(f.hIni || f.hFim) };
+}
+
+/**
+ * Horário de cada pessoa da equipe, com o início do almoço. Sem almoço
+ * informado, ele começa 4h depois da entrada (ou no meio do expediente, se
+ * for curto). Em setor que NÃO FECHA NO ALMOÇO, quem não informou o almoço
+ * recebe horários em sequência (11h, 12h, 13h…), para o setor não ficar vazio.
+ */
+function horariosDaEquipe(equipe) {
+  var pos = {};
+  return equipe.map(function (f) {
+    var h = horarioBase(f), ini = minutosDe(h.ini), fim = minutosDe(h.fim);
+    if (fim <= ini) fim += 1440;
+    var span = fim - ini;
+    h.liq = Math.max(0, span - h.intervalo) / 60;
+    h.span = span / 60;
+    var almoco;
+    if (f.hAlmoco) { almoco = minutosDe(f.hAlmoco); if (almoco < ini) almoco += 1440; h.almocoAuto = false; }
+    else {
+      almoco = ini + (span >= 8 * 60 ? 4 * 60 : Math.floor(span / 2 / 30) * 30);
+      var c = configDoSetor(f.setor), k = chaveSetor(f.setor);
+      if (c && c.intercalarAlmoco && h.intervalo > 0) {
+        var n = pos[k] = (pos[k] || 0) + 1;
+        var cand = almoco + (n - 1) * h.intervalo;
+        if (cand + h.intervalo <= fim - 60) almoco = cand;
+      }
+      h.almocoAuto = true;
+    }
+    h.almocoIni = almoco; h.almocoFim = almoco + h.intervalo;
+    h.almoco = h.intervalo > 0 ? hhmm(almoco) + '–' + hhmm(almoco + h.intervalo) : '';
+    return h;
+  });
+}
+function textoHorario(h) {
+  if (!h) return '';
+  return h.ini + '–' + h.fim + (h.almoco ? ' · almoço ' + h.almoco : '');
+}
+
 /** 7.333 -> "7h20" */
 function fmtHoras(v) {
   var m = Math.round(v * 60), hh = Math.floor(m / 60), mm = m % 60;
@@ -1998,9 +2166,15 @@ function porqueDaEscala(l, a) {
     it.push('<b>Escala 5x2 fixa:</b> trabalha de segunda a sexta, 8h por dia. Sábado e domingo são os dias de descanso — '
       + 'antes da EC 141 o domingo é o DSR e o sábado é folga de compensação (F); na vigência, os dois são DSR.');
   } else if (l.escala === '5x2r') {
-    it.push('<b>Escala 5x2 com rodízio:</b> trabalha 5 dias e descansa 2 por semana, 8h por dia (40h semanais). '
-      + 'Os dias de folga dele(a) no rodízio são <b>' + DIAS_SEMANA[l.parFolga[0]] + ' e ' + DIAS_SEMANA[l.parFolga[1]] + '</b>'
-      + (l.setor ? ', escolhidos para não coincidir com os colegas do setor <b>' + esc(l.setor) + '</b>' : '') + '.');
+    if (l.folgasFixas && l.folgasFixas.length) {
+      it.push('<b>Escala 5x2 com folga fixa:</b> o setor ' + esc(l.setor) + ' não funciona ' + (l.folgasFixas.length > 1 ? 'nos dias ' : 'no dia ') + '<b>' + listaDias(l.folgasFixas)
+        + '</b>, que ' + (l.folgasFixas.length > 1 ? 'são folgas fixas' : 'é folga fixa') + ' de todos.'
+        + (l.folgaRot != null ? ' A 2ª folga da semana gira entre os colegas: a dele(a) é <b>' + DIAS_SEMANA[l.folgaRot] + '</b>.' : ''));
+    } else {
+      it.push('<b>Escala 5x2 com rodízio:</b> trabalha 5 dias e descansa 2 por semana, 8h por dia (40h semanais). '
+        + 'Os dias de folga dele(a) no rodízio são <b>' + DIAS_SEMANA[l.parFolga[0]] + ' e ' + DIAS_SEMANA[l.parFolga[1]] + '</b>'
+        + (l.setor ? ', escolhidos para não coincidir com os colegas do setor <b>' + esc(l.setor) + '</b>' : '') + '.');
+    }
     it.push('<b>Domingo de folga:</b> na semana em que folga no domingo, o domingo ocupa o lugar de um dos dias do par — por isso, às vezes, aparecem dois repousos seguidos (domingo e segunda): cada um pertence a uma semana diferente.');
   } else if (l.escala === '6x1') {
     it.push('<b>Escala 6x1:</b> trabalha 6 dias e descansa 1 (art. 67 da CLT), com folga '
@@ -2054,6 +2228,7 @@ function abrirFicha(idx) {
     + '<div class="meta"><b>' + esc(l.cargo || 'sem cargo') + '</b>' + (l.setor ? ' &middot; setor ' + esc(l.setor) : '')
     + ' &middot; ' + esc(rotuloEscalaLinha(l)) + ' &middot; turno ' + TURNOS[l.turno] + ' &middot; ' + SEXOS[l.sexo]
     + (l.matricula ? ' &middot; matrícula ' + l.matricula : '') + '</div>'
+    + (l.horario && l.escala !== '12x36' ? '<div class="meta">Horário: <b>' + esc(textoHorario(l.horario)) + '</b>' + (l.horario.proprio ? '' : ' (do turno)') + '</div>' : '')
     + '<div class="meta">Escala de <b>' + MESES[a.mes - 1] + '/' + a.ano + '</b> &middot; ' + esc(a.regime || '') + '</div></div>'
     + '<div class="modal-acoes">'
     + '<button class="bt linha2" data-ficha="ant"' + (idx === 0 ? ' disabled' : '') + '>&lsaquo; Anterior</button>'
@@ -2093,8 +2268,7 @@ function abrirFicha(idx) {
       else if (rot) { txt = rot[0]; sub = rot[1]; }
       else {
         txt = 'Trabalho &middot; ' + (TURNOS[c] || c);
-        var tnc = CONFIG.turnos && CONFIG.turnos[c];
-        sub = (tnc ? tnc.ini + '–' + tnc.fim + ' · ' : '') + fmtHoras(jornadaDoDia(l.escalaDia[dd - 1], CONFIG, l.fases[dd - 1]));
+        sub = (l.horario ? l.horario.ini + '–' + l.horario.fim + ' · ' : '') + fmtHoras(jornadaDoDia(l.escalaDia[dd - 1], CONFIG, l.fases[dd - 1]));
       }
       cal += '<div class="dia' + (ehDescanso(c) ? ' descanso' : '') + (w === 0 ? ' domingo' : '') + '" data-dia="' + dd + '" title="' + esc(motivoDoDia(l, dd - 1, a)) + '">'
         + '<span class="num">' + dd + '</span>'
@@ -2161,7 +2335,7 @@ function desenharAuditoria() {
   }
   h += '<p style="margin:10px 0 0;font-size:12.5px"><b>Regime da competência:</b> ' + esc(a.regime || '') + '</p>';
   var cobF = (a.cobertura || []).filter(function (c) { return c.falta.length; });
-  if ((a.cobertura || []).length) {
+  if ((a.cobertura || []).length || (a.almoco || []).length) {
     h += '<h3 style="margin:14px 0 8px;font-size:14px;color:var(--azul-700)">Cobertura dos setores'
        + (cobF.length ? ' — <span style="color:var(--erro-tx)">' + cobF.length + ' setor(es) precisam de mais gente</span>' : '') + '</h3>'
        + htmlCobertura(a);
@@ -2282,10 +2456,15 @@ function desenharSetores() {
     return '<tr><td><b>' + esc(g.nome) + '</b></td><td class="tot">' + g.n + '</td>'
       + '<td><select data-setor="' + esc(k) + '" data-campo="modelo">' + opts + '</select>'
       + (m && m.dica ? '<div style="font-size:11px;color:var(--tinta-fraca);margin-top:3px">' + esc(m.dica) + '</div>' : '') + '</td>'
-      + '<td><select data-setor="' + esc(k) + '" data-campo="dias"' + dis + '>' + Object.keys(DIAS_OPERACAO).map(function (d) {
-          return '<option value="' + d + '"' + (c.dias === d ? ' selected' : '') + '>' + DIAS_OPERACAO[d] + '</option>';
-        }).join('') + '</select></td>'
+      + '<td>' + (c.modelo ? '<div class="dias-op">' + ORDEM_SEMANA.map(function (w) {
+          var on = diasDoSetor(c).indexOf(w) !== -1;
+          return '<label class="dia-chip' + (on ? ' on' : '') + '" title="' + (on ? 'Funciona' : 'Folga fixa') + ' — ' + DIAS_SEMANA[w] + '">'
+            + '<input type="checkbox" data-setor="' + esc(k) + '" data-dia="' + w + '"' + (on ? ' checked' : '') + '>' + DS_CURTO[w] + '</label>';
+        }).join('') + '</div><div style="font-size:11px;color:var(--tinta-fraca);margin-top:3px">' + esc(descreverDias(c)) + '</div>'
+        : '<span style="color:var(--tinta-fraca)">escolha a atividade</span>') + '</td>'
       + '<td><input type="number" min="0" max="50" style="width:90px" data-setor="' + esc(k) + '" data-campo="min" value="' + (c.min || 0) + '"' + dis + '></td>'
+      + '<td><label style="display:flex;gap:6px;align-items:flex-start;font-size:12px;cursor:pointer"><input type="checkbox" data-setor="' + esc(k) + '" data-campo="intercalarAlmoco"'
+      + (c.intercalarAlmoco ? ' checked' : '') + dis + '> Não fecha no almoço — intercalar</label></td>'
       + '<td>' + (c.modelo ? esc(rotuloEscalaSetor(g.nome)) : '<span style="color:var(--tinta-fraca)">pelo cargo</span>') + '</td></tr>';
   }).join('');
 }
@@ -2293,7 +2472,7 @@ function desenharSetores() {
 function desenharEquipe() {
   var tb = el('#tbEquipe tbody');
   if (!ST.equipe.length) {
-    tb.innerHTML = '<tr><td colspan="9" class="vazio">Nenhum funcionário cadastrado.</td></tr>';
+    tb.innerHTML = '<tr><td colspan="10" class="vazio">Nenhum funcionário cadastrado.</td></tr>';
     desenharSetores();
     return;
   }
@@ -2320,6 +2499,16 @@ function desenharEquipe() {
             return '<option value="' + t + '"' + ((f.turno || 'M') === t ? ' selected' : '') + '>' + t + ' — ' + TURNOS[t] + '</option>';
           }).join('')
       + '</select></td>'
+      + '<td>' + (function () {
+          var tb2 = CONFIG.turnos[f.turno || 'M'];
+          return '<div class="hora-func">'
+            + '<input type="time" data-i="' + i + '" data-c="hIni" value="' + esc(f.hIni || '') + '" title="Entrada (vazio = ' + tb2.ini + ')" aria-label="Entrada">'
+            + '<input type="time" data-i="' + i + '" data-c="hFim" value="' + esc(f.hFim || '') + '" title="Saída (vazio = ' + tb2.fim + ')" aria-label="Saída">'
+            + '<input type="time" data-i="' + i + '" data-c="hAlmoco" value="' + esc(f.hAlmoco || '') + '" title="Início do almoço (vazio = o app define)" aria-label="Início do almoço">'
+            + '<input type="number" class="int" min="0" max="240" step="5" data-i="' + i + '" data-c="intervalo" value="' + esc(f.intervalo != null ? f.intervalo : '') + '" placeholder="' + tb2.intervalo + '" title="Intervalo em minutos (vazio = ' + tb2.intervalo + ')" aria-label="Intervalo em minutos">'
+            + '</div><div style="font-size:10.5px;color:var(--tinta-fraca);margin-top:2px">'
+            + (f.hIni || f.hFim ? 'horário próprio' : 'em branco = turno ' + tb2.ini + '–' + tb2.fim) + '</div>';
+        })() + '</td>'
       + '<td><select data-i="' + i + '" data-c="escala">'
         + ['', '5x2', '5x2r', '6x1', '12x36'].map(function (e2) {
             var rot = e2 === '' ? 'auto (' + ROTULO_ESCALA[auto] + ')' : ROTULO_ESCALA[e2];
@@ -2504,10 +2693,10 @@ function desenharAjuda() {
     ['EC 141/2026 — fim da escala 6x1', 'A PEC 221/2019 foi aprovada pelo Senado em 14/10/2026 e promulgada como Emenda Constitucional 141, publicada em edição extra do DOU em 16/10/2026. Nova redação do art. 7º da CF: inciso XIII — jornada de até 8h diárias e 40h semanais; inciso XV — repouso semanal remunerado de 2 dias, um deles preferencialmente aos domingos; § 2º — por convenção ou acordo coletivo, excepcionalmente, regime compensatório com média de 2 dias de repouso por semana no mês e ao menos 1 em cada semana. Transição: 2 meses após a publicação (16/12/2026) valem os 2 dias de repouso e o limite de 42h; 1 ano depois (16/12/2027), 40h. Sem redução de salário. O app escolhe as regras pela data de cada dia da competência.'],
     ['Escala pelo cargo', 'Administrativo, escritório, analista, auxiliar e gerência vão para 5x2; portaria, vigilância e segurança para 12x36; o resto para 6x1 antes da vigência da EC 141 e para 5x2 com rodízio depois dela. É heurística — você troca na coluna Escala.'],
     ['5x2 com rodízio', 'Para quem opera 7 dias por semana e sai da 6x1. Cada pessoa trabalha 5 dias e folga 2 por semana (seg–dom), em um par de dias que varia por funcionário para a operação não ficar sem ninguém no mesmo dia. O rodízio de domingos continua: na semana do domingo de folga, o domingo ocupa o lugar de um dos dias do par. Jornada de 8h por dia = 40h por semana. Na vigência da EC 141 os dois dias de folga são DSR (remunerados); antes dela, só um é DSR e o outro é folga da escala (F).'],
-    ['Atividade do setor', 'Cada atividade diz em que dias o setor funciona. Criação de animais (leite, gado, granja, cavalos, ovelha e cabra, peixe), cana, caseiro, supermercado, restaurante e indústria funcionam todos os dias: 5x2 com rodízio. Lavoura, café, horta, frutas, flores, comércio e limpeza vão de segunda a sábado: 5x2 com o domingo fixo de folga e o 2º dia de folga variando entre os colegas. Floresta plantada e escritório: segunda a sexta, 5x2 fixa. Portaria e saúde: 12x36. Escala escolhida à mão na coluna Escala vale mais que a do setor.'],
+    ['Atividade e dias de funcionamento', 'Cada atividade já vem com os dias em que o setor costuma funcionar, e você ajusta marcando os dias (Seg a Dom). Dia desmarcado é folga fixa de todo o setor. Todos os dias marcados: as 2 folgas da semana giram entre os colegas (5x2 com rodízio). Um dia desmarcado: esse dia é folga fixa e a 2ª folga gira. Sábado e domingo desmarcados: 5x2 fixa. Dois ou mais dias desmarcados: todos são folgas fixas. Portaria e saúde usam 12x36. Setor que não abre todo dia fica fechado no feriado. Escala escolhida à mão na coluna Escala vale mais que a do setor.'],
     ['Mínimo por dia e "precisa contratar?"', 'Com o mínimo definido, o setor nunca deixa folgar mais que (pessoas − mínimo) no mesmo dia, se der. Onde não der, o app conta os dias e as semanas com falta e simula a contratação de 1 a 8 pessoas no setor para dizer com quantas a escala fecha. Setor que não abre todo dia fica fechado no feriado.'],
     ['Jornada de 8h24 na 1ª etapa', 'A liminar do STF (min. Flávio Dino, 12/11/2026) permite distribuir as 42h em 5 dias, com até 8h24 por dia, até 15/12/2027. É opcional, em Parâmetros; o padrão de 8h por dia já cumpre a regra. O Decreto 13.173/2026 fixou os divisores 210 (42h) e 200 (40h) e manteve a 12x36.'],
-    ['Horário dos turnos', 'Entrada, saída e intervalo de cada turno ficam em Parâmetros e aparecem na escala e na ficha. Se o horário, sem o intervalo, passa da jornada diária da escala, o app avisa: seria hora extra todo dia.'],
+    ['Horário de cada funcionário e almoço', 'Cada funcionário pode ter entrada, saída, início do almoço e intervalo próprios (aba Equipe); em branco, vale o horário do turno (aba Parâmetros). O app avisa quando o horário, sem o intervalo, passa da jornada do dia (hora extra todo dia), quando o descanso entre a saída e a entrada do dia seguinte fica abaixo de 11h (art. 66 da CLT) e quando o intervalo é menor que 1h em jornada acima de 6h (art. 71; 30 min só com convenção ou acordo coletivo). Em setor marcado como “não fecha no almoço”, o app intercala o almoço de quem não informou horário (um às 11h, outro às 12h…) e mostra os dias em que o setor ficaria vazio no almoço.'],
     ['DSR seguidos não são erro', 'O app conta a semana de segunda a domingo. Quando o domingo de folga fecha uma semana e a folga do rodízio é a segunda-feira seguinte, aparecem dois DSR lado a lado — um de cada semana. A lei fixa o mínimo de repousos por semana; não proíbe repousos vizinhos nem exige que os dois dias da EC 141 sejam seguidos. A aba Escala mostra a leitura semana a semana de cada funcionário.'],
     ['12x36 e a EC 141', 'A 12x36 dá média de 42h semanais: cabe na 1ª etapa, mas passa das 40h da 2ª. A emenda não cita a 12x36. Há quem entenda que o art. 59-A da CLT (acordo individual, convenção ou acordo coletivo) continua valendo e quem sustente que, a partir das 40h, ela depende de convenção ou acordo coletivo pelo novo § 2º do art. 7º. O app só alerta; a recomendação prudente é formalizar por CCT/ACT.'],
     ['Turno é rótulo, não jornada', 'M, T, N e D (dia todo) marcam em que turno a pessoa trabalha. A quantidade de horas do dia vem da ESCALA, não do turno: 8h na 5x2 e na 5x2 com rodízio, 7h20 na 6x1 e 12h na 12x36. Escolher "dia todo" não muda o total de horas do mês.'],
@@ -2527,7 +2716,7 @@ function desenharAjuda() {
   var passos = [
     ['Cadastre a equipe', 'Na aba <b>Equipe</b>, clique em <b>+ Adicionar funcionário</b>, em <b>Colar lista…</b> (uma pessoa por linha: <code>Nome; Cargo; Turno; Sexo; Setor</code>) ou em <b>Carregar exemplo</b> para ver o app funcionando. Nome e cargo bastam; o resto tem padrão.'],
     ['Confira cada coluna', '<b>Setor</b>: preencha quando pessoas do mesmo setor não puderem folgar no mesmo dia (ex.: dois caixas). <b>Sexo</b>: define o mínimo de domingos de folga. <b>Turno</b>: só o rótulo do dia trabalhado (M, T, N, D). <b>Escala</b>: “auto” sugere pelo cargo; troque se precisar. <b>Folga semanal</b>: só na 6x1 — dia fixo ou variável.'],
-    ['Configure os setores', 'Logo abaixo da lista, em <b>Setores e atividades</b>, escolha a <b>atividade</b> de cada setor (leite, gado, café, lavoura, comércio, escritório, portaria…). Ela define em que dias o setor funciona e a escala de quem está em “auto”: todos os dias → 5x2 com rodízio; segunda a sábado → 5x2 com domingo fixo; segunda a sexta → 5x2 fixa; plantão → 12x36. Informe o <b>mínimo de pessoas trabalhando por dia</b> para o app dizer se precisa contratar.'],
+    ['Configure os setores', 'Logo abaixo da lista, em <b>Setores e atividades</b>, escolha a <b>atividade</b> de cada setor (leite, gado, café, lavoura, comércio, escritório, portaria…) e marque os <b>dias em que o setor funciona</b> — dia desmarcado vira folga fixa de todos. Informe o <b>mínimo de pessoas trabalhando por dia</b> para o app dizer se precisa contratar, e marque <b>“não fecha no almoço”</b> para o app intercalar o almoço da equipe. Na lista de funcionários, preencha entrada, saída e almoço de quem tiver horário próprio.'],
     ['Escolha o mês e o ano', 'No topo da aba Equipe. Logo abaixo aparece o <b>regime da competência</b>: antes da EC 141, 1ª etapa (2 dias de repouso remunerado, 42h) ou 2ª etapa (40h). Se a vigência começar no meio do mês, o app mostra os dois períodos e troca as regras no dia certo.'],
     ['Confira os feriados', 'Na aba <b>Feriados</b> os nacionais já vêm calculados. Carnaval e Corpus Christi vêm desmarcados (ponto facultativo). <b>Acrescente os feriados municipais e estaduais</b> — o app não tem como saber os da sua cidade.'],
     ['Revise os parâmetros', 'Na aba <b>Parâmetros</b>: data de publicação da EC 141 (16/10/2026), se a convenção coletiva prevê regime compensatório (§ 2º), quantas pessoas do mesmo setor podem folgar juntas, conversão automática da 6x1, domingos de folga, feriados e tetos de horas. Cada campo explica a consequência.'],
@@ -2719,7 +2908,7 @@ function exportarXlsx() {
 
   /* Aba 1 — escala dia a dia */
   var c1 = [{ t: 'Matrícula', w: 11 }, { t: 'Funcionário', w: 30 }, { t: 'Cargo', w: 26 }, { t: 'Setor', w: 18 },
-            { t: 'Sexo', w: 12 }, { t: 'Turno', w: 11 }, { t: 'Escala', w: 22 },
+            { t: 'Sexo', w: 12 }, { t: 'Turno', w: 11 }, { t: 'Horário', w: 30 }, { t: 'Escala', w: 22 },
             { t: 'Folga semanal', w: 15 }];
   for (var d = 1; d <= a.dias; d++) {
     var w = diaSemana(a.ano, a.mes, d);
@@ -2732,7 +2921,7 @@ function exportarXlsx() {
                   { t: 'Feriados a pagar em dobro', w: 24 }, { t: 'Status CLT / Compliance', w: 70 }]);
 
   var l1 = a.linhas.map(function (l) {
-    var lin = [l.matricula, l.nome, l.cargo || '', l.setor || '', SEXOS[l.sexo], TURNOS[l.turno], rotuloEscalaLinha(l),
+    var lin = [l.matricula, l.nome, l.cargo || '', l.setor || '', SEXOS[l.sexo], TURNOS[l.turno], l.escala === '12x36' ? 'plantão 12h' : textoHorario(l.horario), rotuloEscalaLinha(l),
                rotuloFolgaLinha(l)];
     l.codigos.forEach(function (c) {
       var s = 2;
@@ -3052,6 +3241,28 @@ var EXEMPLO = [
   ['Paulo Henrique',   'Op. de Caixa',           'M', 'M', 'fixa',     'Caixa']
 ];
 
+/** Fazenda de exemplo: nome, cargo, turno, sexo, setor, entrada, saída. */
+var EXEMPLO_FAZENDA = {
+  equipe: [
+    ['João Batista', 'Ordenhador', 'M', 'M', 'Ordenha', '04:30', '13:30'],
+    ['Maria Aparecida', 'Ordenhadora', 'M', 'F', 'Ordenha', '04:30', '13:30'],
+    ['Sebastião Ramos', 'Ordenhador', 'T', 'M', 'Ordenha', '09:30', '18:30'],
+    ['José Carlos', 'Tratorista', 'D', 'M', 'Lavoura', '07:00', '16:00'],
+    ['Antônio Pereira', 'Operador de máquinas', 'D', 'M', 'Lavoura', '07:00', '16:00'],
+    ['Cida Souza', 'Caseira', 'D', 'F', 'Sede', '', ''],
+    ['Lucas Moreira', 'Vaqueiro', 'M', 'M', 'Gado', '06:00', '15:00'],
+    ['Pedro Henrique', 'Vaqueiro', 'M', 'M', 'Gado', '06:00', '15:00'],
+    ['Beatriz Lima', 'Auxiliar administrativa', 'D', 'F', 'Escritório', '08:00', '17:00']
+  ],
+  setores: {
+    'ordenha': { modelo: 'leite', abertos: [1, 2, 3, 4, 5, 6, 0], min: 2, intercalarAlmoco: true },
+    'lavoura': { modelo: 'graos', abertos: [1, 2, 3, 4, 5, 6], min: 1 },
+    'sede': { modelo: 'caseiro', abertos: [1, 2, 3, 4, 5, 6, 0], min: 1 },
+    'gado': { modelo: 'gado', abertos: [1, 2, 3, 4, 5, 6, 0], min: 1, intercalarAlmoco: true },
+    'escritório': { modelo: 'escritorio', abertos: [1, 2, 3, 4, 5], min: 1 }
+  }
+};
+
 function iniciar() {
   // seletor de mês/ano
   el('#mes').innerHTML = MESES.map(function (m, i) {
@@ -3090,6 +3301,20 @@ function iniciar() {
     EXEMPLO.forEach(function (x) { addFuncionario(x[0], x[1], x[2], x[3], x[4], x[5]); });
     desenharEquipe(); salvar();
     aviso('Exemplo carregado com ' + EXEMPLO.length + ' funcionários.', 'ok');
+  });
+  el('#btExemploFazenda').addEventListener('click', function () {
+    var base = proximaMatricula();
+    EXEMPLO_FAZENDA.equipe.forEach(function (x) {
+      addFuncionario(x[0], x[1], x[2], x[3], 'fixa', x[4]);
+      var f = ST.equipe[ST.equipe.length - 1];
+      if (x[5]) f.hIni = x[5];
+      if (x[6]) f.hFim = x[6];
+    });
+    Object.keys(EXEMPLO_FAZENDA.setores).forEach(function (k) {
+      if (!ST.setores[k]) ST.setores[k] = JSON.parse(JSON.stringify(EXEMPLO_FAZENDA.setores[k]));
+    });
+    desenharEquipe(); salvar();
+    aviso('Exemplo de fazenda carregado: ' + EXEMPLO_FAZENDA.equipe.length + ' funcionários em 5 setores. Clique em Gerar escala.', 'ok');
   });
   el('#btLimparEquipe').addEventListener('click', function () {
     if (!ST.equipe.length) return;
@@ -3130,6 +3355,9 @@ function iniciar() {
       var sx = (p[3] || '').toUpperCase().charAt(0);
       if (sx !== 'F' && sx !== 'M') sx = 'M';
       addFuncionario(p[0], p[1] || '', turno, sx, 'fixa', p[4] || '');
+      var novo = ST.equipe[ST.equipe.length - 1];
+      if (/^\d{1,2}:\d{2}$/.test(p[5] || '')) novo.hIni = ('0' + p[5]).slice(-5);
+      if (/^\d{1,2}:\d{2}$/.test(p[6] || '')) novo.hFim = ('0' + p[6]).slice(-5);
       n++;
     });
     el('#txColar').value = '';
@@ -3194,8 +3422,19 @@ function iniciar() {
       if (!t.value) delete ST.setores[k];
       else {
         var m = modeloSetor(t.value), c = ST.setores[k] || {};
-        ST.setores[k] = { modelo: t.value, dias: m.dias, min: c.min != null ? c.min : 1 };
+        ST.setores[k] = { modelo: t.value, abertos: abertosDe(m.dias), min: c.min != null ? c.min : 1 };
       }
+    } else if (t.dataset.dia && ST.setores[k]) {
+      var w = +t.dataset.dia, ab = diasDoSetor(ST.setores[k]).slice(), pos = ab.indexOf(w);
+      if (t.checked && pos === -1) ab.push(w);
+      if (!t.checked && pos !== -1) {
+        if (ab.length === 1) { aviso('O setor precisa funcionar em pelo menos um dia.', 'err'); desenharSetores(); return; }
+        ab.splice(pos, 1);
+      }
+      ST.setores[k].abertos = ab;
+      delete ST.setores[k].dias;
+    } else if (ST.setores[k] && t.dataset.campo === 'intercalarAlmoco') {
+      ST.setores[k].intercalarAlmoco = t.checked;
     } else if (ST.setores[k]) {
       ST.setores[k][t.dataset.campo] = t.dataset.campo === 'min' ? Math.max(0, parseInt(t.value, 10) || 0) : t.value;
     }
@@ -3304,7 +3543,7 @@ function iniciar() {
   if (!armazenamentoOk()) el('#avisoArmazenamento').hidden = false;
 
   if (!ST.equipe.length) {
-    el('#tbEquipe tbody').innerHTML = '<tr><td colspan="9" class="vazio">Nenhum funcionário cadastrado. Clique em <b>Adicionar funcionário</b> ou em <b>Carregar exemplo</b>.</td></tr>';
+    el('#tbEquipe tbody').innerHTML = '<tr><td colspan="10" class="vazio">Nenhum funcionário cadastrado. Clique em <b>Adicionar funcionário</b> ou em <b>Carregar exemplo</b>.</td></tr>';
   }
 }
 
