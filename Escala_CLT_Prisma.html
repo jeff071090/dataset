@@ -247,7 +247,7 @@ body.modal-aberto{overflow:hidden}
     <h1>Escala de Trabalho com Compliance CLT</h1>
     <p>Digital para você ter mais tempo.</p>
   </div>
-  <div class="cab-versao naoimprime">v1.5 &middot; EC 141/2026 &middot; 100% offline</div>
+  <div class="cab-versao naoimprime">v1.6 &middot; EC 141/2026 &middot; 100% offline</div>
 </header>
 
 <div id="avisoArmazenamento" class="naoimprime" hidden>
@@ -308,13 +308,16 @@ body.modal-aberto{overflow:hidden}
     </div>
     <div class="linha" style="margin-top:14px">
       <button class="bt linha2" id="btAddFunc">+ Adicionar funcionário</button>
+      <button class="bt linha2" id="btImportarArq">Importar planilha&hellip;</button>
+      <button class="bt linha2" id="btModelo">Baixar planilha modelo</button>
+      <input type="file" id="arqEquipe" accept=".xlsx,.csv,.txt,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/csv" hidden>
       <button class="bt linha2" id="btColar">Colar lista&hellip;</button>
       <button class="bt linha2" id="btExemplo">Carregar exemplo</button>
       <button class="bt linha2" id="btExemploFazenda">Exemplo de fazenda</button>
       <button class="mini" id="btLimparEquipe" style="margin-left:auto">Limpar equipe</button>
     </div>
     <div id="areaColar" hidden style="margin-top:14px">
-      <p class="sub" style="margin:0 0 6px">Uma pessoa por linha, separando com ponto e vírgula ou tabulação: <code>Nome; Cargo; Turno; Sexo; Setor; Entrada; Saída</code>. Do turno em diante é tudo opcional (padrão: M, masculino, sem setor e horário do turno).</p>
+      <p class="sub" style="margin:0 0 6px">Uma pessoa por linha, separando com ponto e vírgula ou tabulação: <code>Nome; Cargo; Turno; Sexo; Setor; Entrada; Saída; Início do almoço; Intervalo; Escala</code>. Do turno em diante é tudo opcional. Dá para copiar as linhas direto da planilha modelo (com ou sem o cabeçalho) e colar aqui.</p>
       <textarea id="txColar" placeholder="Ana Paula Silva; Analista Contábil; M; F; Administrativo&#10;Roberto Carlos; Atendente de Vendas; T; M; Loja&#10;Fernanda Rocha; Vendedora; D; F; Loja"></textarea>
       <div class="linha" style="margin-top:8px">
         <button class="bt" id="btImportar">Importar</button>
@@ -443,7 +446,7 @@ body.modal-aberto{overflow:hidden}
 </main>
 
 <div class="rodape">
-  <b>Prisma Contabilidade</b> &middot; Escala CLT v1.5 &middot; roda 100% no seu computador, sem internet e sem enviar dado nenhum para fora.
+  <b>Prisma Contabilidade</b> &middot; Escala CLT v1.6 &middot; roda 100% no seu computador, sem internet e sem enviar dado nenhum para fora.
 </div>
 
 <div id="modalFunc" class="modal-fundo" hidden>
@@ -463,7 +466,7 @@ body.modal-aberto{overflow:hidden}
    é portado 1:1 do gerador_escala_clt.gs da skill escala-clt-sheets.
    ========================================================================== */
 
-var VERSAO = '1.5';
+var VERSAO = '1.6';
 
 /* ----------------------------------------------------- configuração padrão */
 var PADRAO = {
@@ -2714,7 +2717,7 @@ function desenharAjuda() {
     ['Legenda com granularidade de folha', 'Cada código diz sozinho qual é a consequência no pagamento, para a folha não ter que adivinhar.']
   ];
   var passos = [
-    ['Cadastre a equipe', 'Na aba <b>Equipe</b>, clique em <b>+ Adicionar funcionário</b>, em <b>Colar lista…</b> (uma pessoa por linha: <code>Nome; Cargo; Turno; Sexo; Setor</code>) ou em <b>Carregar exemplo</b> para ver o app funcionando. Nome e cargo bastam; o resto tem padrão.'],
+    ['Cadastre a equipe', 'Na aba <b>Equipe</b>, o jeito mais rápido é a planilha: clique em <b>Baixar planilha modelo</b>, preencha a aba <b>Equipe</b> (uma pessoa por linha: nome, cargo, turno, sexo, setor, entrada, saída, início do almoço, intervalo e escala) e, se quiser, a aba <b>Setores</b> (atividade, dias que funciona, mínimo por dia e almoço). Salve e clique em <b>Importar planilha</b> — aceita .xlsx e .csv. Também dá para copiar as linhas do Excel e colar em <b>Colar lista…</b>, adicionar uma a uma ou usar <b>Carregar exemplo</b> / <b>Exemplo de fazenda</b>.'],
     ['Confira cada coluna', '<b>Setor</b>: preencha quando pessoas do mesmo setor não puderem folgar no mesmo dia (ex.: dois caixas). <b>Sexo</b>: define o mínimo de domingos de folga. <b>Turno</b>: só o rótulo do dia trabalhado (M, T, N, D). <b>Escala</b>: “auto” sugere pelo cargo; troque se precisar. <b>Folga semanal</b>: só na 6x1 — dia fixo ou variável.'],
     ['Configure os setores', 'Logo abaixo da lista, em <b>Setores e atividades</b>, escolha a <b>atividade</b> de cada setor (leite, gado, café, lavoura, comércio, escritório, portaria…) e marque os <b>dias em que o setor funciona</b> — dia desmarcado vira folga fixa de todos. Informe o <b>mínimo de pessoas trabalhando por dia</b> para o app dizer se precisa contratar, e marque <b>“não fecha no almoço”</b> para o app intercalar o almoço da equipe. Na lista de funcionários, preencha entrada, saída e almoço de quem tiver horário próprio.'],
     ['Escolha o mês e o ano', 'No topo da aba Equipe. Logo abaixo aparece o <b>regime da competência</b>: antes da EC 141, 1ª etapa (2 dias de repouso remunerado, 42h) ou 2ª etapa (40h). Se a vigência começar no meio do mês, o app mostra os dois períodos e troca as regras no dia certo.'],
@@ -2902,6 +2905,76 @@ function planilhaXml(cols, linhas, congelarCols) {
     + '<cols>' + largs + '</cols><sheetData>' + xml + '</sheetData></worksheet>';
 }
 
+/** Monta o arquivo .xlsx (ZIP + OOXML) a partir das abas já em XML. */
+function pacoteXlsx(abas) {
+  var ct = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+    + '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">'
+    + '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>'
+    + '<Default Extension="xml" ContentType="application/xml"/>'
+    + '<Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>'
+    + abas.map(function (x, i) { return '<Override PartName="/xl/worksheets/sheet' + (i + 1) + '.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>'; }).join('')
+    + '<Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/></Types>';
+
+  var rels = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+    + '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+    + '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>';
+
+  var wb = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+    + '<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets>'
+    + abas.map(function (x, i) { return '<sheet name="' + esc(x.nome) + '" sheetId="' + (i + 1) + '" r:id="rId' + (i + 1) + '"/>'; }).join('')
+    + '</sheets></workbook>';
+
+  var wbRels = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+    + '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+    + abas.map(function (x, i) { return '<Relationship Id="rId' + (i + 1) + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet' + (i + 1) + '.xml"/>'; }).join('')
+    + '<Relationship Id="rId' + (abas.length + 1) + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>';
+
+  var styles = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+    + '<styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">'
+    + '<numFmts count="1"><numFmt numFmtId="164" formatCode="#,##0.00"/></numFmts>'
+    + '<fonts count="4">'
+    + '<font><sz val="11"/><name val="Calibri"/></font>'
+    + '<font><b/><sz val="11"/><color rgb="FFFFFFFF"/><name val="Calibri"/></font>'
+    + '<font><b/><sz val="11"/><color rgb="FF9B2C2C"/><name val="Calibri"/></font>'
+    + '<font><b/><sz val="11"/><color rgb="FF8A5510"/><name val="Calibri"/></font>'
+    + '</fonts>'
+    + '<fills count="7">'
+    + '<fill><patternFill patternType="none"/></fill>'
+    + '<fill><patternFill patternType="gray125"/></fill>'
+    + '<fill><patternFill patternType="solid"><fgColor rgb="FF0C447C"/><bgColor indexed="64"/></patternFill></fill>'
+    + '<fill><patternFill patternType="solid"><fgColor rgb="FFE6F6EC"/><bgColor indexed="64"/></patternFill></fill>'
+    + '<fill><patternFill patternType="solid"><fgColor rgb="FFFDEAEA"/><bgColor indexed="64"/></patternFill></fill>'
+    + '<fill><patternFill patternType="solid"><fgColor rgb="FFFDF0DA"/><bgColor indexed="64"/></patternFill></fill>'
+    + '<fill><patternFill patternType="solid"><fgColor rgb="FFE3EBF5"/><bgColor indexed="64"/></patternFill></fill>'
+    + '</fills>'
+    + '<borders count="2"><border><left/><right/><top/><bottom/><diagonal/></border>'
+    + '<border><left style="thin"><color rgb="FFDCE6F2"/></left><right style="thin"><color rgb="FFDCE6F2"/></right>'
+    + '<top style="thin"><color rgb="FFDCE6F2"/></top><bottom style="thin"><color rgb="FFDCE6F2"/></bottom><diagonal/></border></borders>'
+    + '<cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>'
+    + '<cellXfs count="9">'
+    + '<xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/>'
+    + '<xf numFmtId="0" fontId="1" fillId="2" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment vertical="center" horizontal="center" wrapText="1"/></xf>'
+    + '<xf numFmtId="0" fontId="0" fillId="0" borderId="1" xfId="0" applyBorder="1" applyAlignment="1"><alignment horizontal="center"/></xf>'
+    + '<xf numFmtId="0" fontId="0" fillId="3" borderId="1" xfId="0" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center" wrapText="1"/></xf>'
+    + '<xf numFmtId="0" fontId="2" fillId="4" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center" wrapText="1"/></xf>'
+    + '<xf numFmtId="0" fontId="3" fillId="5" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center" wrapText="1"/></xf>'
+    + '<xf numFmtId="0" fontId="0" fillId="6" borderId="1" xfId="0" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center"/></xf>'
+    + '<xf numFmtId="164" fontId="0" fillId="0" borderId="1" xfId="0" applyNumberFormat="1" applyBorder="1"/>'
+    + '<xf numFmtId="164" fontId="2" fillId="4" borderId="1" xfId="0" applyNumberFormat="1" applyFont="1" applyFill="1" applyBorder="1"/>'
+    + '</cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles><dxfs count="0"/></styleSheet>';
+
+  var pacote = [
+    { nome: '[Content_Types].xml', dado: bytes(ct) },
+    { nome: '_rels/.rels', dado: bytes(rels) },
+    { nome: 'xl/workbook.xml', dado: bytes(wb) },
+    { nome: 'xl/_rels/workbook.xml.rels', dado: bytes(wbRels) },
+    { nome: 'xl/styles.xml', dado: bytes(styles) }
+  ];
+  abas.forEach(function (x, i) { pacote.push({ nome: 'xl/worksheets/sheet' + (i + 1) + '.xml', dado: bytes(x.xml) }); });
+
+  return new Blob([zipar(pacote)], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+}
+
 function exportarXlsx() {
   var a = ST.atual;
   if (!a) { aviso('Gere a escala antes de exportar.', 'err'); return; }
@@ -3002,7 +3075,7 @@ function exportarXlsx() {
       + CONFIG.tetoContratualPorEscala['6x1'] + 'h; 12x36: ' + CONFIG.tetoContratualPorEscala['12x36'] + 'h'],
     ['Gerado em', new Date().toLocaleString('pt-BR')],
     ['Gerado por', 'Escala CLT v' + VERSAO + ' — Prisma Contabilidade'],
-    ['Ressalva 1', 'A interjornada de 11h (art. 66 da CLT) NÃO é validada integralmente: a entrada de dados não traz horário de entrada e saída. O app só aponta plantões 12x36 em dias adjacentes.'],
+    ['Ressalva 1', 'A interjornada de 11h (art. 66 da CLT) é conferida pelo horário cadastrado de cada funcionário, considerado igual em todos os dias trabalhados. Trocas de horário pontuais não entram na conta.'],
     ['Ressalva 2', 'Os tetos de horas são parâmetros de referência, não valores fixados pela CLT. Confira contra a CCT/ACT da categoria.'],
     ['Ressalva 3', 'A regra de folga em domingo da Lei 10.101/2000 é do comércio e se aplica por analogia às demais categorias. Confirme na convenção coletiva.'],
     ['Ressalva 4', 'Esta planilha não substitui advogado trabalhista, contador ou o setor de RH responsável antes de uso em folha de pagamento.']
@@ -3014,72 +3087,7 @@ function exportarXlsx() {
     { nome: 'Parametros', xml: planilhaXml(c3, l3, 1) }
   ];
 
-  var ct = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
-    + '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">'
-    + '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>'
-    + '<Default Extension="xml" ContentType="application/xml"/>'
-    + '<Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>'
-    + abas.map(function (x, i) { return '<Override PartName="/xl/worksheets/sheet' + (i + 1) + '.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>'; }).join('')
-    + '<Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/></Types>';
-
-  var rels = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
-    + '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
-    + '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>';
-
-  var wb = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
-    + '<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets>'
-    + abas.map(function (x, i) { return '<sheet name="' + esc(x.nome) + '" sheetId="' + (i + 1) + '" r:id="rId' + (i + 1) + '"/>'; }).join('')
-    + '</sheets></workbook>';
-
-  var wbRels = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
-    + '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
-    + abas.map(function (x, i) { return '<Relationship Id="rId' + (i + 1) + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet' + (i + 1) + '.xml"/>'; }).join('')
-    + '<Relationship Id="rId' + (abas.length + 1) + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>';
-
-  var styles = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
-    + '<styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">'
-    + '<numFmts count="1"><numFmt numFmtId="164" formatCode="#,##0.00"/></numFmts>'
-    + '<fonts count="4">'
-    + '<font><sz val="11"/><name val="Calibri"/></font>'
-    + '<font><b/><sz val="11"/><color rgb="FFFFFFFF"/><name val="Calibri"/></font>'
-    + '<font><b/><sz val="11"/><color rgb="FF9B2C2C"/><name val="Calibri"/></font>'
-    + '<font><b/><sz val="11"/><color rgb="FF8A5510"/><name val="Calibri"/></font>'
-    + '</fonts>'
-    + '<fills count="7">'
-    + '<fill><patternFill patternType="none"/></fill>'
-    + '<fill><patternFill patternType="gray125"/></fill>'
-    + '<fill><patternFill patternType="solid"><fgColor rgb="FF0C447C"/><bgColor indexed="64"/></patternFill></fill>'
-    + '<fill><patternFill patternType="solid"><fgColor rgb="FFE6F6EC"/><bgColor indexed="64"/></patternFill></fill>'
-    + '<fill><patternFill patternType="solid"><fgColor rgb="FFFDEAEA"/><bgColor indexed="64"/></patternFill></fill>'
-    + '<fill><patternFill patternType="solid"><fgColor rgb="FFFDF0DA"/><bgColor indexed="64"/></patternFill></fill>'
-    + '<fill><patternFill patternType="solid"><fgColor rgb="FFE3EBF5"/><bgColor indexed="64"/></patternFill></fill>'
-    + '</fills>'
-    + '<borders count="2"><border><left/><right/><top/><bottom/><diagonal/></border>'
-    + '<border><left style="thin"><color rgb="FFDCE6F2"/></left><right style="thin"><color rgb="FFDCE6F2"/></right>'
-    + '<top style="thin"><color rgb="FFDCE6F2"/></top><bottom style="thin"><color rgb="FFDCE6F2"/></bottom><diagonal/></border></borders>'
-    + '<cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>'
-    + '<cellXfs count="9">'
-    + '<xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/>'
-    + '<xf numFmtId="0" fontId="1" fillId="2" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment vertical="center" horizontal="center" wrapText="1"/></xf>'
-    + '<xf numFmtId="0" fontId="0" fillId="0" borderId="1" xfId="0" applyBorder="1" applyAlignment="1"><alignment horizontal="center"/></xf>'
-    + '<xf numFmtId="0" fontId="0" fillId="3" borderId="1" xfId="0" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center" wrapText="1"/></xf>'
-    + '<xf numFmtId="0" fontId="2" fillId="4" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center" wrapText="1"/></xf>'
-    + '<xf numFmtId="0" fontId="3" fillId="5" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center" wrapText="1"/></xf>'
-    + '<xf numFmtId="0" fontId="0" fillId="6" borderId="1" xfId="0" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center"/></xf>'
-    + '<xf numFmtId="164" fontId="0" fillId="0" borderId="1" xfId="0" applyNumberFormat="1" applyBorder="1"/>'
-    + '<xf numFmtId="164" fontId="2" fillId="4" borderId="1" xfId="0" applyNumberFormat="1" applyFont="1" applyFill="1" applyBorder="1"/>'
-    + '</cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles><dxfs count="0"/></styleSheet>';
-
-  var pacote = [
-    { nome: '[Content_Types].xml', dado: bytes(ct) },
-    { nome: '_rels/.rels', dado: bytes(rels) },
-    { nome: 'xl/workbook.xml', dado: bytes(wb) },
-    { nome: 'xl/_rels/workbook.xml.rels', dado: bytes(wbRels) },
-    { nome: 'xl/styles.xml', dado: bytes(styles) }
-  ];
-  abas.forEach(function (x, i) { pacote.push({ nome: 'xl/worksheets/sheet' + (i + 1) + '.xml', dado: bytes(x.xml) }); });
-
-  var blob = new Blob([zipar(pacote)], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  var blob = pacoteXlsx(abas);
   var nome = 'Escala_CLT_' + a.ano + '-' + (a.mes < 10 ? '0' + a.mes : a.mes) + '_Prisma.xlsx';
   baixar(blob, nome);
   aviso('Planilha "' + nome + '" gerada com ' + a.linhas.length + ' funcionário(s).', 'ok');
@@ -3241,6 +3249,293 @@ var EXEMPLO = [
   ['Paulo Henrique',   'Op. de Caixa',           'M', 'M', 'fixa',     'Caixa']
 ];
 
+/* ========================================================================
+   IMPORTAÇÃO DA EQUIPE  (planilha .xlsx, .csv ou texto colado)
+   ======================================================================== */
+
+var COLUNAS_EQUIPE = ['Nome', 'Cargo', 'Turno', 'Sexo', 'Setor', 'Entrada', 'Saída', 'Início do almoço', 'Intervalo (min)', 'Escala'];
+var CAMPOS_EQUIPE = ['nome', 'cargo', 'turno', 'sexo', 'setor', 'hIni', 'hFim', 'hAlmoco', 'intervalo', 'escala'];
+
+function normTxt(x) {
+  return String(x == null ? '' : x).normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim();
+}
+/** Cabeçalho -> campo. Aceita variações ("Saida", "Hora de entrada", "Intervalo em minutos"…). */
+function campoDoCabecalho(h) {
+  var t = normTxt(h).replace(/[^a-z0-9]/g, '');
+  if (!t) return null;
+  if (/^nome|funcionario|colaborador/.test(t)) return 'nome';
+  if (/cargo|funcao/.test(t)) return 'cargo';
+  if (/setor|area|departamento/.test(t)) return 'setor';
+  if (/turno/.test(t)) return 'turno';
+  if (/sexo|genero/.test(t)) return 'sexo';
+  if (/almoco/.test(t)) return 'hAlmoco';
+  if (/intervalo/.test(t)) return 'intervalo';
+  if (/entrada|inicio/.test(t)) return 'hIni';
+  if (/saida|fim|termino/.test(t)) return 'hFim';
+  if (/escala|jornada/.test(t)) return 'escala';
+  return null;
+}
+/** "7:00", "07h30", "7h", 0.2916 (hora do Excel) -> "07:00". Vazio se não reconhecer. */
+function normHora(v) {
+  if (v == null || v === '') return '';
+  if (typeof v === 'number' || /^0?\.\d+$/.test(String(v).trim())) {
+    var fr = +v; if (fr >= 1) fr = fr % 1;
+    var m = Math.round(fr * 1440); return hhmm(m);
+  }
+  var t = String(v).trim().toLowerCase().replace(/\s/g, '');
+  var r = t.match(/^(\d{1,2})[:h](\d{2})?/) || t.match(/^(\d{1,2})$/);
+  if (!r) return '';
+  var h = +r[1], mi = +(r[2] || 0);
+  if (h > 23 || mi > 59) return '';
+  return (h < 10 ? '0' : '') + h + ':' + (mi < 10 ? '0' : '') + mi;
+}
+function normTurno(v) {
+  var t = normTxt(v);
+  if (!t) return 'M';
+  if (/^d|integral|dia todo|comercial/.test(t)) return 'D';
+  if (/^n|noite|noturno/.test(t)) return 'N';
+  if (/^t|tarde/.test(t)) return 'T';
+  return 'M';
+}
+function normSexo(v) { var t = normTxt(v); return /^f|mulher/.test(t) ? 'F' : 'M'; }
+function normEscala(v) {
+  var t = normTxt(v).replace(/\s/g, '');
+  if (!t || /auto/.test(t)) return '';
+  if (/12x36|12por36/.test(t)) return '12x36';
+  if (/6x1/.test(t)) return '6x1';
+  if (/rodizio|5x2r/.test(t)) return '5x2r';
+  if (/5x2/.test(t)) return '5x2';
+  return '';
+}
+
+/**
+ * Importa linhas (arrays de células). Se a primeira linha tem "Nome", usa
+ * os cabeçalhos; senão, a ordem padrão de COLUNAS_EQUIPE. Devolve quantos entraram.
+ */
+function importarEquipe(linhas, substituir) {
+  linhas = linhas.filter(function (l) { return l && l.some(function (c) { return String(c == null ? '' : c).trim(); }); });
+  if (!linhas.length) return 0;
+  var mapa = CAMPOS_EQUIPE.slice();
+  var cab = linhas[0].map(campoDoCabecalho);
+  if (cab.indexOf('nome') !== -1) { mapa = cab; linhas = linhas.slice(1); }
+  if (substituir) ST.equipe = [];
+  var n = 0;
+  linhas.forEach(function (l) {
+    var r = {};
+    l.forEach(function (c, i) { if (mapa[i]) r[mapa[i]] = c; });
+    var nome = String(r.nome == null ? '' : r.nome).trim();
+    if (!nome || /^exemplo:?$/i.test(nome)) return;
+    addFuncionario(nome, String(r.cargo || '').trim(), normTurno(r.turno), normSexo(r.sexo), 'fixa', String(r.setor || '').trim());
+    var f = ST.equipe[ST.equipe.length - 1];
+    var hi = normHora(r.hIni), hf = normHora(r.hFim), ha = normHora(r.hAlmoco);
+    if (hi) f.hIni = hi;
+    if (hf) f.hFim = hf;
+    if (ha) f.hAlmoco = ha;
+    if (r.intervalo !== '' && r.intervalo != null && !isNaN(+r.intervalo)) {
+      var iv = +r.intervalo;
+      f.intervalo = String(iv > 0 && iv < 1 ? Math.round(iv * 1440) : iv);   // "01:00" do Excel vira fração do dia
+    }
+    f.escala = normEscala(r.escala);
+    n++;
+  });
+  return n;
+}
+
+/** Aba Setores do modelo: Setor | Atividade | Dias que funciona | Mínimo por dia | Não fecha no almoço. */
+function normDias(v) {
+  var t = normTxt(v);
+  if (!t || /todos|seg.*dom|7 dias/.test(t)) return [1, 2, 3, 4, 5, 6, 0];
+  var cod = { seg: 1, ter: 2, qua: 3, qui: 4, sex: 5, sab: 6, dom: 0 };
+  var faixa = t.match(/(seg|ter|qua|qui|sex|sab|dom)\w*\s*(?:a|ate|-)\s*(seg|ter|qua|qui|sex|sab|dom)/);
+  if (faixa) {
+    var ordem = [1, 2, 3, 4, 5, 6, 0], i = ordem.indexOf(cod[faixa[1]]), j = ordem.indexOf(cod[faixa[2]]);
+    if (i <= j) return ordem.slice(i, j + 1);
+  }
+  var out = [];
+  (t.match(/seg|ter|qua|qui|sex|sab|dom/g) || []).forEach(function (x) { if (out.indexOf(cod[x]) === -1) out.push(cod[x]); });
+  return out.length ? out : [1, 2, 3, 4, 5, 6, 0];
+}
+function importarSetores(linhas) {
+  linhas = linhas.filter(function (l) { return l && l.some(function (c) { return String(c == null ? '' : c).trim(); }); });
+  if (linhas.length && /setor/.test(normTxt(linhas[0][0]))) linhas = linhas.slice(1);
+  var n = 0;
+  linhas.forEach(function (l) {
+    var nome = String(l[0] == null ? '' : l[0]).trim(), k = chaveSetor(nome);
+    if (!k) return;
+    var at = normTxt(l[1]), m = null;
+    MODELOS_SETOR.forEach(function (x) {
+      if (!m && at && (normTxt(x.nome).indexOf(at) !== -1 || at.indexOf(normTxt(x.nome).split(' ')[0]) !== -1 || at === x.k)) m = x;
+    });
+    m = m || modeloSetor('outro');
+    var alm = normTxt(l[4]);
+    ST.setores[k] = { modelo: m.k, abertos: l[2] ? normDias(l[2]) : abertosDe(m.dias),
+                      min: Math.max(0, parseInt(l[3], 10) || 0), intercalarAlmoco: /^s|sim|x|nao fecha/.test(alm) };
+    n++;
+  });
+  return n;
+}
+
+/* ---- leitura de .csv ---- */
+function lerCsv(txt) {
+  txt = txt.replace(/^﻿/, '');
+  var prim = txt.split(/\r?\n/)[0] || '';
+  var sep = [';', '\t', ','].map(function (c) { return [c, prim.split(c).length]; }).sort(function (a, b) { return b[1] - a[1]; })[0][0];
+  var linhas = [], lin = [], cel = '', aspas = false;
+  for (var i = 0; i < txt.length; i++) {
+    var ch = txt[i];
+    if (aspas) {
+      if (ch === '"' && txt[i + 1] === '"') { cel += '"'; i++; }
+      else if (ch === '"') aspas = false;
+      else cel += ch;
+    } else if (ch === '"') aspas = true;
+    else if (ch === sep) { lin.push(cel); cel = ''; }
+    else if (ch === '\n' || ch === '\r') {
+      if (ch === '\r' && txt[i + 1] === '\n') i++;
+      lin.push(cel); linhas.push(lin); lin = []; cel = '';
+    } else cel += ch;
+  }
+  if (cel !== '' || lin.length) { lin.push(cel); linhas.push(lin); }
+  return linhas;
+}
+
+/* ---- leitura de .xlsx (ZIP + XML, sem biblioteca) ---- */
+function lerZip(buf) {
+  var u8 = new Uint8Array(buf), dv = new DataView(buf), fim = -1;
+  for (var i = u8.length - 22; i >= Math.max(0, u8.length - 65557); i--) {
+    if (dv.getUint32(i, true) === 0x06054b50) { fim = i; break; }
+  }
+  if (fim < 0) throw new Error('arquivo não é um .xlsx válido');
+  var total = dv.getUint16(fim + 10, true), off = dv.getUint32(fim + 16, true), arqs = {};
+  var dec = new TextDecoder();
+  for (var n = 0; n < total; n++) {
+    if (dv.getUint32(off, true) !== 0x02014b50) break;
+    var metodo = dv.getUint16(off + 10, true), tamC = dv.getUint32(off + 20, true);
+    var lNome = dv.getUint16(off + 28, true), lExtra = dv.getUint16(off + 30, true), lCom = dv.getUint16(off + 32, true);
+    var local = dv.getUint32(off + 42, true);
+    var nome = dec.decode(u8.subarray(off + 46, off + 46 + lNome));
+    var ini = local + 30 + dv.getUint16(local + 26, true) + dv.getUint16(local + 28, true);
+    arqs[nome] = { metodo: metodo, dado: u8.subarray(ini, ini + tamC) };
+    off += 46 + lNome + lExtra + lCom;
+  }
+  return arqs;
+}
+function textoDoZip(arqs, nome) {
+  var a = arqs[nome];
+  if (!a) return Promise.resolve(null);
+  if (a.metodo === 0) return Promise.resolve(new TextDecoder().decode(a.dado));
+  if (typeof DecompressionStream === 'undefined') return Promise.reject(new Error('este navegador não abre .xlsx — salve a planilha como CSV'));
+  var st = new Blob([a.dado]).stream().pipeThrough(new DecompressionStream('deflate-raw'));
+  return new Response(st).text();
+}
+function colIndex(ref) {
+  var l = (ref.match(/^[A-Z]+/) || ['A'])[0], n = 0;
+  for (var i = 0; i < l.length; i++) n = n * 26 + (l.charCodeAt(i) - 64);
+  return n - 1;
+}
+function lerXlsx(buf) {
+  var arqs = lerZip(buf), xml = function (t) { return new DOMParser().parseFromString(t, 'application/xml'); };
+  return Promise.all([textoDoZip(arqs, 'xl/workbook.xml'), textoDoZip(arqs, 'xl/_rels/workbook.xml.rels'), textoDoZip(arqs, 'xl/sharedStrings.xml')])
+    .then(function (r) {
+      var wb = xml(r[0]), rels = xml(r[1]), comp = [];
+      if (r[2]) Array.prototype.forEach.call(xml(r[2]).getElementsByTagName('si'), function (si) {
+        comp.push(Array.prototype.map.call(si.getElementsByTagName('t'), function (t) { return t.textContent; }).join(''));
+      });
+      var alvo = {};
+      Array.prototype.forEach.call(rels.getElementsByTagName('Relationship'), function (x) { alvo[x.getAttribute('Id')] = x.getAttribute('Target'); });
+      var abas = Array.prototype.map.call(wb.getElementsByTagName('sheet'), function (sh) {
+        var id = sh.getAttribute('r:id') || sh.getAttributeNS('http://schemas.openxmlformats.org/officeDocument/2006/relationships', 'id');
+        var t = (alvo[id] || '').replace(/^\/?xl\//, '').replace(/^\//, '');
+        return { nome: sh.getAttribute('name'), arq: 'xl/' + t };
+      });
+      return Promise.all(abas.map(function (a) { return textoDoZip(arqs, a.arq); })).then(function (txts) {
+        var out = {};
+        abas.forEach(function (a, i) {
+          if (!txts[i]) return;
+          var linhas = [];
+          Array.prototype.forEach.call(xml(txts[i]).getElementsByTagName('row'), function (row) {
+            var lin = [];
+            Array.prototype.forEach.call(row.getElementsByTagName('c'), function (c) {
+              var tipo = c.getAttribute('t'), v = c.getElementsByTagName('v')[0], val = '';
+              if (tipo === 's') val = comp[+(v ? v.textContent : 0)] || '';
+              else if (tipo === 'inlineStr') val = Array.prototype.map.call(c.getElementsByTagName('t'), function (t) { return t.textContent; }).join('');
+              else if (v) val = (tipo === 'str' || tipo === 'b') ? v.textContent : (isNaN(+v.textContent) ? v.textContent : +v.textContent);
+              lin[colIndex(c.getAttribute('r') || colLetra(lin.length) + '1')] = val;
+            });
+            linhas.push(lin);
+          });
+          out[a.nome] = linhas;
+        });
+        return out;
+      });
+    });
+}
+
+function importarArquivo(f) {
+  var ehXlsx = /\.xlsx$/i.test(f.name);
+  var leitura = ehXlsx
+    ? f.arrayBuffer().then(lerXlsx)
+    : f.text().then(function (t) { return { 'Equipe': lerCsv(t) }; });
+  leitura.then(function (abas) {
+    var nomes = Object.keys(abas);
+    var semEx = nomes.filter(function (n) { return !/exemplo|instruc/.test(normTxt(n)); });
+    var abaEq = semEx.filter(function (n) { return /equipe|funcion|colabor/.test(normTxt(n)); })[0] || semEx[0];
+    var abaSet = semEx.filter(function (n) { return /setor/.test(normTxt(n)); })[0];
+    var substituir = ST.equipe.length ? confirm('Substituir os ' + ST.equipe.length + ' funcionário(s) que já estão na lista?\n\nOK = substituir · Cancelar = acrescentar') : false;
+    var n = importarEquipe(abas[abaEq] || [], substituir);
+    var ns = abaSet ? importarSetores(abas[abaSet]) : 0;
+    desenharEquipe(); salvar();
+    aviso(n ? n + ' funcionário(s) importado(s)' + (ns ? ' e ' + ns + ' setor(es) configurado(s)' : '') + ' de "' + f.name + '".'
+            : 'Nenhum funcionário encontrado em "' + f.name + '". Use a planilha modelo: a coluna Nome é obrigatória.', n ? 'ok' : 'err');
+  }).catch(function (e) {
+    aviso('Não consegui ler "' + f.name + '": ' + (e && e.message ? e.message : e) + '.', 'err');
+  });
+}
+
+/** Planilha modelo para preencher a equipe e os setores. */
+function baixarModelo() {
+  var cEq = COLUNAS_EQUIPE.map(function (t, i) { return { t: t, w: [28, 24, 10, 10, 16, 10, 10, 16, 14, 16][i] }; });
+  var lEq = [
+    ['João Batista', 'Ordenhador', 'M', 'M', 'Ordenha', '04:30', '13:30', '08:30', 60, 'auto'],
+    ['Maria Aparecida', 'Ordenhadora', 'M', 'F', 'Ordenha', '04:30', '13:30', '09:30', 60, 'auto'],
+    ['Ana Paula Silva', 'Analista Contábil', 'D', 'F', 'Escritório', '08:00', '17:00', '12:00', 60, '5x2'],
+    ['Marcos Souza', 'Porteiro', 'N', 'M', 'Portaria', '19:00', '07:00', '', 60, '12x36']
+  ];
+  var cSet = [{ t: 'Setor', w: 18 }, { t: 'Atividade', w: 30 }, { t: 'Dias que funciona', w: 34 }, { t: 'Mínimo trabalhando por dia', w: 16 }, { t: 'Não fecha no almoço (sim/não)', w: 18 }];
+  var lSet = [
+    ['Ordenha', 'Leite (ordenha)', 'todos', 2, 'sim'],
+    ['Lavoura', 'Grãos e lavoura', 'seg a sab', 1, 'não'],
+    ['Escritório', 'Escritório / administrativo', 'seg a sex', 1, 'não'],
+    ['Portaria', 'Portaria / vigilância (plantão)', 'todos', 1, 'não']
+  ];
+  var cIn = [{ t: 'Coluna', w: 26 }, { t: 'Como preencher', w: 110 }];
+  var lIn = [
+    ['Como usar', 'Preencha uma pessoa por linha na aba Equipe e, se quiser, os setores na aba Setores — as abas "Exemplo" mostram como fica e não são importadas. No app: Equipe → Importar planilha. Pode salvar como .xlsx ou como .csv (só a aba Equipe).'],
+    ['Nome', 'Obrigatório. Linhas sem nome são ignoradas.'],
+    ['Cargo', 'Livre. Sem escala definida, o app sugere a escala pelo cargo ou pela atividade do setor.'],
+    ['Turno', 'M (manhã), T (tarde), N (noite) ou D (dia todo). Em branco = M.'],
+    ['Sexo', 'M ou F. Define o mínimo de domingos de folga (mulher: 2 por mês, art. 386 da CLT).'],
+    ['Setor', 'Pessoas com o mesmo setor não folgam no mesmo dia. Escreva o nome igual para todos do setor.'],
+    ['Entrada / Saída', 'Horário no formato 07:00. Em branco = horário do turno (aba Parâmetros do app).'],
+    ['Início do almoço', 'Formato 12:00. Em branco = o app define (e intercala, se o setor não fecha no almoço).'],
+    ['Intervalo (min)', 'Duração do almoço em minutos, por exemplo 60. Em branco = o do turno.'],
+    ['Escala', 'auto, 5x2, 5x2 rodízio, 6x1 ou 12x36. Em branco ou "auto" = o app escolhe pelo setor ou pelo cargo.'],
+    ['Aba Setores — Atividade', 'Uma destas: ' + MODELOS_SETOR.map(function (m) { return m.nome; }).join('; ') + '.'],
+    ['Aba Setores — Dias', '"todos", "seg a sab", "seg a sex" ou a lista de dias, por exemplo "seg, ter, qui, sex, sab". Dia que não aparece vira folga fixa do setor.'],
+    ['Aba Setores — Mínimo', 'Quantas pessoas do setor precisam estar trabalhando em cada dia. O app avisa se precisa contratar.'],
+    ['Aba Setores — Almoço', '"sim" quando o setor não pode ficar vazio no almoço: o app intercala o horário de almoço da equipe.']
+  ];
+  var vazias = function (n, k) { var o = []; for (var i = 0; i < n; i++) { var l = []; for (var j = 0; j < k; j++) l.push(''); o.push(l); } return o; };
+  var blob = pacoteXlsx([
+    { nome: 'Equipe', xml: planilhaXml(cEq, vazias(30, cEq.length), 1) },
+    { nome: 'Setores', xml: planilhaXml(cSet, vazias(10, cSet.length), 1) },
+    { nome: 'Exemplo equipe', xml: planilhaXml(cEq, lEq, 1) },
+    { nome: 'Exemplo setores', xml: planilhaXml(cSet, lSet, 1) },
+    { nome: 'Instrucoes', xml: planilhaXml(cIn, lIn, 1) }
+  ]);
+  baixar(blob, 'Modelo_Equipe_Escala_CLT_Prisma.xlsx');
+  aviso('Planilha modelo baixada. Preencha, salve e use "Importar planilha".', 'ok');
+}
+
 /** Fazenda de exemplo: nome, cargo, turno, sexo, setor, entrada, saída. */
 var EXEMPLO_FAZENDA = {
   equipe: [
@@ -3344,26 +3639,19 @@ function iniciar() {
   el('#btColar').addEventListener('click', function () { el('#areaColar').hidden = false; el('#txColar').focus(); });
   el('#btCancelarColar').addEventListener('click', function () { el('#areaColar').hidden = true; });
   el('#btImportar').addEventListener('click', function () {
-    var txt = el('#txColar').value;
-    var n = 0;
-    txt.split(/\r?\n/).forEach(function (ln) {
-      if (!ln.trim()) return;
-      var p = ln.split(/[;\t]/).map(function (x) { return x.trim(); });
-      if (!p[0]) return;
-      var turno = (p[2] || 'M').toUpperCase().charAt(0);
-      if ('MTND'.indexOf(turno) === -1) turno = 'M';
-      var sx = (p[3] || '').toUpperCase().charAt(0);
-      if (sx !== 'F' && sx !== 'M') sx = 'M';
-      addFuncionario(p[0], p[1] || '', turno, sx, 'fixa', p[4] || '');
-      var novo = ST.equipe[ST.equipe.length - 1];
-      if (/^\d{1,2}:\d{2}$/.test(p[5] || '')) novo.hIni = ('0' + p[5]).slice(-5);
-      if (/^\d{1,2}:\d{2}$/.test(p[6] || '')) novo.hFim = ('0' + p[6]).slice(-5);
-      n++;
-    });
+    var linhas = el('#txColar').value.split(/\r?\n/).map(function (ln) { return ln.split(/[;\t]/); });
+    var n = importarEquipe(linhas, false);
     el('#txColar').value = '';
     el('#areaColar').hidden = true;
     desenharEquipe(); salvar();
     aviso(n ? n + ' funcionário(s) importado(s).' : 'Nada foi importado — confira o formato.', n ? 'ok' : 'err');
+  });
+  el('#btModelo').addEventListener('click', baixarModelo);
+  el('#btImportarArq').addEventListener('click', function () { el('#arqEquipe').click(); });
+  el('#arqEquipe').addEventListener('change', function (ev) {
+    var f = ev.target.files && ev.target.files[0];
+    ev.target.value = '';
+    if (f) importarArquivo(f);
   });
 
   // feriados
