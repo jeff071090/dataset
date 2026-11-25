@@ -4,17 +4,18 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Escala CLT — NTW</title>
-<link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NCIgaGVpZ2h0PSI2NCIgdmlld0JveD0iMCAwIDY0IDY0Ij48cmVjdCB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHJ4PSIxNCIgZmlsbD0iIzA4Mzg2OSIvPjx0ZXh0IHg9IjMyIiB5PSI0NCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IlNlZ29lIFVJLEFyaWFsLEhlbHZldGljYSxzYW5zLXNlcmlmIiBmb250LXNpemU9IjM0IiBmb250LXdlaWdodD0iODAwIiBmaWxsPSIjZmZmZmZmIj5OPC90ZXh0PjxyZWN0IHg9IjE2IiB5PSI1MCIgd2lkdGg9IjMyIiBoZWlnaHQ9IjQiIHJ4PSIyIiBmaWxsPSIjRUY5RjI3Ii8+PC9zdmc+">
+<link rel="icon" href="data:image/png;base64,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">
 <style>
 :root{
-  --azul-900:#042C53; --azul-800:#083869; --azul-700:#0C447C; --azul-500:#017ACD;
-  --ambar:#EF9F27; --ambar-claro:#FAC775; --gelo:#B5D4F4;
-  --tinta:#16243a; --tinta-fraca:#5a6b82; --linha:#dce6f2;
-  --fundo:#f4f7fb; --papel:#ffffff;
+  /* Identidade visual NTW Contabilidade (ntwcontabilidade.com.br) */
+  --azul-900:#003576; --azul-800:#09509E; --azul-700:#196ACE; --azul-500:#0798D5;
+  --ciano:#05C1F3; --ambar:#FFA801; --ambar-claro:#FFC94D; --gelo:#D4DCEB;
+  --tinta:#14284b; --tinta-fraca:#5b6b85; --linha:#d4dceb;
+  --fundo:#f2f5fa; --papel:#ffffff;
   --ok-bg:#e6f6ec; --ok-tx:#1d6b3a;
   --alerta-bg:#fdf0da; --alerta-tx:#8a5510;
   --erro-bg:#fdeaea; --erro-tx:#9b2c2c;
-  --raio:10px; --sombra:0 1px 2px rgba(4,44,83,.06),0 4px 16px rgba(4,44,83,.07);
+  --raio:12px; --sombra:0 1px 2px rgba(0,53,118,.06),0 4px 16px rgba(0,53,118,.07);
 }
 *{box-sizing:border-box}
 html,body{margin:0;padding:0}
@@ -24,16 +25,15 @@ body{
 }
 /* ---------------------------------------------------------------- cabeçalho */
 header{
-  background:linear-gradient(135deg,var(--azul-900) 0%,var(--azul-700) 100%);
-  color:#fff; padding:14px 22px; display:flex; align-items:center; gap:18px;
-  box-shadow:0 2px 12px rgba(4,44,83,.18); position:relative;
+  background:var(--papel); color:var(--azul-900); padding:12px 22px; display:flex; align-items:center; gap:18px;
+  box-shadow:0 2px 12px rgba(0,53,118,.08); position:relative;
 }
-header::after{content:'';position:absolute;left:0;right:0;bottom:0;height:3px;background:var(--ambar)}
-header img{height:34px;width:auto;display:block}
-.cab-txt{flex:1;min-width:0}
-.cab-txt h1{margin:0;font-size:17px;font-weight:600;letter-spacing:.2px}
-.cab-txt p{margin:1px 0 0;font-size:11.5px;color:var(--gelo);letter-spacing:.3px}
-.cab-versao{font-size:11px;color:var(--gelo);white-space:nowrap;opacity:.85}
+header::after{content:'';position:absolute;left:0;right:0;bottom:0;height:3px;background:linear-gradient(90deg,var(--azul-900),var(--azul-800) 45%,var(--azul-500) 80%,var(--ciano))}
+header img{height:40px;width:auto;display:block}
+.cab-txt{flex:1;min-width:0;border-left:1px solid var(--linha);padding-left:18px}
+.cab-txt h1{margin:0;font-size:17px;font-weight:700;letter-spacing:.2px;color:var(--azul-900)}
+.cab-txt p{margin:1px 0 0;font-size:11.5px;color:var(--tinta-fraca);letter-spacing:.3px}
+.cab-versao{font-size:11px;color:var(--tinta-fraca);white-space:nowrap}
 /* ---------------------------------------------------------------- abas */
 nav{background:var(--papel);border-bottom:1px solid var(--linha);padding:0 22px;display:flex;gap:2px;overflow-x:auto}
 nav button{
@@ -61,12 +61,12 @@ input,select,textarea{
 input:focus,select:focus,textarea:focus{outline:2px solid var(--gelo);outline-offset:-1px;border-color:var(--azul-500)}
 textarea{resize:vertical;min-height:90px;font-family:ui-monospace,Consolas,monospace;font-size:12.5px}
 button.bt{
-  font:inherit;font-weight:600;padding:8px 16px;border-radius:7px;border:1px solid transparent;cursor:pointer;
+  font:inherit;font-weight:600;padding:8px 16px;border-radius:25px;border:1px solid transparent;cursor:pointer;
   background:var(--azul-700);color:#fff;
 }
 button.bt:hover{background:var(--azul-800)}
-button.bt.ambar{background:var(--ambar);color:#3d2a06}
-button.bt.ambar:hover{background:#dd9220}
+button.bt.ambar{background:var(--ambar);color:#fff;font-weight:700}
+button.bt.ambar:hover{background:#e89600}
 button.bt.linha2{background:#fff;color:var(--azul-700);border-color:var(--linha)}
 button.bt.linha2:hover{background:var(--fundo)}
 button.bt:disabled{opacity:.45;cursor:not-allowed}
@@ -96,8 +96,9 @@ td input:hover,td select:hover{border-color:var(--linha);background:#fff}
 .c-fer{background:#fdf0da;color:#8a5510}
 .c-fercomp{background:#e6f6ec;color:#1d6b3a}
 .c-ferdobro{background:#fdeaea;color:#9b2c2c}
-.c-fer59{background:#e6eefa;color:#0C447C}
+.c-fer59{background:#e6eefa;color:#09509E}
 .c-folgacomp{background:#d5f0e0;color:#1d6b3a}
+.c-fora{background:repeating-linear-gradient(135deg,#eef1f6 0 4px,#f8fafc 4px 8px);color:#8a97aa}
 .tot{background:#f7fafd;font-weight:600}
 .st-ok{background:var(--ok-bg);color:var(--ok-tx)}
 .st-al{background:var(--alerta-bg);color:var(--alerta-tx)}
@@ -129,7 +130,7 @@ td input:hover,td select:hover{border-color:var(--linha);background:#fff}
 #toast{
   position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(90px);
   background:var(--azul-900);color:#fff;padding:11px 20px;border-radius:8px;font-size:13px;
-  box-shadow:0 8px 30px rgba(4,44,83,.3);opacity:0;transition:.28s;z-index:99;max-width:min(560px,92vw)
+  box-shadow:0 8px 30px rgba(0,53,118,.3);opacity:0;transition:.28s;z-index:99;max-width:min(560px,92vw)
 }
 #toast.ver{transform:translateX(-50%) translateY(0);opacity:1}
 #toast.ok{background:#1d6b3a}
@@ -140,9 +141,9 @@ td input:hover,td select:hover{border-color:var(--linha);background:#fff}
 .lnk-func{background:none;border:0;padding:0;margin:0;font:inherit;font-weight:700;color:var(--azul-700);cursor:pointer;text-align:left;text-decoration:underline;text-decoration-style:dotted;text-underline-offset:3px}
 .lnk-func:hover{color:var(--azul-500);text-decoration-style:solid}
 .lnk-func .dica{display:block;font-weight:400;font-size:10px;color:var(--azul-500);text-decoration:none}
-.modal-fundo{position:fixed;inset:0;background:rgba(4,44,83,.45);z-index:90;display:flex;align-items:flex-start;justify-content:center;padding:3vh 12px;overflow:auto}
+.modal-fundo{position:fixed;inset:0;background:rgba(0,53,118,.45);z-index:90;display:flex;align-items:flex-start;justify-content:center;padding:3vh 12px;overflow:auto}
 .modal-fundo[hidden]{display:none}
-.modal{background:var(--papel);border-radius:12px;box-shadow:0 18px 60px rgba(4,44,83,.35);width:min(1040px,100%);padding:22px 24px 20px;position:relative}
+.modal{background:var(--papel);border-radius:12px;box-shadow:0 18px 60px rgba(0,53,118,.35);width:min(1040px,100%);padding:22px 24px 20px;position:relative}
 .modal-topo{display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap;border-bottom:1px solid var(--linha);padding-bottom:12px;margin-bottom:14px}
 .modal-topo h2{margin:0;font-size:21px;color:var(--azul-800)}
 .modal-topo .meta{font-size:12.5px;color:var(--tinta-fraca);margin-top:4px}
@@ -185,6 +186,31 @@ td input:hover,td select:hover{border-color:var(--linha);background:#fff}
 .ficha-num{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 12px}
 body.modal-aberto{overflow:hidden}
 @media (max-width:640px){.cab-versao{display:none}}
+#tbEquipe input[data-c="nome"]{min-width:170px}
+#tbEquipe input[data-c="cargo"]{min-width:140px}
+#tbEquipe input[data-c="setor"]{min-width:120px}
+/* ---------------------------------------------------------------- resumo */
+.res-topo{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-bottom:16px}
+.res-topo h2{margin:0;font-size:19px;color:var(--azul-900);flex:1;min-width:220px}
+.res-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+.res-card{background:var(--papel);border:1px solid var(--linha);border-radius:var(--raio);box-shadow:var(--sombra);padding:16px 18px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.res-card h3{margin:0;font-size:12px;letter-spacing:.6px;text-transform:uppercase;color:var(--tinta-fraca);font-weight:700}
+.res-num{font-size:34px;font-weight:800;color:var(--azul-900);line-height:1;font-variant-numeric:tabular-nums}
+.res-num small{font-size:13px;font-weight:600;color:var(--tinta-fraca);margin-left:6px}
+.res-lista{margin:0;padding:0;list-style:none;font-size:12.5px;display:flex;flex-direction:column;gap:6px}
+.res-lista li{display:flex;gap:8px;align-items:baseline;justify-content:space-between;border-bottom:1px dashed var(--linha);padding-bottom:5px}
+.res-lista li:last-child{border-bottom:0}
+.res-lista b{font-variant-numeric:tabular-nums}
+.res-card .acao{margin-top:auto;align-self:flex-start}
+.pill{display:inline-block;border-radius:12px;padding:2px 10px;font-size:11.5px;font-weight:700;white-space:nowrap}
+.pill.ok{background:var(--ok-bg);color:var(--ok-tx)}
+.pill.al{background:var(--alerta-bg);color:var(--alerta-tx)}
+.pill.vi{background:var(--erro-bg);color:var(--erro-tx)}
+.barra{height:10px;border-radius:6px;background:var(--gelo);overflow:hidden}
+.barra span{display:block;height:100%;background:linear-gradient(90deg,var(--azul-800),var(--azul-500))}
+.chk{font-size:12.5px;display:flex;gap:8px;align-items:flex-start}
+.chk i{font-style:normal;font-weight:800;width:16px;flex:none}
+.chk.ok i{color:var(--ok-tx)} .chk.no i{color:var(--erro-tx)} .chk.al i{color:var(--alerta-tx)}
 /* ---------------------------------------------------------------- dias apontados pela auditoria */
 .cod.prob-vi{box-shadow:0 0 0 2px var(--erro-tx)}
 .cod.prob-al{box-shadow:0 0 0 2px var(--ambar)}
@@ -254,12 +280,12 @@ body.modal-aberto{overflow:hidden}
 <body>
 
 <header>
-  <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMjAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCAxMjAgNDAiPjx0ZXh0IHg9IjAiIHk9IjI5IiBmb250LWZhbWlseT0iU2Vnb2UgVUksQXJpYWwsSGVsdmV0aWNhLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMzEiIGZvbnQtd2VpZ2h0PSI4MDAiIGxldHRlci1zcGFjaW5nPSIyIiBmaWxsPSIjZmZmZmZmIj5OVFc8L3RleHQ+PHJlY3QgeD0iMSIgeT0iMzQiIHdpZHRoPSI3NCIgaGVpZ2h0PSI0IiByeD0iMiIgZmlsbD0iI0VGOUYyNyIvPjwvc3ZnPg==" alt="NTW" width="120" height="40">
+  <img src="data:image/png;base64,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" alt="NTW Contabilidade e Gestão Empresarial" width="113" height="40">
   <div class="cab-txt">
     <h1>Escala de Trabalho com Compliance CLT</h1>
     <p>Escalas, jornadas e folgas dentro da lei.</p>
   </div>
-  <div class="cab-versao naoimprime">v1.8 &middot; EC 141/2026 &middot; 100% offline</div>
+  <div class="cab-versao naoimprime">v1.9 &middot; EC 141/2026 &middot; 100% offline</div>
 </header>
 
 <div id="avisoArmazenamento" class="naoimprime" hidden>
@@ -268,7 +294,8 @@ body.modal-aberto{overflow:hidden}
 </div>
 
 <nav class="naoimprime">
-  <button data-aba="equipe" class="on">Equipe</button>
+  <button data-aba="resumo" class="on">Resumo</button>
+  <button data-aba="equipe">Equipe</button>
   <button data-aba="feriados">Feriados</button>
   <button data-aba="escala">Escala</button>
   <button data-aba="auditoria">Auditoria <span class="bolha" id="bolhaAud" hidden>0</span></button>
@@ -280,7 +307,11 @@ body.modal-aberto{overflow:hidden}
 <main>
 
 <!-- ============================================================ EQUIPE -->
-<section class="aba on" id="aba-equipe">
+<section class="aba on" id="aba-resumo">
+  <div id="painelResumo"></div>
+</section>
+
+<section class="aba" id="aba-equipe">
   <div class="cartao">
     <h2>Período de referência</h2>
     <p class="sub">A escala é gerada mês a mês. O app guarda os meses gerados neste navegador para emendar os contadores na virada.</p>
@@ -312,6 +343,7 @@ body.modal-aberto{overflow:hidden}
           <th title="Em branco = horário do turno (aba Parâmetros)">Jornada e horário <span style="font-weight:400">(entrada · saída · almoço · intervalo min)</span></th>
           <th style="width:112px">Escala</th>
           <th style="width:136px" title="Só vale na 6x1">Folga semanal</th>
+          <th title="Admissão e desligamento no meio do mês; nível superior e remuneração para a exceção do art. 8º da EC 141">Contrato <span style="font-weight:400">(admissão · desligamento · art. 8º)</span></th>
           <th style="width:58px"></th>
         </tr></thead>
         <tbody></tbody>
@@ -458,7 +490,7 @@ body.modal-aberto{overflow:hidden}
 </main>
 
 <div class="rodape">
-  <b>NTW</b> &middot; Escala CLT v1.8 &middot; roda 100% no seu computador, sem internet e sem enviar dado nenhum para fora.
+  <b>NTW</b> &middot; Escala CLT v1.9 &middot; roda 100% no seu computador, sem internet e sem enviar dado nenhum para fora.
 </div>
 
 <div id="modalFunc" class="modal-fundo" hidden>
@@ -478,7 +510,7 @@ body.modal-aberto{overflow:hidden}
    é portado 1:1 do gerador_escala_clt.gs da skill escala-clt-sheets.
    ========================================================================== */
 
-var VERSAO = '1.8';
+var VERSAO = '1.9';
 
 /* ----------------------------------------------------- configuração padrão */
 var PADRAO = {
@@ -515,6 +547,14 @@ var PADRAO = {
   // '8.4' = 8h24/dia, usando as 42h inteiras — liminar do STF (min. Flávio
   // Dino, 12/11/2026) admite essa distribuição até 15/12/2027.
   jornadaEtapa1: '8',
+
+  // 12x36 acima do limite semanal médio: 'apontar' (Decreto 13.173/2026 —
+  // compensar ou pagar hora extra) ou 'suprimir' plantões até o teto.
+  excedente12x36: 'apontar',
+
+  // Art. 8º da EC 141: diploma de nível superior + remuneração >= 2,5x o
+  // teto do RGPS ficam fora das regras de duração e controle da jornada.
+  tetoRGPS: 8475.55,
 
   // Horário de cada turno (rótulo M/T/N/D). Intervalo em minutos.
   turnos: {
@@ -555,9 +595,10 @@ var CONFIG = JSON.parse(JSON.stringify(PADRAO));
 var COD = {
   PLANTAO: 'P12', FOLGA_ESCALA: 'F', DSR: 'DSR', FER: 'FER',
   FER_COMP: 'FER_COMP', FER_DOBRO: 'FER_DOBRO', FER_59A: 'FER_59A',
-  FOLGA_COMP: 'FOLGA_COMP', PENDENTE: '__PEND__'
+  FOLGA_COMP: 'FOLGA_COMP', PENDENTE: '__PEND__',
+  FORA: 'FORA'          // antes da admissão ou depois do desligamento
 };
-var CODIGOS_DESCANSO = [COD.FOLGA_ESCALA, COD.DSR, COD.FER, COD.FOLGA_COMP];
+var CODIGOS_DESCANSO = [COD.FOLGA_ESCALA, COD.DSR, COD.FER, COD.FOLGA_COMP, COD.FORA];
 var TURNOS = { M: 'manhã', T: 'tarde', N: 'noite', D: 'dia todo' };
 var SEXOS = { M: 'masculino', F: 'feminino' };
 var DIAS_SEMANA = ['domingo','segunda','terça','quarta','quinta','sexta','sábado'];
@@ -722,8 +763,9 @@ function domingosDoMes(ano, mes) {
  * colegas não folguem todos no mesmo domingo e a operação siga coberta.
  * Mínimo por sexo: art. 386 da CLT (quinzenal) para mulheres.
  */
-function escolherDomingosDeFolga(ano, mes, quantos, ordem) {
+function escolherDomingosDeFolga(ano, mes, quantos, ordem, permitidos) {
   var doms = domingosDoMes(ano, mes);
+  if (permitidos) doms = doms.filter(function (d) { return permitidos(d); });
   var S = doms.length;
   if (!S || quantos <= 0) return [];
   if (quantos >= S) return doms.slice();
@@ -741,9 +783,25 @@ function escolherDomingosDeFolga(ano, mes, quantos, ordem) {
 function contarDomingosDeFolga(codigos, ano, mes) {
   var n = 0;
   for (var d = 1; d <= codigos.length; d++) {
-    if (diaSemana(ano, mes, d) === 0 && ehDescanso(codigos[d - 1])) n++;
+    if (diaSemana(ano, mes, d) === 0 && ehDescanso(codigos[d - 1]) && codigos[d - 1] !== COD.FORA) n++;
   }
   return n;
+}
+/** Dias do mês dentro do contrato (admissão/desligamento). [1, dias] se não houver datas. */
+function periodoContrato(f, ano, mes) {
+  var dias = diasNoMes(ano, mes), ini = 1, fim = dias;
+  var pa = String(f.admissao || '').split('-').map(Number), pd = String(f.desligamento || '').split('-').map(Number);
+  if (pa.length === 3 && pa[0]) {
+    var a = new Date(pa[0], pa[1] - 1, pa[2]), m0 = new Date(ano, mes - 1, 1), m1 = new Date(ano, mes - 1, dias);
+    if (a > m1) return null;
+    if (a > m0) ini = a.getDate();
+  }
+  if (pd.length === 3 && pd[0]) {
+    var dd = new Date(pd[0], pd[1] - 1, pd[2]), n0 = new Date(ano, mes - 1, 1), n1 = new Date(ano, mes - 1, dias);
+    if (dd < n0) return null;
+    if (dd < n1) fim = dd.getDate();
+  }
+  return fim < ini ? null : { ini: ini, fim: fim, parcial: ini > 1 || fim < dias };
 }
 
 /**
@@ -816,21 +874,37 @@ function montarEscalaDoFuncionario(ano, mes, func, escala, feriados, estado, cfg
   var ultimo12x36 = estado.ultimoTurno12x36;
   var folgaFixa = estado.folgaDiaSemana;
   var variavel = (estado.tipoFolga === 'variavel');
-  var diasDesdeFolga = estado.diasConsecutivos; // usado só na folga variável
+  var diasDesdeFolga = (estado.diasDesdeDSR != null) ? estado.diasDesdeDSR : estado.diasConsecutivos; // folga variável
   var ciclosFolga = estado.ciclosFolga || 0;
 
   // Domingos que este funcionário folga neste mês. Na 5x2 todo domingo já é
   // DSR; na 12x36 a alternância faz os domingos caírem em paridades opostas,
   // então metade deles já é folga — a lista só precisa reger a 6x1.
+  var contrato = periodoContrato(func, ano, mes) || { ini: 1, fim: dias, parcial: false };
+  var dentro = function (d) { return d >= contrato.ini && d <= contrato.fim; };
   var minDom = cfg.minDomingosFolga[func.sexo === 'F' ? 'F' : 'M'];
+  if (contrato.parcial) {
+    // Admitido ou desligado no meio do mês: mínimo de domingos proporcional.
+    var domTot = domingosDoMes(ano, mes).length, domDentro = domingosDoMes(ano, mes).filter(dentro).length;
+    minDom = domTot ? Math.floor(minDom * domDentro / domTot) : 0;
+  }
   var domingosFolga = (escala === '6x1' || escala === '5x2r')
-    ? escolherDomingosDeFolga(ano, mes, minDom, estado.ordem)
+    ? escolherDomingosDeFolga(ano, mes, minDom, estado.ordem, dentro)
     : [];
   var par = PARES_5X2R[(estado.parFolga != null ? estado.parFolga : (estado.ordem || 0)) % PARES_5X2R.length];
   var fechados = estado.diasFechados || [];
   var escalaDia = [], fases = [], conversaoDia = 0;
   var trabNaSemana = 0, dsrSemana = 0;   // semana seg–dom: dias trabalhados e DSR já dados
   var folgasTransicao = null;                    // dias de folga da semana em que a 6x1 vira 5x2r
+  // Semana que começou no mês anterior: já traz dias trabalhados e DSR.
+  var kAnt = (diaSemana(ano, mes, 1) + 6) % 7;
+  if (estado.anterior && kAnt) {
+    var ca = estado.anterior.codigos;
+    for (var qa = ca.length - kAnt; qa < ca.length; qa++) {
+      if (!ehDescanso(ca[qa])) trabNaSemana++;
+      if (ca[qa] === COD.DSR) dsrSemana++;
+    }
+  }
 
   for (var dia = 1; dia <= dias; dia++) {
     var w = diaSemana(ano, mes, dia);
@@ -854,7 +928,10 @@ function montarEscalaDoFuncionario(ano, mes, func, escala, feriados, estado, cfg
       // folgas que faltam para fechar 5 dias trabalhados são escolhidas entre
       // os dias restantes, defasadas por funcionário — senão a equipe inteira
       // folga no mesmo dia (tipicamente o domingo) e a operação para.
-      if (w !== 1) {
+      // Só na semana em que a vigência COMEÇA. Se o mês já abre na vigência
+      // (o dia anterior também estava nela), segue a 5x2r normal, com os
+      // contadores da semana herdados do mês anterior.
+      if (w !== 1 && !(dia === 1 && faseNaData(ano, mes, 0, cfg) >= 1)) {
         var restantes = [];
         for (var q = dia; q <= dias; q++) {
           restantes.push(q);
@@ -875,6 +952,13 @@ function montarEscalaDoFuncionario(ano, mes, func, escala, feriados, estado, cfg
     }
     if (w === 1) folgasTransicao = null;
     escalaDia.push(esc); fases.push(fase);
+    if (!dentro(dia)) {
+      // Fora do contrato: não trabalha, não folga, zera a sequência.
+      codigos.push(COD.FORA);
+      diasSeguidos = 0; diasDesdeFolga = 0; domingosSeguidos = 0;
+      if (escala === '12x36') ultimo12x36 = (dia % 2 === (estado.ordem || 0) % 2);
+      continue;
+    }
 
     if (esc === '5x2r') {
       // 5 dias de trabalho e 2 de folga por semana (seg–dom), em dias que
@@ -922,6 +1006,9 @@ function montarEscalaDoFuncionario(ano, mes, func, escala, feriados, estado, cfg
       if (ehDomingo) cod = COD.DSR;
       else if (w === 6) cod = faseSem >= 1 ? COD.DSR : COD.FOLGA_ESCALA;
       else if (ehFeriado) cod = COD.FER;
+      // Trava: quem chega de outra escala (ex.: 6x1 no mês anterior) com
+      // dias seguidos acumulados folga antes de passar do limite.
+      else if (diasSeguidos >= cfg.limiteDiasConsecutivos) cod = repouso;
       else cod = turno;
 
     } else if (esc === '12x36') {
@@ -979,7 +1066,9 @@ function montarEscalaDoFuncionario(ano, mes, func, escala, feriados, estado, cfg
   // o que passa das 180h. Suprime o excedente do fim do mês para trás,
   // poupando os dias de feriado (que ainda estão como PENDENTE).
   var plantoesSuprimidos = [];
-  if (escala === '12x36') {
+  // Decreto 13.173/2026: o excedente da média mensal é compensado ou pago
+  // como hora extra — por padrão o app mantém os plantões e aponta as horas.
+  if (escala === '12x36' && cfg.excedente12x36 === 'suprimir') {
     var maxPlantoes = Math.floor(cfg.tetoContratualPorEscala['12x36'] / cfg.jornadaHoras['12x36']);
     var trabalhados = 0;
     for (var t = 0; t < codigos.length; t++) if (!ehDescanso(codigos[t])) trabalhados++;
@@ -1040,7 +1129,7 @@ function montarEscalaDoFuncionario(ano, mes, func, escala, feriados, estado, cfg
     domingosDeFolga: contarDomingosDeFolga(codigos, ano, mes),
     minDomingosExigido: minDom,
     plantoesSuprimidos: plantoesSuprimidos,
-    escalaDia: escalaDia, fases: fases, conversaoDia: conversaoDia
+    escalaDia: escalaDia, fases: fases, conversaoDia: conversaoDia, contrato: contrato
   };
 }
 
@@ -1099,7 +1188,13 @@ function obterEstadoAnterior(ano, mes, matricula, nome, escala) {
     folgaDiaSemana: (typeof linha.folgaDiaSemana === 'number' && linha.folgaDiaSemana >= 0)
                       ? linha.folgaDiaSemana : null,
     ciclosFolga: linha.ciclosFolga || 0,
-    herdado: true
+    // Dias trabalhados desde o último DSR. Folga compensatória de feriado
+    // não é descanso semanal: contar a partir dela atrasaria o DSR da semana
+    // que cruza a virada do mês.
+    diasDesdeDSR: (function () { var n = 0; for (var q = cods.length - 1; q >= 0; q--) { if (cods[q] === COD.DSR) break; if (!ehDescanso(cods[q])) n++; } return n; })(),
+    herdado: true,
+    // Para conferir a semana que cruza a virada do mês.
+    anterior: { codigos: cods, horas: linha.horas || null, escala: linha.escala, carga: linha.carga || 0, ano: aAnt, mes: mAnt }
   };
 }
 
@@ -1209,7 +1304,9 @@ function rotuloEscalaSetor(nome) {
  * A 5x2 fixa (seg–sex) fica de fora: nela o setor inteiro fecha no fim de
  * semana por definição — se o setor abre no sábado/domingo, use 5x2 rodízio.
  */
-function entraNaRegraDeSetor(it, d) { return it.r.escalaDia[d] !== '5x2' && (!it.opera || it.opera[d]); }
+function entraNaRegraDeSetor(it, d) {
+  return it.r.escalaDia[d] !== '5x2' && it.r.codigos[d] !== COD.FORA && (!it.opera || it.opera[d]);
+}
 
 /** A linha do funcionário continua respeitando todas as regras estruturais? */
 function escalaAindaValida(it, ano, mes, cfg) {
@@ -1242,6 +1339,9 @@ function tentarMoverFolga(it, d, grupo, max, ano, mes, feriados, cfg, movidos) {
     var e = d + deltas[k];
     if (e < 0 || e >= cods.length) continue;
     if (cods[e] !== it.codTrab) continue;
+    // Só troca dentro da mesma semana (seg–dom): o número de DSR de cada
+    // semana não muda — nem o da semana que cruza a virada do mês.
+    if (semanaDoDia({ ano: ano, mes: mes }, e + 1).iniDia !== semanaDoDia({ ano: ano, mes: mes }, d + 1).iniDia) continue;
     if (comp && e + 1 <= comp.feriado) continue;
     if (feriados.indexOf(fmtData(ano, mes, e + 1)) !== -1) continue;
     if (it.r.escalaDia[e] === '12x36' || it.r.escalaDia[e] === '5x2') continue;
@@ -1276,7 +1376,8 @@ function ajustarFolgasPorSetor(itens, ano, mes, feriados, cfg) {
     // Com mínimo de pessoas trabalhando no setor, folgam juntas no máximo
     // (pessoas do setor − mínimo), sem passar do limite geral.
     var min = g[0].minSetor || 0;
-    var max = Math.max(1, Math.min(maxGeral, min ? g.length - min : maxGeral));
+    // Com mínimo definido, ele manda: folgam juntos no máximo (pessoas − mínimo).
+    var max = min ? Math.max(1, g.length - min) : maxGeral;
     var deFolga = function (d) {
       return g.filter(function (it) { return entraNaRegraDeSetor(it, d) && ehDescanso(it.r.codigos[d]); });
     };
@@ -1370,26 +1471,89 @@ function semanasDeRepouso(codigos, escalaDia, fases, ano, mes) {
   var out = [];
   for (var i = 0; i < codigos.length; i++) {
     if (diaSemana(ano, mes, i + 1) !== 1 || i + 6 >= codigos.length) continue;
-    if (fases[i + 6] < 1) continue;   // vale a fase do domingo que fecha a semana
+    var vig = fases[i + 6] >= 1;   // vale a fase do domingo que fecha a semana
     var tem12x36 = false, dsr = [];
     for (var k = i; k <= i + 6; k++) {
-      if (escalaDia[k] === '12x36') tem12x36 = true;
+      if (escalaDia[k] === '12x36' || codigos[k] === COD.FORA) tem12x36 = true;   // semana fora da regra
       if (codigos[k] === COD.DSR) dsr.push(k + 1);
     }
-    if (!tem12x36) out.push({ de: i + 1, ate: i + 7, dsr: dsr });
+    if (!tem12x36) out.push({ de: i + 1, ate: i + 7, dsr: dsr, vigencia: vig });
   }
   return out;
 }
 function problemasDeRepouso(codigos, escalaDia, fases, ano, mes, cfg) {
   var sem = semanasDeRepouso(codigos, escalaDia, fases, ano, mes), out = [];
-  var minSemana = cfg.regimeCompensatorioCCT ? 1 : 2;
   sem.forEach(function (s) {
-    if (s.dsr.length < minSemana) out.push({ de: s.de, ate: s.ate, n: s.dsr.length, min: minSemana });
+    // Antes da EC 141: 1 DSR por semana (art. 67 da CLT). Na vigência: 2
+    // (art. 7º, XV), ou 1 com regime compensatório por CCT/ACT (§ 2º).
+    var minSemana = s.vigencia ? (cfg.regimeCompensatorioCCT ? 1 : 2) : 1;
+    if (s.dsr.length < minSemana) out.push({ de: s.de, ate: s.ate, n: s.dsr.length, min: minSemana, vigencia: s.vigencia });
   });
-  if (cfg.regimeCompensatorioCCT && sem.length) {
-    var total = sem.reduce(function (a, s) { return a + s.dsr.length; }, 0);
-    if (total < 2 * sem.length) out.push({ media: true, total: total, semanas: sem.length });
+  var semV = sem.filter(function (s) { return s.vigencia; });
+  if (cfg.regimeCompensatorioCCT && semV.length) {
+    var total = semV.reduce(function (a, s) { return a + s.dsr.length; }, 0);
+    if (total < 2 * semV.length) out.push({ media: true, total: total, semanas: semV.length });
   }
+  return out;
+}
+
+/** Horas trabalhadas em cada dia do mês (0 nos dias de descanso). */
+function horasPorDia(l) {
+  return l.codigos.map(function (c, i) {
+    return ehDescanso(c) ? 0 : jornadaDoDia(l.escalaDia[i], CONFIG, l.fases[i], l.carga);
+  });
+}
+
+/** "21.500,00", "21500", 21500 -> 21500 */
+function numeroBR(v) {
+  if (typeof v === 'number') return v;
+  var t = String(v == null ? '' : v).replace(/[^\d,.-]/g, '');
+  if (t.indexOf(',') !== -1) t = t.replace(/\./g, '').replace(',', '.');
+  var n = parseFloat(t);
+  return isNaN(n) ? 0 : n;
+}
+/**
+ * Art. 8º da EC 141/2026: diploma de nível superior + remuneração mensal de
+ * pelo menos 2,5x o teto do RGPS -> fora das regras de duração e controle da
+ * jornada, salvo liberalidade do empregador ou norma coletiva. Os 2 dias de
+ * repouso (art. 7º, XV) e o § 2º continuam valendo.
+ */
+function isentoArt8(f) {
+  var sup = f.superior === true || /^(s|sim|x|true|1)/.test(normTxt(f.superior));
+  return sup && numeroBR(f.remuneracao) >= 2.5 * (+CONFIG.tetoRGPS || 0) && !f.controleJornada;
+}
+
+/**
+ * Semana que cruza a virada do mês: junta os últimos dias do mês anterior
+ * (da escala guardada) com os primeiros deste mês e confere horas e DSR da
+ * semana inteira, seg–dom.
+ */
+function semanaDaVirada(it, r, ano, mes, carga, codTrab) {
+  var ant = it.estado && it.estado.anterior;
+  var w1 = diaSemana(ano, mes, 1), k = (w1 + 6) % 7;
+  if (!ant || !k) return null;
+  var nAnt = ant.codigos.length, out = { k: k, horasAnt: 0, horasCur: 0, dsr: 0, fora: false, trabCur: [], trabAnt: 0 };
+  for (var i = nAnt - k; i < nAnt; i++) {
+    var c = ant.codigos[i];
+    if (c === COD.FORA) out.fora = true;
+    if (c === COD.DSR) out.dsr++;
+    if (!ehDescanso(c)) {
+      out.trabAnt++;
+      out.horasAnt += ant.horas ? (+ant.horas[i] || 0)
+        : jornadaDoDia(ant.escala, CONFIG, faseNaData(ant.ano, ant.mes, i + 1, CONFIG), ant.carga);
+    }
+  }
+  var trabalho = [codTrab, COD.FER_COMP, COD.FER_59A, COD.FER_DOBRO];
+  for (var d = 1; d <= 7 - k; d++) {
+    var cc = r.codigos[d - 1];
+    if (cc === COD.FORA) out.fora = true;
+    if (cc === COD.DSR) out.dsr++;
+    if (trabalho.indexOf(cc) !== -1) { out.horasCur += jornadaDoDia(r.escalaDia[d - 1], CONFIG, r.fases[d - 1], carga); out.trabCur.push(d); }
+  }
+  var faseSeg = faseNaData(ano, mes, 1 - k, CONFIG), faseDom = r.fases[6 - k];
+  out.limite = carga && carga <= 6 ? Math.min(30, REGIMES[faseSeg].semanal) : REGIMES[faseSeg].semanal;
+  out.minDsr = faseDom >= 1 ? (CONFIG.regimeCompensatorioCCT ? 1 : 2) : 1;
+  out.de = 1 - k; out.ate = 7 - k;
   return out;
 }
 
@@ -1485,6 +1649,8 @@ function descricaoFeriado(data) {
  * Usada pela geração e pela simulação "precisa contratar?".
  */
 function calcularCompetencia(ano, mes, equipe) {
+  // Quem foi admitido depois do mês ou desligado antes dele fica de fora.
+  equipe = equipe.filter(function (f) { return periodoContrato(f, ano, mes); });
   var feriados = feriadosAtivos(ano, mes);
   var dias = diasNoMes(ano, mes);
   var linhas = [];
@@ -1576,7 +1742,9 @@ function calcularCompetencia(ano, mes, equipe) {
     var tetoContr = CONFIG.tetoContratualPorEscala[escalaFinal] || 220;
     if (escalaFinal !== '12x36') tetoContr = Math.min(tetoContr, referenciaMensalLegal(r.fases));
     var teto = calcularTetoHoras(hGeradas, jornada, tetoContr);
-    var minFolgas = r.conversaoDia ? calcularMinimoFolgasMisto(r.escalaDia) : calcularMinimoFolgas(escala, dias);
+    var diasContrato = r.contrato ? r.contrato.fim - r.contrato.ini + 1 : dias;
+    var minFolgas = r.conversaoDia ? calcularMinimoFolgasMisto(r.escalaDia) : calcularMinimoFolgas(escala, diasContrato);
+    var art8 = isentoArt8(f);
     var faseMax = Math.max.apply(null, r.fases);
     var dPEC = datasPEC(CONFIG);
 
@@ -1610,11 +1778,28 @@ function calcularCompetencia(ano, mes, equipe) {
             txt: 'Semana de ' + diaCurto(ano, mes, pb.de) + ' a ' + diaCurto(ano, mes, pb.ate) + ': só ' + pb.n + ' dia(s) de repouso remunerado'
                + (pb.n ? ' (' + faixasTxt(ano, mes, intervaloDias(pb.de, pb.ate).filter(function (d) { return r.codigos[d - 1] === COD.DSR; })) + ')' : '')
                + '; o mínimo é ' + pb.min + '. Trabalhou ' + faixasTxt(ano, mes, intervaloDias(pb.de, pb.ate).filter(function (d) { return !ehDescanso(r.codigos[d - 1]); })) + '.',
-            lei: pb.min === 2 ? 'art. 7º, XV, da CF (EC 141/2026) — repouso semanal remunerado de 2 dias'
+            lei: !pb.vigencia ? 'art. 67 da CLT e art. 7º, XV, da CF — 1 descanso semanal remunerado por semana'
+               : pb.min === 2 ? 'art. 7º, XV, da CF (EC 141/2026) — repouso semanal remunerado de 2 dias'
                               : 'art. 7º, § 2º, da CF (EC 141/2026) — ao menos 1 dia de repouso em cada semana' });
     });
-    if (escalaFinal !== '12x36') {
-      semanasAcimaDoLimite(r.codigos, r.escalaDia, r.fases, codTrab, ano, mes, CONFIG, carga).forEach(function (s) {
+    var virada = (escalaFinal !== '12x36') ? semanaDaVirada(it, r, ano, mes, carga, codTrab) : null;
+    if (virada && !art8 && virada.horasAnt + virada.horasCur > virada.limite + 0.01) {
+      problemas.push({ grau: 'vi', dias: virada.trabCur,
+        txt: 'Semana de ' + diaCurto(ano, mes, virada.de) + ' a ' + diaCurto(ano, mes, virada.ate) + ', que cruza a virada do mês: '
+             + fmtHoras(virada.horasAnt + virada.horasCur) + ' de trabalho (' + fmtHoras(virada.horasAnt) + ' no fim de ' + MESES[(mes + 10) % 12]
+             + ' + ' + fmtHoras(virada.horasCur) + ' neste mês), acima do limite de ' + virada.limite + 'h semanais.',
+        lei: 'art. 7º, XIII, da CF (EC 141/2026) — limite semanal vale para a semana inteira, mesmo dividida entre dois meses' });
+    }
+    if (virada && !virada.fora && virada.dsr < virada.minDsr) {
+      problemas.push({ grau: 'vi', dias: intervaloDias(1, virada.ate),
+        txt: 'Semana de ' + diaCurto(ano, mes, virada.de) + ' a ' + diaCurto(ano, mes, virada.ate) + ', que cruza a virada do mês: só '
+             + virada.dsr + ' dia(s) de repouso remunerado somando os dois meses; o mínimo é ' + virada.minDsr + '.',
+        lei: virada.minDsr === 2 ? 'art. 7º, XV, da CF (EC 141/2026) — 2 dias de repouso por semana' : 'art. 67 da CLT — 1 DSR por semana' });
+    }
+    if (escalaFinal !== '12x36' && !art8) {
+      semanasAcimaDoLimite(r.codigos, r.escalaDia, r.fases, codTrab, ano, mes, CONFIG, carga).filter(function (s) {
+        return !(virada && s.de === 1);   // a 1ª semana já foi conferida inteira acima
+      }).forEach(function (s) {
         var trabS = intervaloDias(s.de, s.ate).filter(function (d) { return !ehDescanso(r.codigos[d - 1]); });
         problemas.push({ grau: 'vi', dias: trabS,
           txt: 'Semana de ' + diaCurto(ano, mes, s.de) + ' a ' + diaCurto(ano, mes, s.ate) + ': ' + fmtHoras(s.horas) + ' de trabalho, acima do limite de '
@@ -1623,10 +1808,26 @@ function calcularCompetencia(ano, mes, equipe) {
              : s.limite < 44 ? 'EC 141/2026 — jornada máxima de ' + s.limite + 'h semanais na etapa vigente'
                              : 'art. 7º, XIII, da CF — 44h semanais' });
       });
-    } else if (r.fases.indexOf(2) !== -1) {
-      problemas.push({ grau: 'al',
-        txt: 'A 12x36 tem média de 42h semanais, acima das 40h da 2ª etapa. O Decreto 13.173/2026 manteve a 12x36 permitida, como regime compensatório; confira se ela está prevista em acordo escrito ou CCT/ACT (art. 59-A da CLT e art. 7º, § 2º, da CF).',
-        lei: 'Decreto 13.173/2026 e art. 59-A da CLT — 12x36 permitida, com formalização' });
+    }
+    var excedente12x36 = 0;
+    if (escalaFinal === '12x36' && !art8) {
+      // Decreto 13.173/2026: média mensal acima do limite semanal -> compensar
+      // ou pagar como hora extra. Limite do mês = limite semanal x dias / 7.
+      var limMes = 0, hMes = 0;
+      r.codigos.forEach(function (c, i) {
+        if (c === COD.FORA) return;
+        limMes += REGIMES[r.fases[i]].semanal / 7;
+        if (!ehDescanso(c)) hMes += jornadaDoDia(r.escalaDia[i], CONFIG, r.fases[i], carga);
+      });
+      excedente12x36 = Math.max(0, Math.round((hMes - limMes) * 100) / 100);
+      if (excedente12x36 > 0.01) {
+        var plant = []; r.codigos.forEach(function (c, i) { if (!ehDescanso(c)) plant.push(i + 1); });
+        problemas.push({ grau: 'al',
+          txt: plant.length + ' plantões de 12h = ' + fmtHoras(hMes) + ' no mês, acima da média permitida de ' + fmtHoras(limMes)
+               + ' (limite semanal da etapa × dias do mês ÷ 7). Excedente de ' + fmtHoras(excedente12x36)
+               + ': compensar com folga ou pagar como hora extra, conforme a convenção ou acordo coletivo.',
+          lei: 'Decreto 13.173/2026 (12x36: compensação ou hora extra quando a média mensal passa do limite) e art. 59-A da CLT' });
+      }
     }
     if (r.maxDiasSeguidos > CONFIG.limiteDiasConsecutivos) {
       sequenciasLongas(r.codigos, it.estado.diasConsecutivos, CONFIG.limiteDiasConsecutivos).forEach(function (q) {
@@ -1666,12 +1867,17 @@ function calcularCompetencia(ano, mes, equipe) {
              ' para não passar do teto de ' + CONFIG.tetoContratualPorEscala['12x36'] + 'h da 12x36. Confira a cobertura desse(s) dia(s).',
         lei: 'teto contratual da 12x36 — 15 plantões de 12h' });
     }
-    var hr = it.horario;
+    var hr = art8 ? null : it.horario;
     var diasTrab = []; r.codigos.forEach(function (c, i) { if (c === codTrab) diasTrab.push(i + 1); });
     if (hr && escalaFinal !== '12x36') {
       var maxJ = 0, origem = hr.proprio ? 'O horário de ' + f.nome : 'O horário do turno ' + TURNOS[codTrab];
       r.codigos.forEach(function (c, i) { if (c === codTrab) maxJ = Math.max(maxJ, jornadaDoDia(r.escalaDia[i], CONFIG, r.fases[i], carga)); });
-      if (maxJ && hr.liq > maxJ + 0.01) {
+      if (maxJ && hr.liq > maxJ + 2.01) {
+        problemas.push({ grau: 'vi', dias: diasTrab,
+          txt: origem + ' (' + hr.ini + ' às ' + hr.fim + ', intervalo de ' + hr.intervalo + ' min) dá ' + fmtHoras(hr.liq) + ' de trabalho por dia: '
+               + fmtHoras(hr.liq - maxJ) + ' além da jornada de ' + fmtHoras(maxJ) + '. O máximo de horas extras é 2 por dia.',
+          lei: 'art. 59 da CLT — no máximo 2 horas extras por dia' });
+      } else if (maxJ && hr.liq > maxJ + 0.01) {
         problemas.push({ grau: 'al',
           txt: origem + ' (' + hr.ini + ' às ' + hr.fim + ', intervalo de ' + hr.intervalo + ' min) dá '
                + fmtHoras(hr.liq) + ' de trabalho por dia, acima da jornada de ' + fmtHoras(maxJ) + ' da escala — a diferença (' + fmtHoras(hr.liq - maxJ)
@@ -1724,7 +1930,14 @@ function calcularCompetencia(ano, mes, equipe) {
         lei: 'art. 67 da CLT' });
     }
     var horasTotal = hGeradas;
-    if (horasTotal > teto) {
+    if (art8) {
+      problemas.push({ grau: 'al',
+        txt: 'Exceção do art. 8º da EC 141: nível superior e remuneração de ' + numeroBR(f.remuneracao).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
+             + ' (≥ 2,5 × teto do RGPS = ' + (2.5 * CONFIG.tetoRGPS).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
+             + '). Limites de horas e controle de jornada não foram conferidos; os 2 dias de repouso remunerado continuam valendo. Confira o diploma e a remuneração.',
+        lei: 'art. 8º da EC 141/2026 — salvo liberalidade do empregador ou norma coletiva; respeitados o art. 7º, XV e § 2º, da CF' });
+    }
+    if (horasTotal > teto && !art8) {
       var porSem = [], vistosS = {};
       for (var ds = 1; ds <= dias; ds++) {
         var sm = semanaDoDia({ ano: ano, mes: mes }, ds), ini = Math.max(1, sm.iniDia), fimS = Math.min(dias, sm.iniDia + 6);
@@ -1751,7 +1964,7 @@ function calcularCompetencia(ano, mes, equipe) {
       maxDias: r.maxDiasSeguidos, maxDomingos: r.maxDomingosSeguidos,
       domingosDeFolga: r.domingosDeFolga, minDomingos: r.minDomingosExigido,
       plantoesSuprimidos: r.plantoesSuprimidos, ciclosFolga: r.ciclosFolga,
-      carga: carga,
+      carga: carga, art8: art8, excedente12x36: excedente12x36, contrato: r.contrato,
       parFolga: it.estado.diasFechados.length ? null : PARES_5X2R[(it.parFolga != null ? it.parFolga : it.ordem) % PARES_5X2R.length],
       folgasFixas: it.estado.diasFechados, folgaRot: it.estado.folgaRot,
       horario: it.horario,
@@ -1921,13 +2134,15 @@ function gerar() {
   ST.meses[chave] = linhas.map(function (l) {
     return { matricula: l.matricula, nome: l.nome, escala: l.escala,
              folgaDiaSemana: l.folgaDiaSemana, tipoFolga: l.tipoFolga,
-             ciclosFolga: l.ciclosFolga, codigos: l.codigos };
+             ciclosFolga: l.ciclosFolga, codigos: l.codigos,
+             horas: horasPorDia(l), carga: l.carga || 0 };
   });
   salvar();
 
   desenharGrade();
   desenharAuditoria();
   desenharMeses();
+  desenharResumo();
   irPara('escala');
 
   var comProblema = linhas.filter(function (l) { return l.problemas.length; }).length;
@@ -1942,6 +2157,7 @@ function gerar() {
    ======================================================================== */
 
 function classeCod(c) {
+  if (c === COD.FORA) return 'c-fora';
   if (c === COD.DSR) return 'c-dsr';
   if (c === COD.FOLGA_ESCALA) return 'c-f';
   if (c === COD.FER) return 'c-fer';
@@ -2021,7 +2237,7 @@ function desenharGrade() {
       var w2 = diaSemana(a.ano, a.mes, d2 + 1);
       var pbD = dcp[d2 + 1];
       h += '<td class="' + (w2 === 0 ? 'dom' : '') + '" title="' + esc((pbD ? pbD.txt.join('\n') + '\n\n' : '') + motivoDoDia(l, d2, a)) + '"><span class="cod ' + classeCod(l.codigos[d2]) + (pbD ? ' prob-' + pbD.grau : '') + '">'
-         + l.codigos[d2] + '</span></td>';
+         + (l.codigos[d2] === COD.FORA ? '—' : l.codigos[d2]) + '</span></td>';
     }
     h += '<td class="tot">' + n2(l.horasNormais) + '</td>';
     h += '<td class="tot">' + (l.horasDobro ? n2(l.horasDobro) : '—') + '</td>';
@@ -2056,7 +2272,8 @@ function desenharGrade() {
     ['c-fercomp', 'FER_COMP', 'feriado trabalhado e compensado (pago simples)'],
     ['c-ferdobro', 'FER_DOBRO', 'feriado trabalhado sem compensação — pagar em dobro'],
     ['c-fer59', 'FER_59A', 'feriado em 12x36 já coberto pelo salário mensal (art. 59-A)'],
-    ['c-folgacomp', 'FOLGA_COMP', 'folga compensatória de feriado']
+    ['c-folgacomp', 'FOLGA_COMP', 'folga compensatória de feriado'],
+    ['c-fora', '—', 'fora do contrato (antes da admissão ou depois do desligamento)']
   ];
   el('#legenda').innerHTML = leg.map(function (x) {
     return '<span><b class="' + x[0] + '">' + x[1] + '</b>' + x[2] + '</span>';
@@ -2095,6 +2312,7 @@ function motivoDoDia(l, i, a) {
   var fer = descricaoFeriado(fmtData(a.ano, a.mes, d));
   var comp = (l.compensados || []).filter(function (x) { return x.folga === d || x.feriado === d; })[0];
   var mov = (l.folgasMovidas || []).filter(function (m) { return m.para === d; })[0];
+  if (c === COD.FORA) return dataTxt + 'fora do contrato — ' + (l.contrato && d < l.contrato.ini ? 'admissão em ' + diaCurto(a.ano, a.mes, l.contrato.ini) : 'desligamento em ' + diaCurto(a.ano, a.mes, l.contrato ? l.contrato.fim : d)) + '. Não conta como trabalho nem folga.';
   if (c === COD.FOLGA_COMP) return dataTxt + 'folga compensatória do feriado do dia ' + (comp ? comp.feriado : '?') + ', que foi trabalhado e por isso é pago simples.' + (mov ? ' Deslocada do dia ' + mov.de + ' para não coincidir com colega do setor.' : '');
   if (c === COD.FER) return dataTxt + 'feriado (' + fer + ') não trabalhado — dia remunerado.';
   if (c === COD.FER_COMP) return dataTxt + 'feriado (' + fer + ') trabalhado; a folga compensatória é no dia ' + (comp ? comp.folga : '?') + ', então o dia é pago simples.';
@@ -2232,9 +2450,10 @@ var ROTULO_COD = {
   FER_DOBRO: ['Feriado trabalhado', 'pagar em dobro'],
   FER_59A: ['Plantão no feriado', 'coberto pelo salário (12x36)'],
   FOLGA_COMP: ['Folga compensatória', 'do feriado trabalhado'],
-  P12: ['Plantão 12h', '']
+  P12: ['Plantão 12h', ''],
+  FORA: ['Fora do contrato', 'antes da admissão ou após o desligamento']
 };
-var CURTO_COD = { DSR: 'DSR', F: 'F', FER: 'Fer', FER_COMP: 'Fer.T', FER_DOBRO: '2x', FER_59A: '12h', FOLGA_COMP: 'F.C', P12: '12h' };
+var CURTO_COD = { FORA: '—', DSR: 'DSR', F: 'F', FER: 'Fer', FER_COMP: 'Fer.T', FER_DOBRO: '2x', FER_59A: '12h', FOLGA_COMP: 'F.C', P12: '12h' };
 var fichaAtual = -1, diaSelFicha = 0;
 function minutosDe(hhmm) { var p = String(hhmm || '0:0').split(':'); return (+p[0] || 0) * 60 + (+p[1] || 0); }
 /** Horas de trabalho do turno: fim − início − intervalo (vira a meia-noite se o fim for menor). */
@@ -2350,6 +2569,17 @@ function porqueDaEscala(l, a) {
   }
   var temDepois = (l.fases || []).some(function (f) { return f >= 1; }), temAntes = (l.fases || []).some(function (f) { return f < 1; });
   if (l.escala !== '12x36') {
+    if (l.art8) {
+      it.push('<b>Exceção do art. 8º da EC 141:</b> nível superior e remuneração de pelo menos 2,5 vezes o teto do RGPS. Os limites de horas e o controle de jornada não se aplicam (salvo liberalidade do empregador ou norma coletiva), mas os 2 dias de repouso remunerado por semana continuam valendo.');
+    }
+    if (l.contrato && l.contrato.parcial) {
+      it.push('<b>Contrato no meio do mês:</b> ' + (l.contrato.ini > 1 ? 'admissão em ' + diaCurto(a.ano, a.mes, l.contrato.ini) : '')
+        + (l.contrato.ini > 1 && l.contrato.fim < a.dias ? '; ' : '') + (l.contrato.fim < a.dias ? 'desligamento em ' + diaCurto(a.ano, a.mes, l.contrato.fim) : '')
+        + '. Os dias fora do contrato aparecem como "—" e não contam; o mínimo de domingos de folga fica proporcional (' + l.minDomingos + ').');
+    }
+    if (l.excedente12x36 > 0.01) {
+      it.push('<b>12x36 acima da média:</b> ' + fmtHoras(l.excedente12x36) + ' além do limite do mês. Pelo Decreto 13.173/2026, compense com folga ou pague como hora extra, conforme a convenção ou acordo coletivo.');
+    }
     if (l.carga) {
       it.push('<b>' + (l.carga <= 6 ? 'Meio período' : 'Jornada reduzida') + ':</b> ' + fmtHoras(l.carga) + ' de trabalho por dia'
         + (cargaDe(ST.equipe.filter(function (x) { return x.nome === l.nome; })[0]) ? '' : ', calculadas pelo horário cadastrado (' + l.horario.ini + '–' + l.horario.fim + ', menos o intervalo, que não conta como hora trabalhada)') + ', ' + (l.horario && l.horario.intervalo ? 'com pausa de ' + l.horario.intervalo + ' min (acima de 4h a pausa de 15 min é obrigatória — art. 71, § 1º, da CLT)' : 'sem intervalo de almoço (até 4h a CLT não exige intervalo)')
@@ -2626,10 +2856,114 @@ function desenharSetores() {
   }).join('');
 }
 
+/* ========================================================================
+   RESUMO (tela inicial)
+   ======================================================================== */
+function desenharResumo() {
+  if (!el('#painelResumo')) return;
+  var a = ST.atual, eq = ST.equipe, hoje = new Date(); hoje.setHours(0, 0, 0, 0);
+  var porEscala = {};
+  eq.forEach(function (f) {
+    var e = f.escala || escalaSugeridaDoSetor(f.setor) || definirEscalaPorCargo(f.cargo, hoje.getFullYear(), hoje.getMonth() + 1);
+    porEscala[e] = (porEscala[e] || 0) + 1;
+  });
+  var meio = eq.filter(function (f) { return horasDoDiaFunc(f) && horasDoDiaFunc(f) <= 6; }).length;
+  var art8 = eq.filter(isentoArt8).length;
+  var setores = {}; eq.forEach(function (f) { var k = chaveSetor(f.setor); if (k) setores[k] = true; });
+  var nSet = Object.keys(setores).length, nSetCfg = Object.keys(setores).filter(function (k) { return ST.setores[k]; }).length;
+  var meses = Object.keys(ST.meses).sort();
+
+  var h = '<div class="res-topo"><h2>Resumo da empresa</h2>'
+    + '<button class="bt ambar" data-ir="equipe">Gerar ou revisar escala</button></div><div class="res-grid">';
+
+  h += '<div class="res-card"><h3>Funcionários</h3><div class="res-num">' + eq.length + '<small>cadastrados</small></div><ul class="res-lista">'
+    + Object.keys(porEscala).sort().map(function (e) { return '<li><span>' + esc(ROTULO_ESCALA[e] || e) + '</span><b>' + porEscala[e] + '</b></li>'; }).join('')
+    + (meio ? '<li><span>Meio período</span><b>' + meio + '</b></li>' : '')
+    + (art8 ? '<li><span>Exceção do art. 8º (sem controle de jornada)</span><b>' + art8 + '</b></li>' : '')
+    + '<li><span>Setores (com atividade definida)</span><b>' + nSet + ' (' + nSetCfg + ')</b></li></ul>'
+    + '<button class="bt linha2 acao" data-ir="equipe">Ver equipe</button></div>';
+
+  h += '<div class="res-card"><h3>Escalas geradas</h3><div class="res-num">' + meses.length + '<small>' + (meses.length === 1 ? 'mês guardado' : 'meses guardados') + '</small></div><ul class="res-lista">'
+    + (meses.length ? meses.slice(-4).reverse().map(function (k) { var p = k.split('-'); return '<li><span>' + MESES[+p[1] - 1] + '/' + p[0] + '</span><b>' + ST.meses[k].length + ' pessoa(s)</b></li>'; }).join('')
+                    : '<li><span>Nenhuma escala gerada ainda.</span></li>')
+    + '</ul>' + (a ? '<button class="bt linha2 acao" data-ir="escala">Abrir ' + MESES[a.mes - 1] + '/' + a.ano + '</button>' : '') + '</div>';
+
+  if (a) {
+    var vi = 0, al = 0, pessoas = 0, tipos = {};
+    a.linhas.forEach(function (l) {
+      if (l.problemas.length) pessoas++;
+      l.problemas.forEach(function (p) {
+        if (p.grau === 'vi') vi++; else al++;
+        var t = (p.lei || '').split(' — ')[0].split(';')[0];
+        tipos[t] = (tipos[t] || 0) + 1;
+      });
+    });
+    var topo = Object.keys(tipos).sort(function (x, y) { return tipos[y] - tipos[x]; }).slice(0, 4);
+    h += '<div class="res-card"><h3>Alertas — ' + MESES[a.mes - 1] + '/' + a.ano + '</h3><div class="res-num">' + (vi + al)
+      + '<small>' + vi + ' violação(ões) · ' + al + ' atenção(ões)</small></div>'
+      + '<div><span class="pill ' + (vi ? 'vi' : al ? 'al' : 'ok') + '">' + (vi ? 'Corrigir antes da folha' : al ? 'Conferir' : 'Sem pendências') + '</span> '
+      + '<span style="font-size:12px;color:var(--tinta-fraca)">' + pessoas + ' de ' + a.linhas.length + ' funcionário(s)</span></div>'
+      + (topo.length ? '<ul class="res-lista">' + topo.map(function (t) { return '<li><span>' + esc(t) + '</span><b>' + tipos[t] + '</b></li>'; }).join('') + '</ul>' : '')
+      + '<button class="bt linha2 acao" data-ir="auditoria">Ver auditoria</button></div>';
+  } else {
+    h += '<div class="res-card"><h3>Alertas</h3><div class="res-num">—</div><p style="margin:0;font-size:12.5px;color:var(--tinta-fraca)">Gere a escala de um mês para ver as violações e os pontos de atenção.</p>'
+      + '<button class="bt linha2 acao" data-ir="equipe">Gerar escala</button></div>';
+  }
+
+  var cob = a ? (a.cobertura || []) : [], falta = cob.filter(function (c) { return c.falta.length; });
+  var almVazio = a ? (a.almoco || []).filter(function (x) { return x.vazios.length; }) : [];
+  h += '<div class="res-card"><h3>Cobertura dos setores</h3>';
+  if (!a) h += '<p style="margin:0;font-size:12.5px;color:var(--tinta-fraca)">Aparece depois de gerar a escala.</p>';
+  else if (!cob.length) h += '<p style="margin:0;font-size:12.5px;color:var(--tinta-fraca)">Defina o mínimo de pessoas por dia em Equipe → Setores e atividades para o app dizer se precisa contratar.</p>';
+  else {
+    h += '<div class="res-num">' + falta.length + '<small>de ' + cob.length + ' setor(es) com falta de gente</small></div><ul class="res-lista">'
+      + cob.map(function (c) {
+          return '<li><span>' + esc(c.setor) + '</span>' + (c.falta.length
+            ? '<b style="color:var(--erro-tx)">falta em ' + c.falta.length + ' dia(s)' + (c.fechaCom ? ' · fecha com ' + c.fechaCom : '') + '</b>'
+            : '<b style="color:var(--ok-tx)">ok</b>') + '</li>';
+        }).join('') + '</ul>';
+  }
+  if (almVazio.length) h += '<div style="font-size:12px;color:var(--alerta-tx)">Almoço: ' + almVazio.map(function (x) { return esc(x.setor); }).join(', ') + ' fica(m) vazio(s) em algum dia.</div>';
+  h += (a ? '<button class="bt linha2 acao" data-ir="escala">Ver cobertura</button>' : '') + '</div>';
+
+  var passos = passosDoPlano(), prox = passos.filter(function (p) { return !(p.auto ? hoje >= p.data : ST.plano[p.id]) && p.data >= hoje; }).slice(0, 4);
+  var atrasados = passos.filter(function (p) { return !p.auto && !ST.plano[p.id] && p.data < hoje; });
+  h += '<div class="res-card"><h3>Próximas datas</h3><ul class="res-lista">'
+    + (prox.length ? prox.map(function (p) { var dd = Math.round((p.data - hoje) / 864e5);
+        return '<li><span><b>' + fmtBR(p.data) + '</b> · ' + esc(p.t) + '</span><span class="pill ' + (dd <= 7 ? 'al' : 'ok') + '">' + (dd === 0 ? 'hoje' : 'em ' + dd + ' dia(s)') + '</span></li>'; }).join('')
+                   : '<li><span>Nenhuma data pendente no plano.</span></li>')
+    + '</ul>' + (atrasados.length ? '<div><span class="pill vi">' + atrasados.length + ' passo(s) atrasado(s)</span></div>' : '')
+    + '<button class="bt linha2 acao" data-ir="plano">Ver plano EC 141</button></div>';
+
+  var dP = datasPEC(CONFIG), feitos = passos.filter(function (p) { return p.auto ? hoje >= p.data : ST.plano[p.id]; }).length;
+  var pct = passos.length ? Math.round(100 * feitos / passos.length) : 0;
+  var chave1 = dP ? dP.fase1.getFullYear() + '-' + ('0' + (dP.fase1.getMonth() + 1)).slice(-2) : '';
+  var em6x1 = eq.filter(function (f) { return f.escala === '6x1'; }).length;
+  var temVi = a && a.linhas.some(function (l) { return l.problemas.some(function (p) { return p.grau === 'vi'; }); });
+  var itens = [
+    [dP && ST.meses[chave1] ? 'ok' : 'no', 'Escala de ' + (dP ? MESES[dP.fase1.getMonth()] + '/' + dP.fase1.getFullYear() : '—') + ' (mês em que a EC 141 começa) gerada'],
+    [em6x1 ? (CONFIG.converter6x1 ? 'al' : 'no') : 'ok', em6x1 ? em6x1 + ' pessoa(s) com 6x1 escolhida à mão' + (CONFIG.converter6x1 ? ' (o app converte na vigência)' : ' — sem conversão') : 'Ninguém fixado na 6x1'],
+    [nSet && nSetCfg < nSet ? 'al' : 'ok', nSet ? nSetCfg + ' de ' + nSet + ' setor(es) com atividade e dias definidos' : 'Sem setores cadastrados'],
+    [a ? (temVi ? 'no' : 'ok') : 'al', a ? 'Última escala gerada ' + (temVi ? 'tem violações' : 'sem violações') : 'Nenhuma escala gerada nesta sessão'],
+    [falta.length ? 'no' : (cob.length ? 'ok' : 'al'), falta.length ? falta.length + ' setor(es) precisam de contratação' : (cob.length ? 'Cobertura dos setores fechada' : 'Mínimo por setor não definido')]
+  ];
+  var ruins = itens.filter(function (x) { return x[0] === 'no'; }).length, medios = itens.filter(function (x) { return x[0] === 'al'; }).length;
+  var sit = ruins ? ['vi', 'Pendências'] : medios ? ['al', 'Atenção'] : ['ok', 'Em dia'];
+  h += '<div class="res-card"><h3>Situação da adequação à EC 141</h3><div style="display:flex;align-items:center;gap:10px"><span class="pill ' + sit[0] + '" style="font-size:13px">' + sit[1] + '</span>'
+    + '<span style="font-size:12px;color:var(--tinta-fraca)">plano: ' + feitos + ' de ' + passos.length + ' passos (' + pct + '%)</span></div>'
+    + '<div class="barra" role="img" aria-label="' + pct + '% do plano concluído"><span style="width:' + pct + '%"></span></div>'
+    + itens.map(function (x) { return '<div class="chk ' + x[0] + '"><i>' + (x[0] === 'ok' ? '✓' : x[0] === 'al' ? '!' : '✗') + '</i><span>' + esc(x[1]) + '</span></div>'; }).join('')
+    + (dP ? '<div style="font-size:12px;color:var(--tinta-fraca)">2 DSR e 42h a partir de <b>' + fmtBR(dP.fase1) + '</b> · 40h a partir de <b>' + fmtBR(dP.fase2) + '</b></div>' : '')
+    + '</div>';
+  h += '</div>';
+  el('#painelResumo').innerHTML = h;
+}
+
 function desenharEquipe() {
   var tb = el('#tbEquipe tbody');
+  desenharResumo();
   if (!ST.equipe.length) {
-    tb.innerHTML = '<tr><td colspan="10" class="vazio">Nenhum funcionário cadastrado.</td></tr>';
+    tb.innerHTML = '<tr><td colspan="11" class="vazio">Nenhum funcionário cadastrado.</td></tr>';
     desenharSetores();
     return;
   }
@@ -2685,6 +3019,14 @@ function desenharEquipe() {
               }).join('')
             + '</select>'
           : '<span style="color:var(--tinta-fraca)">—</span>') + '</td>'
+      + '<td><div class="hora-func">'
+        + '<input type="date" data-i="' + i + '" data-c="admissao" value="' + esc(f.admissao || '') + '" title="Admissão (em branco = já trabalhava)" aria-label="Admissão" style="width:138px">'
+        + '<input type="date" data-i="' + i + '" data-c="desligamento" value="' + esc(f.desligamento || '') + '" title="Desligamento (em branco = segue na empresa)" aria-label="Desligamento" style="width:138px">'
+        + '<label style="display:flex;gap:4px;align-items:center;font-size:11.5px;white-space:nowrap"><input type="checkbox" data-i="' + i + '" data-c="superior"' + (f.superior === true || /^(s|sim|true|1)/.test(normTxt(f.superior)) ? ' checked' : '') + '> nível superior</label>'
+        + '<input type="text" inputmode="decimal" data-i="' + i + '" data-c="remuneracao" value="' + esc(f.remuneracao || '') + '" placeholder="Remuneração R$" title="Remuneração mensal (para o art. 8º)" aria-label="Remuneração mensal" style="width:120px">'
+        + '</div><div style="font-size:10.5px;color:var(--tinta-fraca);margin-top:2px">'
+        + (isentoArt8(f) ? '<b style="color:var(--azul-700)">exceção do art. 8º — sem controle de jornada</b>' : (f.admissao || f.desligamento ? 'contrato com datas' : 'em branco = mês inteiro'))
+        + '</div></td>'
       + '<td><button class="mini" data-rm="' + i + '">remover</button></td>'
       + '</tr>';
   }).join('');
@@ -2757,6 +3099,11 @@ var DEF_PARAMS = [
   { k: 'jornadaEtapa1', rot: 'Jornada diária na 1ª etapa (42h semanais)', tipo: 'sel',
     ops: [['8', '8h por dia — 40h na semana (padrão)'], ['8.4', '8h24 por dia — usa as 42h inteiras (liminar do STF ou acordo coletivo)']],
     ajuda: 'Vale para 5x2 e 5x2 com rodízio entre 16/12/2026 e 15/12/2027. A liminar do ministro Flávio Dino (STF, 12/11/2026) permite distribuir as 42h em 5 dias, com até 8h24 por dia; o tema ainda será julgado no plenário. Com 8h por dia a escala já fica dentro do limite em qualquer cenário.' },
+  { k: 'excedente12x36', rot: '12x36 acima da média semanal permitida', tipo: 'sel',
+    ops: [['apontar', 'Manter os plantões e apontar as horas excedentes para compensar ou pagar (Decreto 13.173/2026)'], ['suprimir', 'Suprimir plantões até o teto de horas da 12x36']],
+    ajuda: 'O Decreto 13.173/2026 manteve a 12x36 e prevê compensação ou pagamento de horas extras quando a média mensal passa do limite semanal da etapa (42h, depois 40h). O padrão mantém a alternância dia sim, dia não e mostra quantas horas excedem: limite semanal × dias do mês ÷ 7. Suprimir plantões fica como opção para quem prefere fechar no teto.' },
+  { k: 'tetoRGPS', rot: 'Teto do RGPS (INSS) em R$ — exceção do art. 8º da EC 141', tipo: 'dec', min: 0, max: 100000,
+    ajuda: 'O art. 8º da EC 141 tira das regras de duração e controle da jornada quem tem diploma de nível superior e remuneração de pelo menos 2,5 vezes o teto do RGPS (2026: R$ 8.475,55 → R$ 21.188,88), salvo liberalidade do empregador ou norma coletiva. Os 2 dias de repouso continuam valendo. Atualize o teto quando sair a portaria do ano.' },
   { k: 'converter6x1', rot: 'Funcionário em 6x1 na vigência da EC 141', tipo: 'sel',
     ops: [['true', 'Converter automaticamente para 5x2 com rodízio'], ['false', 'Manter 6x1 (só para simular o impacto — a auditoria aponta violação)']],
     ajuda: 'Na conversão, os dias de folga passam a ser dois por semana, em dias que variam por funcionário para a operação seguir coberta, e o rodízio de domingos (art. 386 da CLT e Lei 10.101/2000) continua valendo. A jornada diária fica em 8h, o que dá 40h por semana — dentro do limite das duas fases.' },
@@ -2784,7 +3131,9 @@ function desenharParams() {
     h += '<div style="padding:13px 0;border-bottom:1px solid var(--linha)">';
     h += '<div class="linha" style="align-items:center">';
     h += '<label class="campo" style="flex:1;min-width:280px"><span style="font-size:13px;color:var(--tinta)">' + p.rot + '</span>';
-    if (p.tipo === 'num') {
+    if (p.tipo === 'dec') {
+      h += '<input type="number" step="0.01" data-p="' + p.k + '" value="' + CONFIG[p.k] + '" min="' + p.min + '" max="' + p.max + '" style="width:140px">';
+    } else if (p.tipo === 'num') {
       h += '<input type="number" data-p="' + p.k + '" value="' + CONFIG[p.k] + '" min="' + p.min + '" max="' + p.max + '" style="width:120px">';
     } else if (p.tipo === 'data') {
       h += '<input type="date" data-p="' + p.k + '" value="' + esc(CONFIG[p.k]) + '" style="width:170px">';
@@ -2860,7 +3209,13 @@ function desenharAjuda() {
     ['Mínimo por dia e "precisa contratar?"', 'Com o mínimo definido, o setor nunca deixa folgar mais que (pessoas − mínimo) no mesmo dia, se der. Onde não der, o app conta os dias e as semanas com falta e simula a contratação de 1 a 8 pessoas no setor para dizer com quantas a escala fecha. Setor que não abre todo dia fica fechado no feriado.'],
     ['Jornada de 8h24 na 1ª etapa', 'A liminar do STF (min. Flávio Dino, 12/11/2026) permite distribuir as 42h em 5 dias, com até 8h24 por dia, até 15/12/2027. É opcional, em Parâmetros; o padrão de 8h por dia já cumpre a regra. O Decreto 13.173/2026 fixou os divisores 210 (42h) e 200 (40h) e manteve a 12x36.'],
     ['Horário de cada funcionário e almoço', 'Cada funcionário pode ter entrada, saída, início do almoço e intervalo próprios (aba Equipe); em branco, vale o horário do turno (aba Parâmetros). O app avisa quando o horário, sem o intervalo, passa da jornada do dia (hora extra todo dia), quando o descanso entre a saída e a entrada do dia seguinte fica abaixo de 11h (art. 66 da CLT) e quando o intervalo é menor que 1h em jornada acima de 6h (art. 71; 30 min só com convenção ou acordo coletivo). Em setor marcado como “não fecha no almoço”, o app intercala o almoço de quem não informou horário (um às 11h, outro às 12h…) e mostra os dias em que o setor ficaria vazio no almoço.'],
+    ['Horas extras por dia', 'Se o horário cadastrado passar da jornada do dia, a diferença é hora extra (atenção). Se passar de 2h além da jornada, é violação: o máximo é 2 horas extras por dia (art. 59 da CLT).'],
     ['Meio período', 'Na coluna Jornada, escolha Meio período 4h, 5h ou 6h. Meio período não tem almoço: até 4h por dia a CLT não exige intervalo; acima de 4h (até 6h) a pausa de 15 min é obrigatória (art. 71, § 1º). Sem saída informada, o app calcula pela entrada. As horas da escala passam a ser as do meio período, e a auditoria confere o limite de 30h por semana do regime de tempo parcial (art. 58-A da CLT). Os dias de folga seguem a regra da escala, como os colegas.'],
+    ['Exceção do art. 8º da EC 141', 'Quem tem diploma de nível superior e remuneração mensal de pelo menos 2,5 vezes o teto do RGPS (2026: R$ 8.475,55 × 2,5 = R$ 21.188,88) fica fora das regras de duração e de controle da jornada, salvo liberalidade do empregador ou norma coletiva. Marque “nível superior” e informe a remuneração na aba Equipe: o app deixa de conferir horas, horário e intervalos dessa pessoa, mas continua exigindo os 2 dias de repouso remunerado por semana (art. 7º, XV) e o § 2º. O teto do RGPS é um parâmetro, para atualizar a cada ano.'],
+    ['12x36 e o Decreto 13.173/2026', 'A 12x36 continua permitida. Quando a média do mês passa do limite semanal da etapa (42h, depois 40h), o excedente deve ser compensado ou pago como hora extra, conforme a convenção ou acordo coletivo. Por padrão o app mantém a alternância dia sim, dia não e mostra as horas excedentes: horas do mês menos (limite semanal × dias do mês ÷ 7). Suprimir plantões até um teto continua disponível em Parâmetros.'],
+    ['Semana que cruza a virada do mês', 'A semana vai de segunda a domingo, mesmo quando começa num mês e termina no outro. O app guarda as horas e os códigos de cada dia do mês gerado e, no mês seguinte, confere a semana inteira: horas (limite da etapa) e DSR (1 antes da EC 141, 2 depois). Ele também já monta a escala sabendo quantos dias a pessoa trabalhou e quantos DSR teve nessa semana. Por isso, gere os meses em sequência.'],
+    ['Admissão e desligamento no meio do mês', 'Informe as datas na aba Equipe (coluna Contrato) ou na planilha. Os dias fora do contrato aparecem como “—”: não contam como trabalho, folga ou DSR, ficam fora da regra de setor e da cobertura, e o mínimo de domingos de folga fica proporcional. Quem foi admitido depois do mês, ou desligado antes dele, não entra na escala daquele mês.'],
+    ['Trocas automáticas por setor', 'Quando duas pessoas do mesmo setor folgariam juntas, o app troca a folga de uma delas por um dia próximo, mas só dentro da mesma semana (segunda a domingo). Assim a contagem de DSR de nenhuma semana muda. Com mínimo de pessoas por dia definido para o setor, quem manda é o mínimo: podem folgar juntos todos menos o mínimo.'],
     ['DSR seguidos não são erro', 'O app conta a semana de segunda a domingo. Quando o domingo de folga fecha uma semana e a folga do rodízio é a segunda-feira seguinte, aparecem dois DSR lado a lado — um de cada semana. A lei fixa o mínimo de repousos por semana; não proíbe repousos vizinhos nem exige que os dois dias da EC 141 sejam seguidos. A aba Escala mostra a leitura semana a semana de cada funcionário.'],
     ['12x36 e a EC 141', 'A 12x36 dá média de 42h semanais: cabe na 1ª etapa, mas passa das 40h da 2ª. A emenda não cita a 12x36. Há quem entenda que o art. 59-A da CLT (acordo individual, convenção ou acordo coletivo) continua valendo e quem sustente que, a partir das 40h, ela depende de convenção ou acordo coletivo pelo novo § 2º do art. 7º. O app só alerta; a recomendação prudente é formalizar por CCT/ACT.'],
     ['Turno é rótulo, não jornada', 'M, T, N e D (dia todo) marcam em que turno a pessoa trabalha. A quantidade de horas do dia vem da ESCALA, não do turno: 8h na 5x2 e na 5x2 com rodízio, 7h20 na 6x1 e 12h na 12x36. Escolher "dia todo" não muda o total de horas do mês.'],
@@ -2878,6 +3233,7 @@ function desenharAjuda() {
     ['Legenda com granularidade de folha', 'Cada código diz sozinho qual é a consequência no pagamento, para a folha não ter que adivinhar.']
   ];
   var passos = [
+    ['Comece pelo Resumo', 'A aba <b>Resumo</b> abre primeiro e mostra a situação da empresa: funcionários por escala, meses de escala gerados, violações e pontos de atenção da última escala, setores com falta de gente, próximas datas do plano e a situação da adequação à EC 141. Cada cartão tem um botão que leva à aba certa.'],
     ['Cadastre a equipe', 'Na aba <b>Equipe</b>, o jeito mais rápido é a planilha: clique em <b>Baixar planilha modelo</b>, preencha a aba <b>Equipe</b> (uma pessoa por linha: nome, cargo, turno, sexo, setor, entrada, saída, início do almoço, intervalo e escala) e, se quiser, a aba <b>Setores</b> (atividade, dias que funciona, mínimo por dia e almoço). Salve e clique em <b>Importar planilha</b> — aceita .xlsx e .csv. Também dá para copiar as linhas do Excel e colar em <b>Colar lista…</b>, adicionar uma a uma ou usar <b>Carregar exemplo</b> / <b>Exemplo de fazenda</b>.'],
     ['Confira cada coluna', '<b>Setor</b>: preencha quando pessoas do mesmo setor não puderem folgar no mesmo dia (ex.: dois caixas). <b>Sexo</b>: define o mínimo de domingos de folga. <b>Turno</b>: só o rótulo do dia trabalhado (M, T, N, D). <b>Escala</b>: “auto” sugere pelo cargo; troque se precisar. <b>Folga semanal</b>: só na 6x1 — dia fixo ou variável.'],
     ['Configure os setores', 'Logo abaixo da lista, em <b>Setores e atividades</b>, escolha a <b>atividade</b> de cada setor (leite, gado, café, lavoura, comércio, escritório, portaria…) e marque os <b>dias em que o setor funciona</b> — dia desmarcado vira folga fixa de todos. Informe o <b>mínimo de pessoas trabalhando por dia</b> para o app dizer se precisa contratar, e marque <b>“não fecha no almoço”</b> para o app intercalar o almoço da equipe. Na lista de funcionários, preencha entrada, saída e almoço de quem tiver horário próprio.'],
@@ -3116,7 +3472,7 @@ function pacoteXlsx(abas) {
     + '<fills count="7">'
     + '<fill><patternFill patternType="none"/></fill>'
     + '<fill><patternFill patternType="gray125"/></fill>'
-    + '<fill><patternFill patternType="solid"><fgColor rgb="FF0C447C"/><bgColor indexed="64"/></patternFill></fill>'
+    + '<fill><patternFill patternType="solid"><fgColor rgb="FF09509E"/><bgColor indexed="64"/></patternFill></fill>'
     + '<fill><patternFill patternType="solid"><fgColor rgb="FFE6F6EC"/><bgColor indexed="64"/></patternFill></fill>'
     + '<fill><patternFill patternType="solid"><fgColor rgb="FFFDEAEA"/><bgColor indexed="64"/></patternFill></fill>'
     + '<fill><patternFill patternType="solid"><fgColor rgb="FFFDF0DA"/><bgColor indexed="64"/></patternFill></fill>'
@@ -3429,8 +3785,10 @@ var EXEMPLO = [
    IMPORTAÇÃO DA EQUIPE  (planilha .xlsx, .csv ou texto colado)
    ======================================================================== */
 
-var COLUNAS_EQUIPE = ['Nome', 'Cargo', 'Turno', 'Sexo', 'Setor', 'Entrada', 'Saída', 'Início do almoço', 'Intervalo (min)', 'Escala', 'Jornada'];
-var CAMPOS_EQUIPE = ['nome', 'cargo', 'turno', 'sexo', 'setor', 'hIni', 'hFim', 'hAlmoco', 'intervalo', 'escala', 'carga'];
+var COLUNAS_EQUIPE = ['Nome', 'Cargo', 'Turno', 'Sexo', 'Setor', 'Entrada', 'Saída', 'Início do almoço', 'Intervalo (min)', 'Escala', 'Jornada',
+                      'Admissão', 'Desligamento', 'Nível superior', 'Remuneração (R$)'];
+var CAMPOS_EQUIPE = ['nome', 'cargo', 'turno', 'sexo', 'setor', 'hIni', 'hFim', 'hAlmoco', 'intervalo', 'escala', 'carga',
+                     'admissao', 'desligamento', 'superior', 'remuneracao'];
 
 function normTxt(x) {
   return String(x == null ? '' : x).normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim();
@@ -3439,6 +3797,10 @@ function normTxt(x) {
 function campoDoCabecalho(h) {
   var t = normTxt(h).replace(/[^a-z0-9]/g, '');
   if (!t) return null;
+  if (/admiss/.test(t)) return 'admissao';
+  if (/deslig|demiss|rescis/.test(t)) return 'desligamento';
+  if (/superior|diploma|graduac/.test(t)) return 'superior';
+  if (/remunera|salario/.test(t)) return 'remuneracao';
   if (/^nome|funcionario|colaborador/.test(t)) return 'nome';
   if (/cargo|funcao/.test(t)) return 'cargo';
   if (/setor|area|departamento/.test(t)) return 'setor';
@@ -3465,6 +3827,18 @@ function normHora(v) {
   var h = +r[1], mi = +(r[2] || 0);
   if (h > 23 || mi > 59) return '';
   return (h < 10 ? '0' : '') + h + ':' + (mi < 10 ? '0' : '') + mi;
+}
+/** 15/03/2027, 2027-03-15 ou número de série do Excel -> "2027-03-15". */
+function normData(v) {
+  if (v == null || v === '') return '';
+  if (typeof v === 'number' || /^\d{5}(\.\d+)?$/.test(String(v).trim())) {
+    var dt = new Date(Date.UTC(1899, 11, 30) + Math.floor(+v) * 864e5);
+    return dt.getUTCFullYear() + '-' + ('0' + (dt.getUTCMonth() + 1)).slice(-2) + '-' + ('0' + dt.getUTCDate()).slice(-2);
+  }
+  var t = String(v).trim(), m = t.match(/^(\d{1,2})[\/.-](\d{1,2})[\/.-](\d{2,4})$/);
+  if (m) { var y = +m[3]; if (y < 100) y += 2000; return y + '-' + ('0' + m[2]).slice(-2) + '-' + ('0' + m[1]).slice(-2); }
+  m = t.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  return m ? m[1] + '-' + m[2] + '-' + m[3] : '';
 }
 function normTurno(v) {
   var t = normTxt(v);
@@ -3513,6 +3887,11 @@ function importarEquipe(linhas, substituir) {
       f.intervalo = String(iv > 0 && iv < 1 ? Math.round(iv * 1440) : iv);   // "01:00" do Excel vira fração do dia
     }
     f.escala = normEscala(r.escala);
+    var da = normData(r.admissao), dd = normData(r.desligamento);
+    if (da) f.admissao = da;
+    if (dd) f.desligamento = dd;
+    if (/^(s|sim|x|true|1)/.test(normTxt(r.superior))) f.superior = true;
+    if (r.remuneracao !== '' && r.remuneracao != null && numeroBR(r.remuneracao) > 0) f.remuneracao = String(numeroBR(r.remuneracao));
     var cg = normTxt(r.carga), mn = String(cg).match(/(\d+(?:[.,]\d+)?)/), num = mn ? parseFloat(mn[1].replace(',', '.')) : NaN;
     if (/meio|parcial/.test(cg) || (num > 0 && num < 8)) f.carga = String(num > 0 && num < 8 ? num : 4);
     n++;
@@ -3678,12 +4057,13 @@ var LISTAS_MODELO = {
   jornada: ['Integral', 'Meio período 4h', 'Meio período 5h', 'Meio período 6h'],
   intervalo: ['0', '15', '30', '60', '90', '120'],
   dias: ['todos', 'seg a sab', 'seg a sex', 'seg a qui', 'ter a dom', 'ter a sab'],
-  almoco: ['não', 'sim']
+  almoco: ['não', 'sim'],
+  superior: ['não', 'sim']
 };
 function baixarModelo() {
   var L = LISTAS_MODELO, atividades = MODELOS_SETOR.map(function (m) { return m.nome; });
   var listas = [['Turno', L.turno], ['Sexo', L.sexo], ['Escala', L.escala], ['Jornada', L.jornada],
-                ['Intervalo', L.intervalo], ['Atividade', atividades], ['Dias', L.dias], ['Almoço', L.almoco]];
+                ['Intervalo', L.intervalo], ['Atividade', atividades], ['Dias', L.dias], ['Almoço', L.almoco], ['Superior', L.superior]];
   // Aba oculta "Listas": uma coluna por lista; as caixinhas apontam para ela.
   var maxL = Math.max.apply(null, listas.map(function (x) { return x[1].length; }));
   var lLis = [];
@@ -3694,26 +4074,28 @@ function baixarModelo() {
   };
   var N_EQ = 300, N_SET = 40;
 
-  var cEq = COLUNAS_EQUIPE.map(function (t, i) { return { t: t, w: [28, 24, 12, 13, 18, 10, 10, 16, 14, 14, 18][i] }; });
+  var cEq = COLUNAS_EQUIPE.map(function (t, i) { return { t: t, w: [28, 24, 12, 13, 18, 10, 10, 16, 14, 14, 18, 13, 14, 14, 17][i] }; });
   // Linhas em branco já com o padrão nas caixinhas: só falta nome, cargo, setor e sexo.
   var lEqVazia = [];
-  for (var r = 0; r < N_EQ; r++) lEqVazia.push(['', '', 'Manhã', '', '', '', '', '', '', 'auto', 'Integral']);
+  for (var r = 0; r < N_EQ; r++) lEqVazia.push(['', '', 'Manhã', '', '', '', '', '', '', 'auto', 'Integral', '', '', 'não', '']);
   var valEq = function (fim) {
     return [
       { col: 2, ini: 2, fim: fim, lista: ref('Turno'), titulo: 'Turno', dica: 'Manhã, Tarde, Noite ou Dia todo.' },
       { col: 3, ini: 2, fim: fim, lista: ref('Sexo'), titulo: 'Sexo', dica: 'Define o mínimo de domingos de folga.' },
       { col: 8, ini: 2, fim: fim, lista: ref('Intervalo'), livre: true, titulo: 'Intervalo (min)', dica: 'Minutos de almoço ou pausa. Em branco = o do turno.' },
       { col: 9, ini: 2, fim: fim, lista: ref('Escala'), titulo: 'Escala', dica: 'auto = o app escolhe pelo setor ou cargo.' },
-      { col: 10, ini: 2, fim: fim, lista: ref('Jornada'), titulo: 'Jornada', dica: 'Integral ou meio período (sem almoço).' }
+      { col: 10, ini: 2, fim: fim, lista: ref('Jornada'), titulo: 'Jornada', dica: 'Integral ou meio período (sem almoço).' },
+      { col: 13, ini: 2, fim: fim, lista: ref('Superior'), titulo: 'Nível superior', dica: 'Para a exceção do art. 8º da EC 141 (com remuneração ≥ 2,5x o teto do INSS).' }
     ];
   };
   var lEq = [
-    ['João Batista', 'Ordenhador', 'Manhã', 'Masculino', 'Ordenha', '04:30', '13:30', '08:30', 60, 'auto', 'Integral'],
-    ['Maria Aparecida', 'Ordenhadora', 'Manhã', 'Feminino', 'Ordenha', '04:30', '13:30', '09:30', 60, 'auto', 'Integral'],
-    ['Ana Paula Silva', 'Analista Contábil', 'Dia todo', 'Feminino', 'Escritório', '08:00', '17:00', '12:00', 60, '5x2', 'Integral'],
-    ['Júlia Castro', 'Recepcionista', 'Tarde', 'Feminino', 'Escritório', '13:00', '17:00', '', 0, '5x2', 'Meio período 4h'],
-    ['Débora Lima', 'Analista DP', 'Manhã', 'Feminino', 'Escritório', '07:00', '13:15', '10:00', 15, '5x2', 'Meio período 6h'],
-    ['Marcos Souza', 'Porteiro', 'Noite', 'Masculino', 'Portaria', '19:00', '07:00', '', 60, '12x36', 'Integral']
+    ['João Batista', 'Ordenhador', 'Manhã', 'Masculino', 'Ordenha', '04:30', '13:30', '08:30', 60, 'auto', 'Integral', '', '', 'não', ''],
+    ['Maria Aparecida', 'Ordenhadora', 'Manhã', 'Feminino', 'Ordenha', '04:30', '13:30', '09:30', 60, 'auto', 'Integral', '15/01/2027', '', 'não', ''],
+    ['Ana Paula Silva', 'Analista Contábil', 'Dia todo', 'Feminino', 'Escritório', '08:00', '17:00', '12:00', 60, '5x2', 'Integral', '', '', 'não', ''],
+    ['Júlia Castro', 'Recepcionista', 'Tarde', 'Feminino', 'Escritório', '13:00', '17:00', '', 0, '5x2', 'Meio período 4h', '', '', 'não', ''],
+    ['Débora Lima', 'Analista DP', 'Manhã', 'Feminino', 'Escritório', '07:00', '13:15', '10:00', 15, '5x2', 'Meio período 6h', '', '', 'não', ''],
+    ['Carla Mendes', 'Diretora financeira', 'Dia todo', 'Feminino', 'Escritório', '08:00', '18:00', '12:00', 60, '5x2', 'Integral', '', '', 'sim', '25.000,00'],
+    ['Marcos Souza', 'Porteiro', 'Noite', 'Masculino', 'Portaria', '19:00', '07:00', '', 60, '12x36', 'Integral', '', '20/01/2027', 'não', '']
   ];
   var cSet = [{ t: 'Setor', w: 18 }, { t: 'Atividade', w: 32 }, { t: 'Dias que funciona', w: 22 }, { t: 'Mínimo trabalhando por dia', w: 16 }, { t: 'Não fecha no almoço', w: 16 }];
   var lSetVazia = [];
@@ -3744,6 +4126,8 @@ function baixarModelo() {
     ['Intervalo (min)', 'Lista com 0, 15, 30, 60, 90 ou 120 (aceita outro valor). Em branco = o do turno. Acima de 6h de trabalho o mínimo é 60 min; de 4h a 6h, 15 min (art. 71 da CLT).'],
     ['Escala', 'Lista: auto, 5x2, 5x2 rodízio, 6x1 ou 12x36. "auto" = o app escolhe pelo setor ou pelo cargo.'],
     ['Jornada', 'Lista: Integral, Meio período 4h, 5h ou 6h. Meio período não tem almoço (até 4h sem intervalo; acima de 4h, pausa de 15 min) e limite de 30h por semana (art. 58-A da CLT). Com "Integral" e um horário de menos de 8h, o app usa as horas do horário.'],
+    ['Admissão / Desligamento', 'Data, ex.: 15/01/2027. Em branco = trabalha o mês inteiro. Os dias fora do contrato aparecem como "—" e não contam como trabalho nem folga; o mínimo de domingos de folga fica proporcional.'],
+    ['Nível superior / Remuneração', 'Para a exceção do art. 8º da EC 141: com diploma de nível superior ("sim") e remuneração mensal de pelo menos 2,5 vezes o teto do INSS (2026: R$ 21.188,88), o app não confere limites de horas nem controle de jornada — só os 2 dias de repouso remunerado. Salvo liberalidade do empregador ou norma coletiva.'],
     ['Aba Setores — Atividade', 'Lista com as ' + atividades.length + ' atividades do app. Define os dias que o setor funciona e a escala padrão.'],
     ['Aba Setores — Dias', 'Lista: todos, seg a sab, seg a sex… ou escreva os dias, ex.: "seg, ter, qui, sex, sab". Dia que não aparece vira folga fixa do setor.'],
     ['Aba Setores — Mínimo', 'Quantas pessoas do setor precisam estar trabalhando em cada dia. O app avisa se precisa contratar.'],
@@ -3801,6 +4185,11 @@ function iniciar() {
   desenharMeses();
   desenharAjuda();
   desenharPlano();
+  desenharResumo();
+  el('#painelResumo').addEventListener('click', function (ev) {
+    var b = ev.target.closest('[data-ir]');
+    if (b) irPara(b.dataset.ir);
+  });
 
   // navegação
   els('nav button').forEach(function (b) {
@@ -3844,16 +4233,16 @@ function iniciar() {
   });
   el('#tbEquipe').addEventListener('input', function (ev) {
     var t = ev.target;
-    if (t.dataset.i == null) return;
+    if (t.dataset.i == null || t.type === 'checkbox') return;
     ST.equipe[+t.dataset.i][t.dataset.c] = t.value;
     salvar();
   });
   el('#tbEquipe').addEventListener('change', function (ev) {
     var t = ev.target;
     if (t.dataset.i == null) return;
-    ST.equipe[+t.dataset.i][t.dataset.c] = t.value;
+    ST.equipe[+t.dataset.i][t.dataset.c] = t.type === 'checkbox' ? t.checked : t.value;
     salvar();
-    if (['cargo', 'escala', 'carga', 'hIni', 'hFim', 'turno'].indexOf(t.dataset.c) !== -1) desenharEquipe();
+    if (['cargo', 'escala', 'carga', 'hIni', 'hFim', 'turno', 'superior', 'remuneracao', 'admissao', 'desligamento'].indexOf(t.dataset.c) !== -1) desenharEquipe();
   });
   el('#tbEquipe').addEventListener('click', function (ev) {
     var i = ev.target.dataset.rm;
@@ -3925,7 +4314,7 @@ function iniciar() {
     var id = ev.target.dataset.plano;
     if (!id) return;
     if (ev.target.checked) ST.plano[id] = true; else delete ST.plano[id];
-    salvar(); desenharPlano();
+    salvar(); desenharPlano(); desenharResumo();
   });
 
   // setores e atividades
@@ -3961,7 +4350,7 @@ function iniciar() {
     var t = ev.target;
     if (t.dataset.p) {
       var v = t.value;
-      if (t.type === 'number') v = parseInt(v, 10);
+      if (t.type === 'number') v = (String(t.step).indexOf('.') !== -1) ? parseFloat(v) : parseInt(v, 10);
       else if (v === 'true' || v === 'false') v = (v === 'true');
       CONFIG[t.dataset.p] = v;
       salvar();
@@ -4058,7 +4447,7 @@ function iniciar() {
   if (!armazenamentoOk()) el('#avisoArmazenamento').hidden = false;
 
   if (!ST.equipe.length) {
-    el('#tbEquipe tbody').innerHTML = '<tr><td colspan="10" class="vazio">Nenhum funcionário cadastrado. Clique em <b>Adicionar funcionário</b> ou em <b>Carregar exemplo</b>.</td></tr>';
+    el('#tbEquipe tbody').innerHTML = '<tr><td colspan="11" class="vazio">Nenhum funcionário cadastrado. Clique em <b>Adicionar funcionário</b> ou em <b>Carregar exemplo</b>.</td></tr>';
   }
 }
 
