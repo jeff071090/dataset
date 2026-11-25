@@ -185,6 +185,18 @@ td input:hover,td select:hover{border-color:var(--linha);background:#fff}
 .ficha-num{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 12px}
 body.modal-aberto{overflow:hidden}
 @media (max-width:640px){.cab-versao{display:none}}
+/* ---------------------------------------------------------------- dias apontados pela auditoria */
+.cod.prob-vi{box-shadow:0 0 0 2px var(--erro-tx)}
+.cod.prob-al{box-shadow:0 0 0 2px var(--ambar)}
+.cal .dia.prob-vi{box-shadow:inset 0 0 0 3px var(--erro-tx)}
+.cal .dia.prob-al{box-shadow:inset 0 0 0 3px var(--ambar)}
+.cal .dia .marca{position:absolute;top:4px;right:5px;font-size:10px;font-weight:800;border-radius:8px;padding:0 5px;color:#fff}
+.cal .dia.prob-vi .marca{background:var(--erro-tx)}
+.cal .dia.prob-al .marca{background:var(--alerta-tx)}
+.dias-aviso{margin-top:4px;display:flex;flex-wrap:wrap;gap:4px;align-items:center;font-size:11.5px;color:var(--tinta-fraca)}
+.dchip{display:inline-block;border-radius:10px;padding:1px 7px;font-size:11px;font-weight:600}
+.dchip.vi{background:var(--erro-bg);color:var(--erro-tx)}
+.dchip.al{background:var(--alerta-bg);color:var(--alerta-tx)}
 /* ---------------------------------------------------------------- dias de funcionamento */
 .dias-op{display:flex;flex-wrap:wrap;gap:4px}
 .dia-chip{display:inline-flex;align-items:center;justify-content:center;min-width:40px;padding:4px 6px;border:1px solid var(--linha);border-radius:14px;font-size:11.5px;font-weight:600;cursor:pointer;background:#fff;color:var(--tinta-fraca);user-select:none;text-decoration:line-through}
@@ -247,7 +259,7 @@ body.modal-aberto{overflow:hidden}
     <h1>Escala de Trabalho com Compliance CLT</h1>
     <p>Digital para você ter mais tempo.</p>
   </div>
-  <div class="cab-versao naoimprime">v1.6 &middot; EC 141/2026 &middot; 100% offline</div>
+  <div class="cab-versao naoimprime">v1.7 &middot; EC 141/2026 &middot; 100% offline</div>
 </header>
 
 <div id="avisoArmazenamento" class="naoimprime" hidden>
@@ -297,7 +309,7 @@ body.modal-aberto{overflow:hidden}
           <th style="width:130px" title="Pessoas do mesmo setor não folgam no mesmo dia (limite na aba Parâmetros)">Setor</th>
           <th style="width:112px" title="Mínimo de domingos de folga por mês: 2 para mulher (art. 386 da CLT), 1 para homem">Sexo</th>
           <th style="width:118px">Turno</th>
-          <th title="Em branco = horário do turno (aba Parâmetros)">Horário <span style="font-weight:400">(entrada · saída · almoço · intervalo min)</span></th>
+          <th title="Em branco = horário do turno (aba Parâmetros)">Jornada e horário <span style="font-weight:400">(entrada · saída · almoço · intervalo min)</span></th>
           <th style="width:112px">Escala</th>
           <th style="width:136px" title="Só vale na 6x1">Folga semanal</th>
           <th style="width:58px"></th>
@@ -317,7 +329,7 @@ body.modal-aberto{overflow:hidden}
       <button class="mini" id="btLimparEquipe" style="margin-left:auto">Limpar equipe</button>
     </div>
     <div id="areaColar" hidden style="margin-top:14px">
-      <p class="sub" style="margin:0 0 6px">Uma pessoa por linha, separando com ponto e vírgula ou tabulação: <code>Nome; Cargo; Turno; Sexo; Setor; Entrada; Saída; Início do almoço; Intervalo; Escala</code>. Do turno em diante é tudo opcional. Dá para copiar as linhas direto da planilha modelo (com ou sem o cabeçalho) e colar aqui.</p>
+      <p class="sub" style="margin:0 0 6px">Uma pessoa por linha, separando com ponto e vírgula ou tabulação: <code>Nome; Cargo; Turno; Sexo; Setor; Entrada; Saída; Início do almoço; Intervalo; Escala; Jornada</code>. Do turno em diante é tudo opcional. Dá para copiar as linhas direto da planilha modelo (com ou sem o cabeçalho) e colar aqui.</p>
       <textarea id="txColar" placeholder="Ana Paula Silva; Analista Contábil; M; F; Administrativo&#10;Roberto Carlos; Atendente de Vendas; T; M; Loja&#10;Fernanda Rocha; Vendedora; D; F; Loja"></textarea>
       <div class="linha" style="margin-top:8px">
         <button class="bt" id="btImportar">Importar</button>
@@ -378,7 +390,7 @@ body.modal-aberto{overflow:hidden}
     <div class="nota" id="notaEscala" hidden>
       <b>Limites desta planilha</b>
       <ol>
-        <li>A <b>interjornada de 11h</b> (art. 66 da CLT) não é validada integralmente: a entrada de dados não tem horário de entrada e saída. O app só aponta plantões 12x36 em dias adjacentes.</li>
+        <li>A <b>interjornada de 11h</b> (art. 66 da CLT) é conferida pelo horário de cada funcionário (aba Equipe), considerado igual em todos os dias trabalhados.</li>
         <li>Os <b>tetos de horas</b> são parâmetros de referência, não valores fixados pela CLT — confira contra a CCT/ACT da categoria.</li>
         <li>A leitura adotada para <b>feriado na 12x36</b> está na aba Parâmetros e é controvérsia viva, não ponto pacífico.</li>
         <li>Isto <b>não substitui</b> advogado trabalhista, contador ou o setor de RH responsável antes de uso em folha de pagamento.</li>
@@ -446,7 +458,7 @@ body.modal-aberto{overflow:hidden}
 </main>
 
 <div class="rodape">
-  <b>Prisma Contabilidade</b> &middot; Escala CLT v1.6 &middot; roda 100% no seu computador, sem internet e sem enviar dado nenhum para fora.
+  <b>Prisma Contabilidade</b> &middot; Escala CLT v1.7 &middot; roda 100% no seu computador, sem internet e sem enviar dado nenhum para fora.
 </div>
 
 <div id="modalFunc" class="modal-fundo" hidden>
@@ -466,7 +478,7 @@ body.modal-aberto{overflow:hidden}
    é portado 1:1 do gerador_escala_clt.gs da skill escala-clt-sheets.
    ========================================================================== */
 
-var VERSAO = '1.6';
+var VERSAO = '1.7';
 
 /* ----------------------------------------------------- configuração padrão */
 var PADRAO = {
@@ -615,6 +627,39 @@ function resumoRegime(ano, mes) {
   }
   return partes.join(' · ');
 }
+/** "seg 07/12" — aceita dia 0 ou negativo (cai no mês anterior). */
+function diaCurto(ano, mes, d) {
+  var dt = new Date(ano, mes - 1, d);
+  return DS_CURTO[dt.getDay()] + ' ' + (dt.getDate() < 10 ? '0' : '') + dt.getDate() + '/' + (dt.getMonth() < 9 ? '0' : '') + (dt.getMonth() + 1);
+}
+/** Lista de dias em faixas legíveis: "de seg 07/12 a sex 11/12; dom 13/12". */
+function faixasTxt(ano, mes, dias) {
+  var ds = dias.slice().sort(function (a, b) { return a - b; }), grupos = [];
+  ds.forEach(function (d) {
+    var g = grupos[grupos.length - 1];
+    if (g && d === g[1] + 1) g[1] = d; else grupos.push([d, d]);
+  });
+  return grupos.map(function (g) {
+    if (g[0] === g[1]) return diaCurto(ano, mes, g[0]);
+    if (g[1] === g[0] + 1) return diaCurto(ano, mes, g[0]) + ' e ' + diaCurto(ano, mes, g[1]);
+    return 'de ' + diaCurto(ano, mes, g[0]) + ' a ' + diaCurto(ano, mes, g[1]);
+  }).join('; ');
+}
+function intervaloDias(a, b) { var o = []; for (var d = a; d <= b; d++) o.push(d); return o; }
+/**
+ * Sequências de trabalho acima do limite, contando os dias herdados do mês
+ * anterior (carry). ini pode ser 0 ou negativo: são dias do mês anterior.
+ */
+function sequenciasLongas(codigos, carry, limite) {
+  var out = [], cur = carry || 0, ini = 1 - (carry || 0);
+  for (var i = 0; i < codigos.length; i++) {
+    if (!ehDescanso(codigos[i])) { if (cur === 0) ini = i + 1; cur++; }
+    else { if (cur > limite) out.push({ ini: ini, fim: i, n: cur }); cur = 0; }
+  }
+  if (cur > limite) out.push({ ini: ini, fim: codigos.length, n: cur });
+  return out;
+}
+
 function fmtBR(dt) {
   return (dt.getDate() < 10 ? '0' : '') + dt.getDate() + '/' +
          (dt.getMonth() < 9 ? '0' : '') + (dt.getMonth() + 1) + '/' + dt.getFullYear();
@@ -1022,9 +1067,12 @@ function obterEstadoAnterior(ano, mes, matricula, nome, escala) {
   var linhas = ST.meses[chave];
   if (!linhas) return vazio;
 
-  var linha = null;
+  // Emenda só com a MESMA pessoa: pelo nome. A matrícula sozinha não serve —
+  // ao importar ou recadastrar a equipe as matrículas recomeçam em 1001 e o
+  // app herdaria os dias de outra pessoa do mês anterior.
+  var linha = null, alvo = normTxt(nome);
   for (var i = 0; i < linhas.length; i++) {
-    if (linhas[i].matricula === matricula || linhas[i].nome === nome) { linha = linhas[i]; break; }
+    if (normTxt(linhas[i].nome) === alvo) { linha = linhas[i]; break; }
   }
   if (!linha) return vazio;
 
@@ -1172,7 +1220,7 @@ function escalaAindaValida(it, ano, mes, cfg) {
   if (cfg.limiteDomingosSeguidos > 0 &&
       Math.max(ap.maxDomingosSeguidos, sequenciaInicial(cods, true, ano, mes) + est.domingosSeguidos) > cfg.limiteDomingosSeguidos) return false;
   if (contarDomingosDeFolga(cods, ano, mes) < Math.min(r.minDomingosExigido, it.domingosOriginais)) return false;
-  if (semanasAcimaDoLimite(cods, r.escalaDia, r.fases, it.codTrab, ano, mes, cfg).length) return false;
+  if (semanasAcimaDoLimite(cods, r.escalaDia, r.fases, it.codTrab, ano, mes, cfg, cargaDe(it.f)).length) return false;
   if (problemasDeRepouso(cods, r.escalaDia, r.fases, ano, mes, cfg).length) return false;
   return true;
 }
@@ -1268,7 +1316,10 @@ function calcularMinimoFolgasMisto(escalaDia) {
   return Math.floor(n6 / 7) + Math.floor(n5 / 7) * 2;
 }
 /** Jornada do dia conforme a escala efetivamente aplicada naquele dia. */
-function jornadaDoDia(esc, cfg, fase) {
+/** Horas do dia. carga = jornada de meio período do funcionário (4, 5 ou 6h), se houver. */
+function cargaDe(f) { var c = parseFloat(f && f.carga); return c > 0 && c < 8 ? c : 0; }
+function jornadaDoDia(esc, cfg, fase, carga) {
+  if (carga && esc !== '12x36') return carga;
   if (fase === 1 && String(cfg.jornadaEtapa1) === '8.4' && (esc === '5x2' || esc === '5x2r')) return 8.4;
   return cfg.jornadaHoras[esc] || 8;
 }
@@ -1278,13 +1329,15 @@ function jornadaDoDia(esc, cfg, fase) {
  * do regime vigente na segunda-feira da semana (mais favorável na semana de
  * transição). Semanas cortadas pela virada do mês entram com o que há no mês.
  */
-function semanasAcimaDoLimite(codigos, escalaDia, fases, codTrab, ano, mes, cfg) {
+function semanasAcimaDoLimite(codigos, escalaDia, fases, codTrab, ano, mes, cfg, carga) {
   var trabalho = [codTrab, COD.FER_COMP, COD.FER_59A, COD.FER_DOBRO];
-  var out = [], soma = 0, ini = 1, limite = REGIMES[fases[0]].semanal;
+  // Meio período (art. 58-A da CLT): até 30h por semana.
+  var lim = function (f) { return carga ? Math.min(30, REGIMES[f].semanal) : REGIMES[f].semanal; };
+  var out = [], soma = 0, ini = 1, limite = lim(fases[0]);
   for (var i = 0; i < codigos.length; i++) {
     var dia = i + 1, w = diaSemana(ano, mes, dia);
-    if (w === 1 || i === 0) { soma = 0; ini = dia; limite = REGIMES[fases[i]].semanal; }
-    if (trabalho.indexOf(codigos[i]) !== -1) soma += jornadaDoDia(escalaDia[i], cfg, fases[i]);
+    if (w === 1 || i === 0) { soma = 0; ini = dia; limite = lim(fases[i]); }
+    if (trabalho.indexOf(codigos[i]) !== -1) soma += jornadaDoDia(escalaDia[i], cfg, fases[i], carga);
     if (w === 0 || i === codigos.length - 1) {
       if (soma > limite + 0.001) out.push({ de: ini, ate: dia, horas: soma, limite: limite });
     }
@@ -1491,10 +1544,11 @@ function calcularCompetencia(ano, mes, equipe) {
     // Escala que vale para o mês na maior parte das contas: a do último dia
     // (se a 6x1 virou 5x2r no meio do mês, o que fica é a 5x2r).
     var escalaFinal = r.escalaDia[r.escalaDia.length - 1];
-    var jornada = jornadaDoDia(escalaFinal, CONFIG, r.fases[r.fases.length - 1]);
+    var carga = cargaDe(f);
+    var jornada = jornadaDoDia(escalaFinal, CONFIG, r.fases[r.fases.length - 1], carga);
     var hNormais = 0, hDobro = 0, nNormais = 0, nDobro = 0;
     r.codigos.forEach(function (c, i) {
-      var jd = jornadaDoDia(r.escalaDia[i], CONFIG, r.fases[i]);
+      var jd = jornadaDoDia(r.escalaDia[i], CONFIG, r.fases[i], carga);
       if (c === codTrab || c === COD.FER_COMP || c === COD.FER_59A) { nNormais++; hNormais += jd; }
       if (c === COD.FER_DOBRO) { nDobro++; hDobro += jd; }
     });
@@ -1517,12 +1571,13 @@ function calcularCompetencia(ano, mes, equipe) {
     r.escalaDia.forEach(function (e, i) { if (e === '6x1' && r.fases[i] >= 1) dias6x1NaVigencia.push(i + 1); });
     if (dias6x1NaVigencia.length) {
       problemas.push({ grau: 'vi',
-        txt: 'Escala 6x1 mantida na vigência da EC 141 (a partir do dia ' + dias6x1NaVigencia[0] + '). Simulação apenas — com 1 dia de repouso por semana ela não cumpre os 2 dias exigidos.',
+        dias: dias6x1NaVigencia,
+        txt: 'Escala 6x1 mantida na vigência da EC 141, ' + faixasTxt(ano, mes, dias6x1NaVigencia) + '. Simulação apenas — com 1 dia de repouso por semana ela não cumpre os 2 dias exigidos.',
         lei: 'art. 7º, XV, da CF, na redação da EC 141/2026 — repouso semanal remunerado de 2 dias' });
     }
     if (r.conversaoDia) {
       problemas.push({ grau: 'al',
-        txt: (r.conversaoDia === 1 ? 'Convertido de 6x1 para 5x2 com rodízio' : 'Convertido de 6x1 para 5x2 com rodízio a partir do dia ' + r.conversaoDia)
+        txt: (r.conversaoDia === 1 ? 'Convertido de 6x1 para 5x2 com rodízio' : 'Convertido de 6x1 para 5x2 com rodízio a partir de ' + diaCurto(ano, mes, r.conversaoDia))
              + ' por causa da vigência da EC 141. Atualize o contrato/aditivo e o controle de ponto.',
         lei: 'EC 141/2026 — 2 dias de repouso remunerado por semana, sem redução salarial' });
     }
@@ -1535,15 +1590,21 @@ function calcularCompetencia(ano, mes, equipe) {
       problemas.push(pb.media
         ? { grau: 'vi', txt: 'Média de repouso abaixo de 2 dias por semana no mês: ' + pb.total + ' DSR em ' + pb.semanas + ' semana(s) inteira(s).',
             lei: 'art. 7º, § 2º, da CF (EC 141/2026) — regime compensatório por CCT/ACT exige média de 2 dias de repouso por semana' }
-        : { grau: 'vi', txt: 'Semana de ' + pb.de + ' a ' + pb.ate + ' com ' + pb.n + ' dia(s) de repouso remunerado; o mínimo é ' + pb.min + '.',
+        : { grau: 'vi', dias: intervaloDias(pb.de, pb.ate),
+            txt: 'Semana de ' + diaCurto(ano, mes, pb.de) + ' a ' + diaCurto(ano, mes, pb.ate) + ': só ' + pb.n + ' dia(s) de repouso remunerado'
+               + (pb.n ? ' (' + faixasTxt(ano, mes, intervaloDias(pb.de, pb.ate).filter(function (d) { return r.codigos[d - 1] === COD.DSR; })) + ')' : '')
+               + '; o mínimo é ' + pb.min + '. Trabalhou ' + faixasTxt(ano, mes, intervaloDias(pb.de, pb.ate).filter(function (d) { return !ehDescanso(r.codigos[d - 1]); })) + '.',
             lei: pb.min === 2 ? 'art. 7º, XV, da CF (EC 141/2026) — repouso semanal remunerado de 2 dias'
                               : 'art. 7º, § 2º, da CF (EC 141/2026) — ao menos 1 dia de repouso em cada semana' });
     });
     if (escalaFinal !== '12x36') {
-      semanasAcimaDoLimite(r.codigos, r.escalaDia, r.fases, codTrab, ano, mes, CONFIG).forEach(function (s) {
-        problemas.push({ grau: 'vi',
-          txt: 'Semana de ' + s.de + ' a ' + s.ate + ': ' + n2(s.horas) + 'h, acima do limite de ' + s.limite + 'h semanais.',
-          lei: s.limite < 44 ? 'EC 141/2026 — jornada máxima de ' + s.limite + 'h semanais na etapa vigente'
+      semanasAcimaDoLimite(r.codigos, r.escalaDia, r.fases, codTrab, ano, mes, CONFIG, carga).forEach(function (s) {
+        var trabS = intervaloDias(s.de, s.ate).filter(function (d) { return !ehDescanso(r.codigos[d - 1]); });
+        problemas.push({ grau: 'vi', dias: trabS,
+          txt: 'Semana de ' + diaCurto(ano, mes, s.de) + ' a ' + diaCurto(ano, mes, s.ate) + ': ' + fmtHoras(s.horas) + ' de trabalho, acima do limite de '
+               + s.limite + 'h semanais. Dias trabalhados: ' + faixasTxt(ano, mes, trabS) + ' (' + trabS.length + ' dias).',
+          lei: carga ? 'art. 58-A da CLT — regime de tempo parcial: até 30h semanais'
+             : s.limite < 44 ? 'EC 141/2026 — jornada máxima de ' + s.limite + 'h semanais na etapa vigente'
                              : 'art. 7º, XIII, da CF — 44h semanais' });
       });
     } else if (r.fases.indexOf(2) !== -1) {
@@ -1552,40 +1613,60 @@ function calcularCompetencia(ano, mes, equipe) {
         lei: 'Decreto 13.173/2026 e art. 59-A da CLT — 12x36 permitida, com formalização' });
     }
     if (r.maxDiasSeguidos > CONFIG.limiteDiasConsecutivos) {
-      problemas.push({ grau: 'vi', txt: 'Mais de ' + CONFIG.limiteDiasConsecutivos + ' dias seguidos de trabalho (chegou a ' + r.maxDiasSeguidos + ').',
-        lei: 'art. 67 da CLT; conceder o DSR após o 7º dia consecutivo viola o art. 7º, XV, da CF — OJ 410 da SBDI-1 do TST' });
+      sequenciasLongas(r.codigos, it.estado.diasConsecutivos, CONFIG.limiteDiasConsecutivos).forEach(function (q) {
+        var herd = q.ini < 1 ? 1 - q.ini : 0;
+        problemas.push({ grau: 'vi', dias: intervaloDias(Math.max(1, q.ini), q.fim),
+          txt: q.n + ' dias seguidos de trabalho, de ' + diaCurto(ano, mes, q.ini) + ' a ' + diaCurto(ano, mes, q.fim)
+               + (herd ? ' — ' + herd + ' deles no fim de ' + MESES[(mes + 10) % 12] + ', vindos da escala guardada do mês anterior' : '')
+               + '. O máximo é ' + CONFIG.limiteDiasConsecutivos + ': '
+               + (q.ini + CONFIG.limiteDiasConsecutivos >= 1
+                  ? 'a folga tinha de cair até ' + diaCurto(ano, mes, q.ini + CONFIG.limiteDiasConsecutivos) + '.'
+                  : 'o limite já estourou no fim de ' + MESES[(mes + 10) % 12] + ' — corrija a escala daquele mês ou dê folga em ' + diaCurto(ano, mes, 1) + '.'),
+          lei: 'art. 67 da CLT; conceder o DSR após o 7º dia consecutivo viola o art. 7º, XV, da CF — OJ 410 da SBDI-1 do TST' });
+      });
     }
     if (CONFIG.limiteDomingosSeguidos > 0 && r.maxDomingosSeguidos > CONFIG.limiteDomingosSeguidos) {
-      problemas.push({ grau: 'vi', txt: 'Mais de ' + CONFIG.limiteDomingosSeguidos + ' domingos seguidos trabalhados (chegou a ' + r.maxDomingosSeguidos + ').',
+      var domTrab = []; for (var dd2 = 1; dd2 <= dias; dd2++) if (diaSemana(ano, mes, dd2) === 0 && !ehDescanso(r.codigos[dd2 - 1])) domTrab.push(dd2);
+      problemas.push({ grau: 'vi', dias: domTrab,
+        txt: 'Mais de ' + CONFIG.limiteDomingosSeguidos + ' domingos seguidos trabalhados (chegou a ' + r.maxDomingosSeguidos + '). Domingos trabalhados no mês: '
+             + domTrab.map(function (d) { return diaCurto(ano, mes, d); }).join(', ') + '.',
         lei: 'art. 6º, parágrafo único, da Lei 10.101/2000 — regra do comércio, aplicada por analogia; confira a CCT' });
     }
     if (r.domingosDeFolga < r.minDomingosExigido) {
-      problemas.push({ grau: 'vi',
-        txt: 'Folgou em apenas ' + r.domingosDeFolga + ' domingo(s) no mês; o mínimo para ' +
-             (f.sexo === 'F' ? 'mulher' : 'homem') + ' é ' + r.minDomingosExigido + '.',
+      var domT = [], domF = [];
+      for (var dd3 = 1; dd3 <= dias; dd3++) if (diaSemana(ano, mes, dd3) === 0) (ehDescanso(r.codigos[dd3 - 1]) ? domF : domT).push(dd3);
+      problemas.push({ grau: 'vi', dias: domT,
+        txt: 'Folgou em apenas ' + r.domingosDeFolga + ' domingo(s) no mês' + (domF.length ? ' (' + domF.map(function (d) { return diaCurto(ano, mes, d); }).join(', ') + ')' : '')
+             + ' e trabalhou em ' + domT.map(function (d) { return diaCurto(ano, mes, d); }).join(', ') + '; o mínimo para ' +
+             (f.sexo === 'F' ? 'mulher' : 'homem') + ' é ' + r.minDomingosExigido + '. Troque um desses domingos por folga.',
         lei: f.sexo === 'F'
           ? 'art. 386 da CLT — havendo trabalho aos domingos, escala de revezamento quinzenal que favoreça o repouso dominical'
           : 'parâmetro do escritório; no comércio o art. 6º, parágrafo único, da Lei 10.101/2000 é mais estrito (uma folga dominical a cada três semanas)' });
     }
     if (r.plantoesSuprimidos.length) {
       problemas.push({ grau: 'al',
-        txt: 'Plantão suprimido no(s) dia(s) ' + r.plantoesSuprimidos.join(', ') +
+        dias: r.plantoesSuprimidos,
+        txt: 'Plantão suprimido em ' + faixasTxt(ano, mes, r.plantoesSuprimidos) +
              ' para não passar do teto de ' + CONFIG.tetoContratualPorEscala['12x36'] + 'h da 12x36. Confira a cobertura desse(s) dia(s).',
         lei: 'teto contratual da 12x36 — 15 plantões de 12h' });
     }
     var hr = it.horario;
+    var diasTrab = []; r.codigos.forEach(function (c, i) { if (c === codTrab) diasTrab.push(i + 1); });
     if (hr && escalaFinal !== '12x36') {
       var maxJ = 0, origem = hr.proprio ? 'O horário de ' + f.nome : 'O horário do turno ' + TURNOS[codTrab];
-      r.codigos.forEach(function (c, i) { if (c === codTrab) maxJ = Math.max(maxJ, jornadaDoDia(r.escalaDia[i], CONFIG, r.fases[i])); });
+      r.codigos.forEach(function (c, i) { if (c === codTrab) maxJ = Math.max(maxJ, jornadaDoDia(r.escalaDia[i], CONFIG, r.fases[i], carga)); });
       if (maxJ && hr.liq > maxJ + 0.01) {
         problemas.push({ grau: 'al',
           txt: origem + ' (' + hr.ini + ' às ' + hr.fim + ', intervalo de ' + hr.intervalo + ' min) dá '
-               + fmtHoras(hr.liq) + ' de trabalho por dia, acima da jornada de ' + fmtHoras(maxJ) + ' da escala — a diferença vira hora extra todo dia.',
+               + fmtHoras(hr.liq) + ' de trabalho por dia, acima da jornada de ' + fmtHoras(maxJ) + ' da escala — a diferença (' + fmtHoras(hr.liq - maxJ)
+               + ') vira hora extra em todos os ' + diasTrab.length + ' dias trabalhados do mês.',
           lei: 'art. 7º, XIII, da CF (EC 141/2026) e art. 59 da CLT' });
       }
       if (24 - hr.span < 11) {
         problemas.push({ grau: 'vi',
-          txt: 'Entre a saída (' + hr.fim + ') e a entrada do dia seguinte (' + hr.ini + ') sobram ' + fmtHoras(24 - hr.span) + ' de descanso; o mínimo é 11h.',
+          dias: diasTrab.filter(function (d) { return d < dias && !ehDescanso(r.codigos[d]); }),
+          txt: 'Entre a saída (' + hr.fim + ') e a entrada do dia seguinte (' + hr.ini + ') sobram ' + fmtHoras(24 - hr.span) + ' de descanso; o mínimo é 11h. '
+               + 'Acontece sempre que trabalha dois dias seguidos: ' + faixasTxt(ano, mes, diasTrab.filter(function (d) { return d < dias && !ehDescanso(r.codigos[d]); })) + '.',
           lei: 'art. 66 da CLT — 11h consecutivas de descanso entre duas jornadas' });
       }
       if (hr.liq > 6 && hr.intervalo < 60) {
@@ -1599,31 +1680,40 @@ function calcularCompetencia(ano, mes, equipe) {
     }
     if (conflitosSetor.length) {
       problemas.push({ grau: 'al',
-        txt: 'Folga no mesmo dia que colega(s) do setor "' + f.setor + '" no(s) dia(s) '
-             + conflitosSetor.map(function (c) { return c.dia + ' (' + c.nomes.filter(function (n) { return n !== f.nome; }).join(', ') + ')'; }).join('; ')
+        dias: conflitosSetor.map(function (c) { return c.dia; }),
+        txt: 'Folga no mesmo dia que colega(s) do setor "' + f.setor + '": '
+             + conflitosSetor.map(function (c) { return diaCurto(ano, mes, c.dia) + ' (' + c.nomes.filter(function (n) { return n !== f.nome; }).join(', ') + ')'; }).join('; ')
              + ' — o app não achou troca que respeitasse as demais regras (dias seguidos, horas da semana, domingos de folga). '
              + 'Troque a folga à mão com o colega, pague o feriado em dobro em vez de compensar, ou reveja o limite por setor.',
         lei: 'regra da empresa — máximo de ' + CONFIG.maxFolgaMesmoSetor + ' pessoa(s) do mesmo setor de folga por dia (aba Parâmetros)' });
     }
     if (r.feriadosSemTratamento.length) {
-      problemas.push({ grau: 'vi', txt: 'Feriado trabalhado sem compensação nem dobro no(s) dia(s) ' + r.feriadosSemTratamento.join(', ') + '.',
+      problemas.push({ grau: 'vi', dias: r.feriadosSemTratamento, txt: 'Feriado trabalhado sem compensação nem dobro: ' + faixasTxt(ano, mes, r.feriadosSemTratamento) + '.',
         lei: 'art. 9º da Lei 605/1949' });
     }
     if (r.adjacencia12x36.length) {
-      problemas.push({ grau: 'al', txt: 'Plantões 12x36 em dias adjacentes no(s) dia(s) ' + r.adjacencia12x36.join(', ') + ' — risco de interjornada. Confira os horários.',
+      problemas.push({ grau: 'al', dias: r.adjacencia12x36, txt: 'Plantões 12x36 em dias seguidos: ' + faixasTxt(ano, mes, r.adjacencia12x36) + ' — risco de interjornada. Confira os horários.',
         lei: 'art. 66 da CLT' });
     }
     if (r.totalFolgas < minFolgas) {
-      problemas.push({ grau: 'al', txt: 'Folgas abaixo do mínimo do período: ' + r.totalFolgas + ' de ' + minFolgas + '.',
+      var folgasD = []; r.codigos.forEach(function (c, i) { if (c === COD.DSR || c === COD.FOLGA_ESCALA || c === COD.FOLGA_COMP) folgasD.push(i + 1); });
+      problemas.push({ grau: 'al', txt: 'Folgas abaixo do mínimo do período: ' + r.totalFolgas + ' de ' + minFolgas + '. Folgas no mês: ' + (folgasD.length ? faixasTxt(ano, mes, folgasD) : 'nenhuma') + '.',
         lei: 'art. 67 da CLT' });
     }
     var horasTotal = hGeradas;
     if (horasTotal > teto) {
-      problemas.push({ grau: 'al', txt: 'Horas acima do teto de referência: ' + n2(horasTotal) + 'h contra ' + teto + 'h.',
+      var porSem = [], vistosS = {};
+      for (var ds = 1; ds <= dias; ds++) {
+        var sm = semanaDoDia({ ano: ano, mes: mes }, ds), ini = Math.max(1, sm.iniDia), fimS = Math.min(dias, sm.iniDia + 6);
+        if (vistosS[ini]) continue; vistosS[ini] = true;
+        var hS = 0; for (var x = ini; x <= fimS; x++) if (!ehDescanso(r.codigos[x - 1])) hS += jornadaDoDia(r.escalaDia[x - 1], CONFIG, r.fases[x - 1], carga);
+        porSem.push(diaCurto(ano, mes, ini).slice(4) + '–' + diaCurto(ano, mes, fimS).slice(4) + ': ' + fmtHoras(hS));
+      }
+      problemas.push({ grau: 'al', txt: 'Horas acima do teto de referência: ' + n2(horasTotal) + 'h contra ' + teto + 'h. Horas por semana: ' + porSem.join(' · ') + '.',
         lei: 'teto contratual — conferir CCT/ACT, a CLT não fixa teto mensal' });
     }
     if (nDobro > 0) {
-      problemas.push({ grau: 'al', txt: 'Pagar em dobro na folha o(s) feriado(s) do(s) dia(s) ' + r.feriadosEmDobro.join(', ') + ' — não houve dia livre para compensar.',
+      problemas.push({ grau: 'al', dias: r.feriadosEmDobro, txt: 'Pagar em dobro na folha o(s) feriado(s) de ' + faixasTxt(ano, mes, r.feriadosEmDobro) + ' — não houve dia livre para compensar.',
         lei: 'art. 9º da Lei 605/1949' });
     }
 
@@ -1638,6 +1728,7 @@ function calcularCompetencia(ano, mes, equipe) {
       maxDias: r.maxDiasSeguidos, maxDomingos: r.maxDomingosSeguidos,
       domingosDeFolga: r.domingosDeFolga, minDomingos: r.minDomingosExigido,
       plantoesSuprimidos: r.plantoesSuprimidos, ciclosFolga: r.ciclosFolga,
+      carga: carga,
       parFolga: it.estado.diasFechados.length ? null : PARES_5X2R[(it.parFolga != null ? it.parFolga : it.ordem) % PARES_5X2R.length],
       folgasFixas: it.estado.diasFechados, folgaRot: it.estado.folgaRot,
       horario: it.horario,
@@ -1837,6 +1928,25 @@ function classeCod(c) {
   if (c === COD.FOLGA_COMP) return 'c-folgacomp';
   return 'c-trab';
 }
+/** Dias marcados pelos avisos da auditoria: {dia: {grau, txt[]}} (violação vence atenção). */
+function diasComProblema(l) {
+  var m = {};
+  (l.problemas || []).forEach(function (p) {
+    (p.dias || []).forEach(function (d) {
+      if (!m[d]) m[d] = { grau: p.grau, txt: [] };
+      if (p.grau === 'vi') m[d].grau = 'vi';
+      m[d].txt.push((p.grau === 'vi' ? 'VIOLAÇÃO: ' : 'ATENÇÃO: ') + p.txt);
+    });
+  });
+  return m;
+}
+function htmlDiasDoAviso(p, a) {
+  if (!p.dias || !p.dias.length) return '';
+  return '<div class="dias-aviso">Dias considerados: ' + p.dias.slice().sort(function (x, y) { return x - y; }).map(function (d) {
+    return '<span class="dchip ' + p.grau + '">' + diaCurto(a.ano, a.mes, d) + '</span>';
+  }).join('') + '</div>';
+}
+
 function rotuloEscalaLinha(l) {
   var r = ROTULO_ESCALA[l.escala] || l.escala;
   if (l.escala === '5x2r' && l.folgasFixas && l.folgasFixas.length) {
@@ -1883,9 +1993,11 @@ function desenharGrade() {
     h += '<td>' + esc(rotuloEscalaLinha(l)) + '</td>';
     h += '<td title="' + SEXOS[l.sexo] + '">' + l.sexo + '</td>';
     h += '<td>' + rotuloFolgaLinha(l) + '</td>';
+    var dcp = diasComProblema(l);
     for (var d2 = 0; d2 < l.codigos.length; d2++) {
       var w2 = diaSemana(a.ano, a.mes, d2 + 1);
-      h += '<td class="' + (w2 === 0 ? 'dom' : '') + '" title="' + esc(motivoDoDia(l, d2, a)) + '"><span class="cod ' + classeCod(l.codigos[d2]) + '">'
+      var pbD = dcp[d2 + 1];
+      h += '<td class="' + (w2 === 0 ? 'dom' : '') + '" title="' + esc((pbD ? pbD.txt.join('\n') + '\n\n' : '') + motivoDoDia(l, d2, a)) + '"><span class="cod ' + classeCod(l.codigos[d2]) + (pbD ? ' prob-' + pbD.grau : '') + '">'
          + l.codigos[d2] + '</span></td>';
     }
     h += '<td class="tot">' + n2(l.horasNormais) + '</td>';
@@ -1967,7 +2079,7 @@ function motivoDoDia(l, i, a) {
   if (c === COD.FER_59A) return dataTxt + 'feriado (' + fer + ') em plantão 12x36 — já coberto pelo salário mensal (art. 59-A, p. único, da CLT).';
   if (!ehDescanso(c)) {
     var tn = l.horario;
-    return dataTxt + 'dia trabalhado — ' + fmtHoras(jornadaDoDia(esc2, CONFIG, fase)) + ' (' + (ROTULO_ESCALA[esc2] || esc2) + ')'
+    return dataTxt + 'dia trabalhado — ' + fmtHoras(jornadaDoDia(esc2, CONFIG, fase, l.carga)) + (l.carga ? ' (meio período, ' : ' (') + (ROTULO_ESCALA[esc2] || esc2) + ')'
       + (tn && esc2 !== '12x36' ? ', das ' + tn.ini + ' às ' + tn.fim + (tn.almoco ? ', almoço ' + tn.almoco : '') : '') + '.';
   }
   var por = '';
@@ -2005,7 +2117,7 @@ function desenharExplicacao(a) {
   var dP = datasPEC(CONFIG);
   var h = '<div class="cartao" style="margin:16px 0 0;box-shadow:none;border:1px solid var(--linha)">'
     + '<h2 style="margin-top:0">Entenda as folgas e o DSR desta escala</h2>'
-    + '<p class="sub"><b>Clique no nome de um funcionário</b> para abrir a ficha dele com o calendário do mês e o motivo de cada folga. Passe o mouse sobre qualquer dia da grade para ver o motivo daquele código. Abaixo, a regra geral e a leitura semana a semana de cada funcionário.</p>'
+    + '<p class="sub"><b>Clique no nome de um funcionário</b> na grade para abrir a ficha dele com o calendário do mês e o motivo de cada folga. Passe o mouse sobre qualquer dia da grade para ver o motivo daquele código. Dia contornado em vermelho ou laranja é dia apontado pela auditoria.</p>'
     + '<div style="font-size:13px;line-height:1.6;max-width:1000px">';
   h += '<p><b>A semana vai de segunda a domingo.</b> É assim que o app conta os repousos: cada semana precisa ter os seus. '
      + 'O DSR (descanso semanal remunerado) é um direito por semana — a lei fixa o mínimo de cada semana, não proíbe que dois repousos fiquem lado a lado.</p>';
@@ -2036,10 +2148,13 @@ function desenharExplicacao(a) {
      + 'Na semana em que a pessoa folga no domingo, o domingo ocupa o lugar de um dos dias do par.</p>';
   h += '<p><b>Feriados.</b> Feriado trabalhado vira <b>FER_COMP</b> e ganha uma <b>FOLGA_COMP</b> em outro dia do mês (pago simples). '
      + 'Se não houver dia livre para compensar, vira <b>FER_DOBRO</b> (pagar em dobro). A folga compensatória não conta como DSR: ela paga o feriado, não o descanso da semana.</p>';
-  h += '</div>';
+  h += '</div></div>';
+  var hExplica = h;
 
-  // Leitura semana a semana, por funcionário
-  h += '<h3 style="margin:18px 0 8px;font-size:14px;color:var(--azul-700)">Leitura semana a semana</h3>';
+  // Leitura semana a semana, por funcionário — vem antes da explicação geral
+  h = '<div class="cartao" style="margin:16px 0 0;box-shadow:none;border:1px solid var(--linha)">'
+    + '<h2 style="margin-top:0">Leitura semana a semana</h2>'
+    + '<p class="sub">Para cada funcionário: dias trabalhados, horas e folgas de cada semana (segunda a domingo) e se o repouso da semana está certo. Clique no nome para abrir.</p>';
   a.linhas.forEach(function (l) {
     var semanas = [], vistos = {};
     for (var d = 1; d <= a.dias; d++) {
@@ -2054,7 +2169,7 @@ function desenharExplicacao(a) {
       var trab = 0, horas = 0, rep = [], dsr = 0;
       for (var x = ini; x <= fim; x++) {
         var c = l.codigos[x - 1];
-        if (!ehDescanso(c)) { trab++; horas += jornadaDoDia(l.escalaDia[x - 1], CONFIG, l.fases[x - 1]); }
+        if (!ehDescanso(c)) { trab++; horas += jornadaDoDia(l.escalaDia[x - 1], CONFIG, l.fases[x - 1], l.carga); }
         else {
           if (c === COD.DSR) dsr++;
           rep.push('<b>' + DS_CURTO[diaSemana(a.ano, a.mes, x)] + ' ' + x + '</b> ' + c);
@@ -2080,7 +2195,7 @@ function desenharExplicacao(a) {
        + '<th>Dias de folga no mês</th><th>Repouso da semana</th></tr></thead><tbody>' + linhasTab + '</tbody></table></div></details>';
   });
   h += '</div>';
-  el('#explicaEscala').innerHTML = h;
+  el('#explicaEscala').innerHTML = h + hExplica;
   el('#explicaEscala').hidden = false;
 }
 
@@ -2109,9 +2224,14 @@ function hhmm(min) { min = ((min % 1440) + 1440) % 1440; var h = Math.floor(min 
 
 /** Horário do funcionário: o dele, se preenchido; senão o do turno. */
 function horarioBase(f) {
-  var t = CONFIG.turnos[f.turno || 'M'] || CONFIG.turnos.M;
-  var intv = (f.intervalo !== '' && f.intervalo != null && !isNaN(+f.intervalo)) ? +f.intervalo : (+t.intervalo || 0);
-  return { ini: f.hIni || t.ini, fim: f.hFim || t.fim, intervalo: intv, proprio: !!(f.hIni || f.hFim) };
+  var t = CONFIG.turnos[f.turno || 'M'] || CONFIG.turnos.M, carga = cargaDe(f);
+  var temIntv = (f.intervalo !== '' && f.intervalo != null && !isNaN(+f.intervalo));
+  // Meio período: sem almoço. Até 4h não há intervalo; acima de 4h (até 6h),
+  // pausa de 15 min (art. 71, § 1º, da CLT). A saída sai da entrada + carga.
+  var intv = temIntv ? +f.intervalo : carga ? (carga > 4 ? 15 : 0) : (+t.intervalo || 0);
+  var ini = f.hIni || t.ini, fim = f.hFim;
+  if (!fim) fim = carga ? hhmm(minutosDe(ini) + carga * 60 + intv) : t.fim;
+  return { ini: ini, fim: fim, intervalo: intv, proprio: !!(f.hIni || f.hFim), parcial: !!carga, carga: carga };
 }
 
 /**
@@ -2147,6 +2267,7 @@ function horariosDaEquipe(equipe) {
 }
 function textoHorario(h) {
   if (!h) return '';
+  if (h.parcial) return h.ini + '–' + h.fim + ' · meio período ' + fmtHoras(h.carga) + (h.almoco ? ' · pausa ' + h.almoco : ', sem almoço');
   return h.ini + '–' + h.fim + (h.almoco ? ' · almoço ' + h.almoco : '');
 }
 
@@ -2204,6 +2325,10 @@ function porqueDaEscala(l, a) {
   }
   var temDepois = (l.fases || []).some(function (f) { return f >= 1; }), temAntes = (l.fases || []).some(function (f) { return f < 1; });
   if (l.escala !== '12x36') {
+    if (l.carga) {
+      it.push('<b>Meio período:</b> ' + fmtHoras(l.carga) + ' por dia, ' + (l.horario && l.horario.intervalo ? 'com pausa de ' + l.horario.intervalo + ' min (acima de 4h a pausa de 15 min é obrigatória — art. 71, § 1º, da CLT)' : 'sem intervalo de almoço (até 4h a CLT não exige intervalo)')
+        + '. Regime de tempo parcial: até 30h por semana (art. 58-A da CLT); os dias de folga seguem a mesma regra dos colegas.');
+    }
     it.push('<b>Regra de repouso do mês:</b> '
       + (temAntes ? '1 DSR por semana antes da EC 141' : '')
       + (temAntes && temDepois ? '; ' : '')
@@ -2253,6 +2378,7 @@ function abrirFicha(idx) {
   var cal = '<div class="cal">' + cab.map(function (c, i) { return '<div class="cab' + (i === 6 ? ' dom' : '') + '">' + c + '</div>'; }).join('')
           + '<div class="cab semcab">Repouso na semana</div>';
   var primeiroW = diaSemana(a.ano, a.mes, 1), vazios = (primeiroW + 6) % 7;
+  var probDias = diasComProblema(l);
   var celulas = [];
   for (var v = 0; v < vazios; v++) celulas.push(0);
   for (var d = 1; d <= a.dias; d++) celulas.push(d);
@@ -2271,10 +2397,12 @@ function abrirFicha(idx) {
       else if (rot) { txt = rot[0]; sub = rot[1]; }
       else {
         txt = 'Trabalho &middot; ' + (TURNOS[c] || c);
-        sub = (l.horario ? l.horario.ini + '–' + l.horario.fim + ' · ' : '') + fmtHoras(jornadaDoDia(l.escalaDia[dd - 1], CONFIG, l.fases[dd - 1]));
+        sub = (l.horario ? l.horario.ini + '–' + l.horario.fim + ' · ' : '') + fmtHoras(jornadaDoDia(l.escalaDia[dd - 1], CONFIG, l.fases[dd - 1], l.carga));
       }
-      cal += '<div class="dia' + (ehDescanso(c) ? ' descanso' : '') + (w === 0 ? ' domingo' : '') + '" data-dia="' + dd + '" title="' + esc(motivoDoDia(l, dd - 1, a)) + '">'
-        + '<span class="num">' + dd + '</span>'
+      var pbC = probDias[dd];
+      cal += '<div class="dia' + (ehDescanso(c) ? ' descanso' : '') + (w === 0 ? ' domingo' : '') + (pbC ? ' prob-' + pbC.grau : '') + '" data-dia="' + dd + '" title="'
+        + esc((pbC ? pbC.txt.join('\n') + '\n\n' : '') + motivoDoDia(l, dd - 1, a)) + '">'
+        + '<span class="num">' + dd + '</span>' + (pbC ? '<span class="marca">!</span>' : '')
         + (ehFer ? '<span class="ferdesc">' + esc(descricaoFeriado(dataIso)) + '</span>' : '')
         + '<span class="evt ' + classeCod(c) + '"><span class="lg">' + txt + (sub ? '<small>' + sub + '</small>' : '') + '</span><span class="ct">' + curto + '</span></span></div>';
     }
@@ -2292,7 +2420,7 @@ function abrirFicha(idx) {
   var probs = l.problemas.length
     ? '<ul>' + l.problemas.map(function (p) {
         return '<li><b style="color:' + (p.grau === 'vi' ? 'var(--erro-tx)' : 'var(--alerta-tx)') + '">' + (p.grau === 'vi' ? 'Violação' : 'Atenção')
-          + ':</b> ' + esc(p.txt) + '<br><span style="color:var(--tinta-fraca);font-size:11.5px;font-style:italic">' + esc(p.lei) + '</span></li>';
+          + ':</b> ' + esc(p.txt) + htmlDiasDoAviso(p, a) + '<span style="display:block;color:var(--tinta-fraca);font-size:11.5px;font-style:italic">' + esc(p.lei) + '</span></li>';
       }).join('') + '</ul>'
     : '<p style="margin:0;font-size:12.5px;color:var(--ok-tx)">Nenhuma violação estrutural. Máximo de ' + l.maxDias + ' dias seguidos de trabalho.</p>';
 
@@ -2363,8 +2491,8 @@ function desenharAuditoria() {
       h += '<ul>';
       l.problemas.forEach(function (p) {
         h += '<li><b style="color:' + (p.grau === 'vi' ? 'var(--erro-tx)' : 'var(--alerta-tx)') + '">'
-           + (p.grau === 'vi' ? 'Violação' : 'Atenção') + ':</b> ' + esc(p.txt)
-           + '<br><span class="lei">' + esc(p.lei) + '</span></li>';
+           + (p.grau === 'vi' ? 'Violação' : 'Atenção') + ':</b> ' + esc(p.txt) + htmlDiasDoAviso(p, a)
+           + '<span class="lei" style="display:block">' + esc(p.lei) + '</span></li>';
       });
       h += '</ul>';
     }
@@ -2379,8 +2507,8 @@ function desenharAuditoria() {
     h += '</div>';
   });
 
-  h += '<div class="nota"><b>O que esta auditoria não cobre:</b> a interjornada de 11h do art. 66 da CLT depende de horário '
-     + 'de entrada e saída, que não entra aqui — o app só aponta plantões 12x36 em dias adjacentes. '
+  h += '<div class="nota"><b>O que esta auditoria não cobre:</b> a interjornada de 11h (art. 66 da CLT) é conferida pelo horário cadastrado '
+     + 'de cada funcionário, considerado igual em todos os dias — trocas pontuais de horário não entram na conta. '
      + 'E o teto de horas é parâmetro contratual da CCT/ACT, não um número fixado pela CLT. '
      + '<b>EC 141/2026:</b> as regras seguem a Emenda Constitucional publicada no DOU em 16/10/2026 (2 dias de repouso '
      + 'remunerado, 42h e depois 40h). Confira a redação oficial no site do Planalto, a convenção coletiva e a lei de '
@@ -2505,12 +2633,17 @@ function desenharEquipe() {
       + '<td>' + (function () {
           var tb2 = CONFIG.turnos[f.turno || 'M'];
           return '<div class="hora-func">'
+            + '<select data-i="' + i + '" data-c="carga" title="Jornada" aria-label="Jornada" style="width:auto;padding:4px 5px;font-size:12px">'
+            + [['', 'Integral'], ['4', 'Meio período 4h'], ['5', 'Meio período 5h'], ['6', 'Meio período 6h']].map(function (o) {
+                return '<option value="' + o[0] + '"' + (String(f.carga || '') === o[0] ? ' selected' : '') + '>' + o[1] + '</option>';
+              }).join('') + '</select>'
             + '<input type="time" data-i="' + i + '" data-c="hIni" value="' + esc(f.hIni || '') + '" title="Entrada (vazio = ' + tb2.ini + ')" aria-label="Entrada">'
             + '<input type="time" data-i="' + i + '" data-c="hFim" value="' + esc(f.hFim || '') + '" title="Saída (vazio = ' + tb2.fim + ')" aria-label="Saída">'
             + '<input type="time" data-i="' + i + '" data-c="hAlmoco" value="' + esc(f.hAlmoco || '') + '" title="Início do almoço (vazio = o app define)" aria-label="Início do almoço">'
             + '<input type="number" class="int" min="0" max="240" step="5" data-i="' + i + '" data-c="intervalo" value="' + esc(f.intervalo != null ? f.intervalo : '') + '" placeholder="' + tb2.intervalo + '" title="Intervalo em minutos (vazio = ' + tb2.intervalo + ')" aria-label="Intervalo em minutos">'
             + '</div><div style="font-size:10.5px;color:var(--tinta-fraca);margin-top:2px">'
-            + (f.hIni || f.hFim ? 'horário próprio' : 'em branco = turno ' + tb2.ini + '–' + tb2.fim) + '</div>';
+            + (cargaDe(f) ? 'meio período: ' + textoHorario(horarioBase(f)).replace(/ · meio período [^,·]*/, '')
+               : (f.hIni || f.hFim ? 'horário próprio' : 'em branco = turno ' + tb2.ini + '–' + tb2.fim)) + '</div>';
         })() + '</td>'
       + '<td><select data-i="' + i + '" data-c="escala">'
         + ['', '5x2', '5x2r', '6x1', '12x36'].map(function (e2) {
@@ -2700,6 +2833,7 @@ function desenharAjuda() {
     ['Mínimo por dia e "precisa contratar?"', 'Com o mínimo definido, o setor nunca deixa folgar mais que (pessoas − mínimo) no mesmo dia, se der. Onde não der, o app conta os dias e as semanas com falta e simula a contratação de 1 a 8 pessoas no setor para dizer com quantas a escala fecha. Setor que não abre todo dia fica fechado no feriado.'],
     ['Jornada de 8h24 na 1ª etapa', 'A liminar do STF (min. Flávio Dino, 12/11/2026) permite distribuir as 42h em 5 dias, com até 8h24 por dia, até 15/12/2027. É opcional, em Parâmetros; o padrão de 8h por dia já cumpre a regra. O Decreto 13.173/2026 fixou os divisores 210 (42h) e 200 (40h) e manteve a 12x36.'],
     ['Horário de cada funcionário e almoço', 'Cada funcionário pode ter entrada, saída, início do almoço e intervalo próprios (aba Equipe); em branco, vale o horário do turno (aba Parâmetros). O app avisa quando o horário, sem o intervalo, passa da jornada do dia (hora extra todo dia), quando o descanso entre a saída e a entrada do dia seguinte fica abaixo de 11h (art. 66 da CLT) e quando o intervalo é menor que 1h em jornada acima de 6h (art. 71; 30 min só com convenção ou acordo coletivo). Em setor marcado como “não fecha no almoço”, o app intercala o almoço de quem não informou horário (um às 11h, outro às 12h…) e mostra os dias em que o setor ficaria vazio no almoço.'],
+    ['Meio período', 'Na coluna Jornada, escolha Meio período 4h, 5h ou 6h. Meio período não tem almoço: até 4h por dia a CLT não exige intervalo; acima de 4h (até 6h) a pausa de 15 min é obrigatória (art. 71, § 1º). Sem saída informada, o app calcula pela entrada. As horas da escala passam a ser as do meio período, e a auditoria confere o limite de 30h por semana do regime de tempo parcial (art. 58-A da CLT). Os dias de folga seguem a regra da escala, como os colegas.'],
     ['DSR seguidos não são erro', 'O app conta a semana de segunda a domingo. Quando o domingo de folga fecha uma semana e a folga do rodízio é a segunda-feira seguinte, aparecem dois DSR lado a lado — um de cada semana. A lei fixa o mínimo de repousos por semana; não proíbe repousos vizinhos nem exige que os dois dias da EC 141 sejam seguidos. A aba Escala mostra a leitura semana a semana de cada funcionário.'],
     ['12x36 e a EC 141', 'A 12x36 dá média de 42h semanais: cabe na 1ª etapa, mas passa das 40h da 2ª. A emenda não cita a 12x36. Há quem entenda que o art. 59-A da CLT (acordo individual, convenção ou acordo coletivo) continua valendo e quem sustente que, a partir das 40h, ela depende de convenção ou acordo coletivo pelo novo § 2º do art. 7º. O app só alerta; a recomendação prudente é formalizar por CCT/ACT.'],
     ['Turno é rótulo, não jornada', 'M, T, N e D (dia todo) marcam em que turno a pessoa trabalha. A quantidade de horas do dia vem da ESCALA, não do turno: 8h na 5x2 e na 5x2 com rodízio, 7h20 na 6x1 e 12h na 12x36. Escolher "dia todo" não muda o total de horas do mês.'],
@@ -3253,8 +3387,8 @@ var EXEMPLO = [
    IMPORTAÇÃO DA EQUIPE  (planilha .xlsx, .csv ou texto colado)
    ======================================================================== */
 
-var COLUNAS_EQUIPE = ['Nome', 'Cargo', 'Turno', 'Sexo', 'Setor', 'Entrada', 'Saída', 'Início do almoço', 'Intervalo (min)', 'Escala'];
-var CAMPOS_EQUIPE = ['nome', 'cargo', 'turno', 'sexo', 'setor', 'hIni', 'hFim', 'hAlmoco', 'intervalo', 'escala'];
+var COLUNAS_EQUIPE = ['Nome', 'Cargo', 'Turno', 'Sexo', 'Setor', 'Entrada', 'Saída', 'Início do almoço', 'Intervalo (min)', 'Escala', 'Jornada'];
+var CAMPOS_EQUIPE = ['nome', 'cargo', 'turno', 'sexo', 'setor', 'hIni', 'hFim', 'hAlmoco', 'intervalo', 'escala', 'carga'];
 
 function normTxt(x) {
   return String(x == null ? '' : x).normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim();
@@ -3272,7 +3406,8 @@ function campoDoCabecalho(h) {
   if (/intervalo/.test(t)) return 'intervalo';
   if (/entrada|inicio/.test(t)) return 'hIni';
   if (/saida|fim|termino/.test(t)) return 'hFim';
-  if (/escala|jornada/.test(t)) return 'escala';
+  if (/jornada|carga|periodo/.test(t)) return 'carga';
+  if (/escala/.test(t)) return 'escala';
   return null;
 }
 /** "7:00", "07h30", "7h", 0.2916 (hora do Excel) -> "07:00". Vazio se não reconhecer. */
@@ -3336,6 +3471,8 @@ function importarEquipe(linhas, substituir) {
       f.intervalo = String(iv > 0 && iv < 1 ? Math.round(iv * 1440) : iv);   // "01:00" do Excel vira fração do dia
     }
     f.escala = normEscala(r.escala);
+    var cg = normTxt(r.carga), num = parseFloat(String(cg).replace(',', '.'));
+    if (/meio|parcial/.test(cg) || (num > 0 && num < 8)) f.carga = String(num > 0 && num < 8 ? num : 4);
     n++;
   });
   return n;
@@ -3493,12 +3630,13 @@ function importarArquivo(f) {
 
 /** Planilha modelo para preencher a equipe e os setores. */
 function baixarModelo() {
-  var cEq = COLUNAS_EQUIPE.map(function (t, i) { return { t: t, w: [28, 24, 10, 10, 16, 10, 10, 16, 14, 16][i] }; });
+  var cEq = COLUNAS_EQUIPE.map(function (t, i) { return { t: t, w: [28, 24, 10, 10, 16, 10, 10, 16, 14, 16, 16][i] }; });
   var lEq = [
-    ['João Batista', 'Ordenhador', 'M', 'M', 'Ordenha', '04:30', '13:30', '08:30', 60, 'auto'],
-    ['Maria Aparecida', 'Ordenhadora', 'M', 'F', 'Ordenha', '04:30', '13:30', '09:30', 60, 'auto'],
-    ['Ana Paula Silva', 'Analista Contábil', 'D', 'F', 'Escritório', '08:00', '17:00', '12:00', 60, '5x2'],
-    ['Marcos Souza', 'Porteiro', 'N', 'M', 'Portaria', '19:00', '07:00', '', 60, '12x36']
+    ['João Batista', 'Ordenhador', 'M', 'M', 'Ordenha', '04:30', '13:30', '08:30', 60, 'auto', 'integral'],
+    ['Maria Aparecida', 'Ordenhadora', 'M', 'F', 'Ordenha', '04:30', '13:30', '09:30', 60, 'auto', 'integral'],
+    ['Ana Paula Silva', 'Analista Contábil', 'D', 'F', 'Escritório', '08:00', '17:00', '12:00', 60, '5x2', 'integral'],
+    ['Júlia Castro', 'Recepcionista', 'T', 'F', 'Escritório', '13:00', '17:00', '', 0, '5x2', '4'],
+    ['Marcos Souza', 'Porteiro', 'N', 'M', 'Portaria', '19:00', '07:00', '', 60, '12x36', 'integral']
   ];
   var cSet = [{ t: 'Setor', w: 18 }, { t: 'Atividade', w: 30 }, { t: 'Dias que funciona', w: 34 }, { t: 'Mínimo trabalhando por dia', w: 16 }, { t: 'Não fecha no almoço (sim/não)', w: 18 }];
   var lSet = [
@@ -3519,6 +3657,7 @@ function baixarModelo() {
     ['Início do almoço', 'Formato 12:00. Em branco = o app define (e intercala, se o setor não fecha no almoço).'],
     ['Intervalo (min)', 'Duração do almoço em minutos, por exemplo 60. Em branco = o do turno.'],
     ['Escala', 'auto, 5x2, 5x2 rodízio, 6x1 ou 12x36. Em branco ou "auto" = o app escolhe pelo setor ou pelo cargo.'],
+    ['Jornada', '"integral" (ou em branco) ou as horas por dia do meio período: 4, 5 ou 6. Meio período não tem almoço: até 4h sem intervalo, acima de 4h pausa de 15 min; limite de 30h por semana (art. 58-A da CLT). Sem saída informada, o app calcula pela entrada.'],
     ['Aba Setores — Atividade', 'Uma destas: ' + MODELOS_SETOR.map(function (m) { return m.nome; }).join('; ') + '.'],
     ['Aba Setores — Dias', '"todos", "seg a sab", "seg a sex" ou a lista de dias, por exemplo "seg, ter, qui, sex, sab". Dia que não aparece vira folga fixa do setor.'],
     ['Aba Setores — Mínimo', 'Quantas pessoas do setor precisam estar trabalhando em cada dia. O app avisa se precisa contratar.'],
@@ -3627,7 +3766,7 @@ function iniciar() {
     if (t.dataset.i == null) return;
     ST.equipe[+t.dataset.i][t.dataset.c] = t.value;
     salvar();
-    if (t.dataset.c === 'cargo' || t.dataset.c === 'escala') desenharEquipe();
+    if (['cargo', 'escala', 'carga', 'hIni', 'hFim', 'turno'].indexOf(t.dataset.c) !== -1) desenharEquipe();
   });
   el('#tbEquipe').addEventListener('click', function (ev) {
     var i = ev.target.dataset.rm;
@@ -3804,7 +3943,8 @@ function iniciar() {
       els('#modalFunc .dia.sel').forEach(function (n) { n.classList.remove('sel'); });
       cel.classList.add('sel');
       var l = ST.atual.linhas[fichaAtual];
-      el('#motivoDia').textContent = motivoDoDia(l, +cel.dataset.dia - 1, ST.atual);
+      var pbx = diasComProblema(l)[+cel.dataset.dia];
+      el('#motivoDia').textContent = (pbx ? pbx.txt.join(' ') + ' — ' : '') + motivoDoDia(l, +cel.dataset.dia - 1, ST.atual);
     }
   });
   document.addEventListener('keydown', function (ev) {
